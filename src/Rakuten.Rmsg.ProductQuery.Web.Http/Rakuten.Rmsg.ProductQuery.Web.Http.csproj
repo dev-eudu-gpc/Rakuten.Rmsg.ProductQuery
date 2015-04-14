@@ -152,6 +152,8 @@
     <Compile Include="App_Start\ApiCompositionRoot.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.cs" />
+    <Compile Include="CommandParameters\PrepareProductQueryCommandParameters.cs" />
+    <Compile Include="Commands\PrepareProductQueryCommand.cs" />
     <Compile Include="Controllers\ProductQueryController.cs" />
     <Compile Include="EntityModels\ProductQuery.Context.cs">
       <AutoGen>True</AutoGen>
@@ -185,6 +187,7 @@
     <Compile Include="Exceptions\InternalServerException.cs" />
     <Compile Include="Exceptions\ObjectNotFoundException.cs" />
     <Compile Include="Exceptions\ValidationFailedException.cs" />
+    <Compile Include="Links\ProductQueryLink.cs" />
     <Compile Include="Net\Http\Formatting\ResourceJsonMediaTypeFormatter.cs" />
     <Compile Include="Net\Http\Formatting\ResourceXmlMediaTypeFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -240,6 +243,10 @@
     <ProjectReference Include="..\Rakuten.Gpc.Api.Client\Rakuten.Gpc.Api.Client.csproj">
       <Project>{924d65b3-56eb-4bff-abb9-e1df0c5da412}</Project>
       <Name>Rakuten.Gpc.Api.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rakuten.Gpc.Core\Rakuten.Gpc.Core.csproj">
+      <Project>{550e98d4-8daf-4cde-af14-a9e63650597d}</Project>
+      <Name>Rakuten.Gpc.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rakuten.Gpc.Resources\Rakuten.Gpc.Resources.csproj">
       <Project>{a9b6848d-391e-42ba-a648-1ad2f71ca014}</Project>

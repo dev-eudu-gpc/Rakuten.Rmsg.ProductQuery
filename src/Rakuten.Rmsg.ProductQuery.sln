@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rakuten.Gpc.Api.Client", "R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rakuten.Gpc.Resources", "Rakuten.Gpc.Resources\Rakuten.Gpc.Resources.csproj", "{A9B6848D-391E-42BA-A648-1AD2F71CA014}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rakuten.Gpc.Core", "Rakuten.Gpc.Core\Rakuten.Gpc.Core.csproj", "{550E98D4-8DAF-4CDE-AF14-A9E63650597D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,16 @@ Global
 		{A9B6848D-391E-42BA-A648-1AD2F71CA014}.Release|ARM.ActiveCfg = Release|Any CPU
 		{A9B6848D-391E-42BA-A648-1AD2F71CA014}.Release|x64.ActiveCfg = Release|Any CPU
 		{A9B6848D-391E-42BA-A648-1AD2F71CA014}.Release|x86.ActiveCfg = Release|Any CPU
+		{550E98D4-8DAF-4CDE-AF14-A9E63650597D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{550E98D4-8DAF-4CDE-AF14-A9E63650597D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{550E98D4-8DAF-4CDE-AF14-A9E63650597D}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{550E98D4-8DAF-4CDE-AF14-A9E63650597D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{550E98D4-8DAF-4CDE-AF14-A9E63650597D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{550E98D4-8DAF-4CDE-AF14-A9E63650597D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{550E98D4-8DAF-4CDE-AF14-A9E63650597D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{550E98D4-8DAF-4CDE-AF14-A9E63650597D}.Release|ARM.ActiveCfg = Release|Any CPU
+		{550E98D4-8DAF-4CDE-AF14-A9E63650597D}.Release|x64.ActiveCfg = Release|Any CPU
+		{550E98D4-8DAF-4CDE-AF14-A9E63650597D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

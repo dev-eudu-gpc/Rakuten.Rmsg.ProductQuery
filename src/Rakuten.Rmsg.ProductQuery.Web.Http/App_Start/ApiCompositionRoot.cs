@@ -12,8 +12,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using System.Web.Http.Dispatcher;
     using System.Web.Routing;
     using System.Web.SessionState;
-
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
     using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
     /// <summary>
     /// Constructs the application's object graph.
@@ -43,15 +44,21 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         {
             IHttpController controller = null;
 
-            ProductQueryDbContext databaseContext;
+            ////ProductQueryDbContext databaseContext;
+
+            // Initialize common collection of Uri templates
+            var uriTemplates = new
+            {
+                ProductQuery = new UriTemplate("/product-query/{id}")
+            };
 
             // Create appropriate controller based on the controller name
             switch (controllerDescriptor.ControllerName)
             {
                 case "ProductQuery":
-                    databaseContext = new ProductQueryDbContext();
+                    ////databaseContext = new ProductQueryDbContext();
 
-                    controller = new ProductQueryController();
+                    controller = new ProductQueryController(new PrepareProductQueryCommand(uriTemplates.ProductQuery));
 
                     break;
             }

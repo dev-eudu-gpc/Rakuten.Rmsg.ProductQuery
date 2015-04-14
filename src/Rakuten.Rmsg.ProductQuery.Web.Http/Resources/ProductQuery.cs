@@ -6,14 +6,16 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Web;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
     /// <summary>
     /// Represents a product query
     /// </summary>
-    public class ProductQuery
+    public class ProductQuery : Resource
     {
         /// <summary>
         /// Gets or sets the status of the product query
