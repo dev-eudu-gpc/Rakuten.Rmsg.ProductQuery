@@ -61,6 +61,5 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Links
 
             return new ProductQueryLink(this.RelationType, resolvedTemplate, this.TargetAttributes);
         }
-
     }
 }
