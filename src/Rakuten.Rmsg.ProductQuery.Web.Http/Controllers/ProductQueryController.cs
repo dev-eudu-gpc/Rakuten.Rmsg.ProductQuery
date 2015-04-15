@@ -50,7 +50,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <param name="id">The unique identifier for the product query</param>
         /// <returns>A representation of the new product query</returns>
         [Route("product-query/{id}")]
-        public async Task<IHttpActionResult> Get(Guid id)
+        public async Task<IHttpActionResult> PutNewProductQuery(Guid id)
         {
             Contract.Assume(this.getProductQueryCommand != null);
             Contract.Assume(this.createProductQueryCommand != null);

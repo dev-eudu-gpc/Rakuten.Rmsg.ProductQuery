@@ -105,7 +105,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             await this.createProductQueryDatabaseCommand.Execute(
                 new CreateProductQueryDatabaseCommandParameters(parameters.Id, dateCreated));
 
-            // TODO: [WB 15-Apr-2015] Catch exceptions and update database accordingly
+            // TODO: [WB 15-Apr-2015] Catch azure exceptions and update database accordingly
 
             // Create blob in storage
             Uri blobUri = await this.createStorageBlobCommand.Execute(
