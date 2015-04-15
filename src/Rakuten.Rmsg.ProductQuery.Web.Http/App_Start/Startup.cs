@@ -10,12 +10,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using System.Web.Http;
     using System.Web.Http.Dispatcher;
     using System.Web.Http.ExceptionHandling;
-
     using Owin;
-
     using Rakuten.Gpc.Api.Web.Http.ExceptionHandling;
     using Rakuten.Net.Http.Formatting;
     using Rakuten.Reflection.Emit;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Configuration;
     using Rakuten.Web.Http;
     using Rakuten.Web.Http.ExceptionHandling;
     using Rakuten.Web.Http.Results;
@@ -45,10 +44,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             // Exception handling
             configuration.Services.Replace(typeof(IExceptionHandler), GetExceptionHandler());
 
+            // Get the context for the current instance.
+            var context = GetContext();
+
             // Replace the default controller activator with the ApiCompositionRoot activator.
             configuration.Services.Replace(
                 typeof(IHttpControllerActivator),
-                new ApiCompositionRoot());
+                new ApiCompositionRoot(context));
 
             // Configure the OWIN pipeline with a Web API endpoint using the specified configuration.
             app.UseWebApi(configuration);
@@ -66,6 +68,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             formatters.Clear();
             formatters.Add(new ResourceJsonMediaTypeFormatter());
             formatters.Add(new ResourceXmlMediaTypeFormatter());
+        }
+
+        /// <summary>
+        /// Gets a context for the current instance
+        /// </summary>
+        /// <returns>A context for the current instance.</returns>
+        private static IApiContext GetContext()
+        {
+            return new ApiContextFactory(new AppSettingsConfigurationSource()).Create();
         }
 
         /// <summary>

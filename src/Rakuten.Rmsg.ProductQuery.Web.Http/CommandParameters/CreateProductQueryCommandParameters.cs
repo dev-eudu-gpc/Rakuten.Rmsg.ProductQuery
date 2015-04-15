@@ -1,31 +1,31 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="PrepareProductQueryCommandParameters" company="Rakuten">
+// <copyright file="CreateProductQueryCommandParameters.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
+    using System.Diagnostics.Contracts;
 
     /// <summary>
-    /// The parameters for the <see cref="PrepareProductQueryCommand"/> class.
+    /// The parameters for the <see cref="CreateProductQueryCommand"/> class.
     /// </summary>
-    public class PrepareProductQueryCommandParameters
+    public class CreateProductQueryCommandParameters
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PrepareProductQueryCommandParameters"/> class
+        /// Initializes a new instance of the <see cref="CreateProductQueryCommandParameters"/> class
         /// </summary>
         /// <param name="id">The unique identifier for the product query</param>
-        public PrepareProductQueryCommandParameters(Guid id)
+        public CreateProductQueryCommandParameters(Guid id)
         {
+            Contract.Requires(id != null);
+
             this.Id = id;
         }
 
         /// <summary>
-        /// Gets or sets the unique identifier of the product query
+        /// Gets the unique identifier of the product query
         /// </summary>
         public Guid Id { get; private set; }
     }

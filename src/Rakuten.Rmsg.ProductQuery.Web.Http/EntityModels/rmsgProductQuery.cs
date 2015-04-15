@@ -22,5 +22,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels
         public string uri { get; set; }
     
         public virtual rmsgProductQueryGroup rmsgProductQueryGroup { get; set; }
+        public virtual rmsgProductQueryStatu rmsgProductQueryStatu { get; set; }
     }
 }

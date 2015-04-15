@@ -10,6 +10,7 @@
         <EntityTypeShape EntityType="EntityModels.rmsgProductQueryItem" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="EntityModels.rmsgProductQueryStatu" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
         <AssociationConnector Association="EntityModels.fkRmsgProductQuery_rmsgProductQueryGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="EntityModels.fkRmsgProductQuery_rmsgProductQueryStatus" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

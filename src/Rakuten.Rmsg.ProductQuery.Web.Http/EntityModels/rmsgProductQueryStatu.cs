@@ -14,7 +14,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels
     
     public partial class rmsgProductQueryStatu
     {
+        public rmsgProductQueryStatu()
+        {
+            this.rmsgProductQueries = new HashSet<rmsgProductQuery>();
+        }
+    
         public byte rmsgProductQueryStatusID { get; set; }
         public string name { get; set; }
+    
+        public virtual ICollection<rmsgProductQuery> rmsgProductQueries { get; set; }
     }
 }

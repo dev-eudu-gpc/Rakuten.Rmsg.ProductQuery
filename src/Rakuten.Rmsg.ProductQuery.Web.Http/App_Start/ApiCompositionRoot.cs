@@ -13,8 +13,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using System.Web.Routing;
     using System.Web.SessionState;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
-    using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
+    using Rakuten.WindowsAzure.Storage;
 
     /// <summary>
     /// Constructs the application's object graph.
@@ -22,12 +23,19 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     public class ApiCompositionRoot : IHttpControllerActivator
     {
         /// <summary>
+        /// The context of the current instance.
+        /// </summary>
+        private readonly IApiContext context;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ApiCompositionRoot" /> class.
         /// </summary>
-        /// A delegate that will create a client for connecting to the current GPC instance.
-        /// </param>
-        internal ApiCompositionRoot()
+        /// <param name="context">The context of the current instance.</param>
+        internal ApiCompositionRoot(IApiContext context)
         {
+            Contract.Requires(context != null);
+
+            this.context = context;
         }
 
         /// <summary>
@@ -44,21 +52,43 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         {
             IHttpController controller = null;
 
-            ////ProductQueryDbContext databaseContext;
-
             // Initialize common collection of Uri templates
             var uriTemplates = new
             {
-                ProductQuery = new UriTemplate("/product-query/{id}")
+                AzureBlob = new UriTemplate("{id}"),
+                ProductQuery = new UriTemplate("/product-query/{id}"),
+                ProductQueryMonitorLink = new UriTemplate("/product-query-group/{id}/status/{year}/{month}/{day}/{time}")
             };
 
             // Create appropriate controller based on the controller name
             switch (controllerDescriptor.ControllerName)
             {
                 case "ProductQuery":
-                    ////databaseContext = new ProductQueryDbContext();
+                    var databaseContext = new ProductQueryDbContext();
+                    var storage = new AzureStorage();
 
-                    controller = new ProductQueryController(new PrepareProductQueryCommand(uriTemplates.ProductQuery));
+                    var createDatabaseCommand = new CreateProductQueryDatabaseCommand(this.context, databaseContext);
+                    var updateUriDatabaseCommand = new UpdateProductQueryUriCommand(this.context, databaseContext);                   
+                    var getDatabaseCommand = new GetProductQueryDatabaseCommand(this.context, databaseContext);
+                    var createStorageBlobCommand = new CreateStorageBlobCommand(storage, this.context);
+
+                    var createCommand = new CreateProductQueryCommand(
+                        storage,
+                        this.context,
+                        uriTemplates.ProductQuery,
+                        uriTemplates.AzureBlob,
+                        createDatabaseCommand,
+                        createStorageBlobCommand,
+                        updateUriDatabaseCommand);
+                    var getCommand = new GetProductQueryCommand(
+                        storage,
+                        this.context,
+                        uriTemplates.ProductQuery,
+                        uriTemplates.AzureBlob,
+                        uriTemplates.ProductQueryMonitorLink,
+                        getDatabaseCommand);
+
+                    controller = new ProductQueryController(getCommand, createCommand);
 
                     break;
             }

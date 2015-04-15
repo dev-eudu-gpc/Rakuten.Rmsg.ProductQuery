@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Rakuten.Rmsg.ProductQuery.EntityModels.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Rakuten.Rmsg.ProductQuery.EntityModels.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="rmsgProductQuery">
           <Key>
             <PropertyRef Name="rmsgProductQueryID" />
@@ -20,7 +20,7 @@
           <Key>
             <PropertyRef Name="rmsgProductQueryGroupID" />
           </Key>
-          <Property Name="rmsgProductQueryGroupID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="rmsgProductQueryGroupID" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="None" />
           <Property Name="count" Type="smallint" Nullable="false" />
         </EntityType>
         <EntityType Name="rmsgProductQueryItem">
@@ -49,6 +49,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fkRmsgProductQuery_rmsgProductQueryStatus">
+          <End Role="rmsgProductQueryStatus" Type="Self.rmsgProductQueryStatus" Multiplicity="1" />
+          <End Role="rmsgProductQuery" Type="Self.rmsgProductQuery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="rmsgProductQueryStatus">
+              <PropertyRef Name="rmsgProductQueryStatusID" />
+            </Principal>
+            <Dependent Role="rmsgProductQuery">
+              <PropertyRef Name="rmsgProductQueryStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="RakutenRmsgProductQueryEntityModelsStoreContainer">
           <EntitySet Name="rmsgProductQuery" EntityType="Self.rmsgProductQuery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="rmsgProductQueryGroup" EntityType="Self.rmsgProductQueryGroup" Schema="dbo" store:Type="Tables" />
@@ -58,9 +70,12 @@
             <End Role="rmsgProductQueryGroup" EntitySet="rmsgProductQueryGroup" />
             <End Role="rmsgProductQuery" EntitySet="rmsgProductQuery" />
           </AssociationSet>
+          <AssociationSet Name="fkRmsgProductQuery_rmsgProductQueryStatus" Association="Self.fkRmsgProductQuery_rmsgProductQueryStatus">
+            <End Role="rmsgProductQueryStatus" EntitySet="rmsgProductQueryStatus" />
+            <End Role="rmsgProductQuery" EntitySet="rmsgProductQuery" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EntityModels" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -75,12 +90,13 @@
           <Property Name="rmsgProductQueryStatusID" Type="Byte" Nullable="false" />
           <Property Name="uri" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="rmsgProductQueryGroup" Relationship="Self.fkRmsgProductQuery_rmsgProductQueryGroup" FromRole="rmsgProductQuery" ToRole="rmsgProductQueryGroup" />
+          <NavigationProperty Name="rmsgProductQueryStatu" Relationship="EntityModels.fkRmsgProductQuery_rmsgProductQueryStatus" FromRole="rmsgProductQuery" ToRole="rmsgProductQueryStatu" />
         </EntityType>
         <EntityType Name="rmsgProductQueryGroup">
           <Key>
             <PropertyRef Name="rmsgProductQueryGroupID" />
           </Key>
-          <Property Name="rmsgProductQueryGroupID" Type="Guid" Nullable="false" />
+          <Property Name="rmsgProductQueryGroupID" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="count" Type="Int16" Nullable="false" />
           <NavigationProperty Name="rmsgProductQueries" Relationship="Self.fkRmsgProductQuery_rmsgProductQueryGroup" FromRole="rmsgProductQueryGroup" ToRole="rmsgProductQuery" />
         </EntityType>
@@ -97,6 +113,7 @@
           </Key>
           <Property Name="rmsgProductQueryStatusID" Type="Byte" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="rmsgProductQueries" Relationship="EntityModels.fkRmsgProductQuery_rmsgProductQueryStatus" FromRole="rmsgProductQueryStatu" ToRole="rmsgProductQuery" />
         </EntityType>
         <Association Name="fkRmsgProductQuery_rmsgProductQueryGroup">
           <End Role="rmsgProductQueryGroup" Type="Self.rmsgProductQueryGroup" Multiplicity="1" />
@@ -119,7 +136,23 @@
             <End Role="rmsgProductQueryGroup" EntitySet="rmsgProductQueryGroups" />
             <End Role="rmsgProductQuery" EntitySet="rmsgProductQueries" />
           </AssociationSet>
+          <AssociationSet Name="fkRmsgProductQuery_rmsgProductQueryStatus" Association="EntityModels.fkRmsgProductQuery_rmsgProductQueryStatus">
+            <End Role="rmsgProductQueryStatu" EntitySet="rmsgProductQueryStatus" />
+            <End Role="rmsgProductQuery" EntitySet="rmsgProductQueries" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="fkRmsgProductQuery_rmsgProductQueryStatus">
+          <End Type="EntityModels.rmsgProductQueryStatu" Role="rmsgProductQueryStatu" Multiplicity="1" />
+          <End Type="EntityModels.rmsgProductQuery" Role="rmsgProductQuery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="rmsgProductQueryStatu">
+              <PropertyRef Name="rmsgProductQueryStatusID" />
+            </Principal>
+            <Dependent Role="rmsgProductQuery">
+              <PropertyRef Name="rmsgProductQueryStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
