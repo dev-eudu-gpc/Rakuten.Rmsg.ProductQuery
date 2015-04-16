@@ -5,9 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
-    using System;
-    using System.IO;
-
     using Microsoft.Azure.WebJobs;
 
     using Rakuten.Azure.WebJobs;
