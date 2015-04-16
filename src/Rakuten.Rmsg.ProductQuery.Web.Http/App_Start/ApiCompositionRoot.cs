@@ -16,6 +16,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
     using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
+    using Rakuten.WindowsAzure.ServiceBus;
     using Rakuten.WindowsAzure.Storage;
 
     /// <summary>
@@ -56,9 +57,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             // Initialize common collection of Uri templates
             var uriTemplates = new
             {
-                AzureBlob = new UriTemplate("{id}"),
-                ProductQuery = new UriTemplate("/product-query/{id}"),
-                ProductQueryMonitorLink = new UriTemplate("/product-query-group/{id}/status/{year}/{month}/{day}/{time}")
+                AzureBlob = new Rakuten.UriTemplate("{id}"),
+                ProductQuery = new Rakuten.UriTemplate("/product-query/{id}"),
+                ProductQueryMonitorLink = new Rakuten.UriTemplate("/product-query-group/{id}/status/{year}/{month}/{day}/{time}")
             };
 
             // Create appropriate controller based on the controller name
@@ -66,30 +67,42 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             {
                 case "ProductQuery":
                     var databaseContext = new ProductQueryDbContext();
+                    var messageQueue = new AzureServiceBusQueue();
                     var storage = new AzureStorage();
 
+                    // Database commands
                     var createDatabaseCommand = new CreateProductQueryDatabaseCommand(this.context, databaseContext);
-                    var updateUriDatabaseCommand = new UpdateProductQueryUriCommand(this.context, databaseContext);                   
                     var getDatabaseCommand = new GetProductQueryDatabaseCommand(this.context, databaseContext);
-                    var createStorageBlobCommand = new CreateStorageBlobCommand(storage, this.context);
+                    var updateProductQueryStatusDatabaseCommand = new UpdateProductQueryStatusDatabaseCommand(this.context, databaseContext);
+                    var updateProductQueryUriDatabaseCommand = new UpdateProductQueryUriCommand(this.context, databaseContext);                   
 
+                    // Storage commands
+                    var createStorageBlobCommand = new CreateStorageBlobCommand(this.context, storage);
+                    var dispatchMessageCommand = new DispatchMessageCommand(this.context, messageQueue);
+
+                    // Macro commands
                     var createCommand = new CreateProductQueryCommand(
-                        storage,
                         this.context,
                         uriTemplates.ProductQuery,
                         uriTemplates.AzureBlob,
                         createDatabaseCommand,
                         createStorageBlobCommand,
-                        updateUriDatabaseCommand);
+                        updateProductQueryUriDatabaseCommand);
+
                     var getCommand = new GetProductQueryCommand(
-                        storage,
                         this.context,
                         uriTemplates.ProductQuery,
                         uriTemplates.AzureBlob,
                         uriTemplates.ProductQueryMonitorLink,
                         getDatabaseCommand);
 
-                    controller = new ProductQueryController(getCommand, createCommand);
+                    var readyForProcessingCommand = new ReadyForProcessingCommand(
+                        this.context,
+                        dispatchMessageCommand,
+                        getCommand,
+                        updateProductQueryStatusDatabaseCommand);
+
+                    controller = new ProductQueryController(getCommand, createCommand, readyForProcessingCommand);
 
                     break;
             }

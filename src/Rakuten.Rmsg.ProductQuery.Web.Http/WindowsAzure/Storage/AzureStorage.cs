@@ -10,11 +10,13 @@ namespace Rakuten.WindowsAzure.Storage
     using System.Diagnostics.Contracts;
     using System.Text;
     using System.Threading.Tasks;
+    using Microsoft.ServiceBus.Messaging;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
     using Microsoft.WindowsAzure.Storage.Shared.Protocol;
     using Rakuten.Gpc;
     using Rakuten.Gpc.Api;
+    using Rakuten.Rmsg.ProductQuery.Web.Http;
 
     /// <summary>
     /// Represents an implementation that interacts with storage on Microsoft Azure.
@@ -201,6 +203,24 @@ namespace Rakuten.WindowsAzure.Storage
             AddSharedAccessPolicy(expiryTime, SharedAccessBlobPermissions.Write, blobContainer);
 
             return GetSharedAccessSignature(blobContainer, blobName);
+        }
+
+        /// <summary>
+        /// Dispatches a message to a specified Azure service bus message queue
+        /// </summary>
+        /// <param name="connectionString">The connection string for the Azure service bus.</param>
+        /// <param name="queueName">The name of the queue to dispatch the message to.</param>
+        /// <param name="productQuery">The product query that forms the message.</param>
+        public void DispatchMessage(
+            string connectionString,
+            string queueName,
+            ProductQuery productQuery)
+        {
+            Contract.Requires(connectionString != null);
+
+            QueueClient client = QueueClient.CreateFromConnectionString(connectionString, queueName);
+
+            client.Send(new BrokeredMessage(productQuery));
         }
 
         /// <summary>

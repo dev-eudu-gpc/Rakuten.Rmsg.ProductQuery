@@ -60,6 +60,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         }
 
         /// <summary>
+        /// Gets or sets the status of the product query
+        /// </summary>
+        public string Status { get; set; }
+
+        /// <summary>
         /// Gets the time at which the product query was created.
         /// </summary>
         public string Time 
@@ -91,10 +96,5 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     this.DateCreated.Value.Year.ToString();
             }
         }
-
-        /// <summary>
-        /// Gets or sets the status of the product query
-        /// </summary>
-        public string Status { get; set; }
     }
 }

@@ -133,15 +133,22 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
                 databaseUser,
                 databasePassword);
 
-            string serviceBusConnectionString =
-                source.GetConfigurationSettingValue(SettingKey.ServiceBusConnectionString);
+            // Configure the service bus connection string
+            string serviceBusKey =
+                source.GetConfigurationSettingValue(SettingKey.ServiceBusAccessKey);
 
-            if (serviceBusConnectionString == null)
+            if (serviceBusKey == null)
             {
                 throw new InvalidOperationException("Service Bus connection string not configured.");
             }
 
-            // Get the maximum number of queryes allowed per query group
+            string serviceBusConnectionString = GenerateServiceBusConnectionString(
+                environmentName,
+                region,
+                "app",
+                storageAccountKey);
+
+            // Get the maximum number of queries allowed per query group
             string maxQueriesPerGroupString = source.GetConfigurationSettingValue(SettingKey.MaximumQueriesPerGroup);
             if (maxQueriesPerGroupString == null)
             {
@@ -211,6 +218,32 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         }
 
         /// <summary>
+        /// Generates and returns a service bus connection string using the specified details.
+        /// </summary>
+        /// <param name="environmentName">The currently targeted environment.</param>
+        /// <param name="region">The region in which the storage account is located.</param>
+        /// <param name="instance">A <see cref="string"/> identifying the account.</param>
+        /// <param name="accountKey">The shared key assigned to the storage account.</param>
+        /// <returns>The generate connection string.</returns>
+        private static string GenerateServiceBusConnectionString(
+            string environmentName,
+            string region,
+            string instance,
+            string accountKey)
+        {
+            const string ConnectionStringTemplate = "Endpoint=sb://{0}.servicebus.windows.net/;SharedAccessKeyName=RootManagerSharedAccessKey;SharedSecretValue={1}";
+
+            // Create the connection string to the storage account.
+            string accountName = string.Format("{0}-gpc-{1}-bus",
+                environmentName,
+                region.Replace(" ", string.Empty));
+
+            return string.Format(ConnectionStringTemplate,
+                accountName,
+                accountKey);
+        }
+
+        /// <summary>
         /// Provides names of the keys for the GPC configuration settings.
         /// </summary>
         private static class SettingKey
@@ -268,7 +301,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             /// <summary>
             /// Indicates the setting for the connection string to the service bus/
             /// </summary>
-            public const string ServiceBusConnectionString = "Microsoft.ServiceBus.ConnectionString";
+            public const string ServiceBusAccessKey = "Rakuten.Gpc.Azure.ServiceBus.AccessKey";
 
             /// <summary>
             /// Indicates the setting for the connection string to the storage account.

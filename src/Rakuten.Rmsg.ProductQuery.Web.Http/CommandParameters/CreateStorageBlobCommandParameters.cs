@@ -23,6 +23,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             Contract.Requires(dateCreated != null);
             Contract.Requires(id != null);
 
+            this.DateCreated = dateCreated;
             this.Id = id;
         }
 

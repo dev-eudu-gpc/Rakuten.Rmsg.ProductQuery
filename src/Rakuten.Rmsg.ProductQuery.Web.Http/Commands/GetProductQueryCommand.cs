@@ -44,28 +44,20 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly ProductQueryLink selfLink;
 
         /// <summary>
-        /// The object for interacting with storage.
-        /// </summary>
-        private readonly IStorage storage;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="GetProductQueryCommand"/> class
         /// </summary>
-        /// <param name="storage">A means to interact with storage for the product query</param>
         /// <param name="context">The context in which this instance is running.</param>
         /// <param name="productQueryUriTemplate">A link template representing the canonical location of the resource.</param>
         /// <param name="azureBlobUriTemplate">A link template representing the canonical location of the blob in Azure storage.</param>
         /// <param name="monitorUriTemplate">A link template representing the canonical location of the monitor for the resource.</param>
         /// <param name="getProductQueryDatabaseCommand">A command that gets product query data from the database.</param>
         public GetProductQueryCommand(
-            IStorage storage,
             IApiContext context,
             IUriTemplate productQueryUriTemplate,
             IUriTemplate azureBlobUriTemplate,
             IUriTemplate monitorUriTemplate,
             ICommand<GetProductQueryDatabaseCommandParameters, Task<ProductQuery>> getProductQueryDatabaseCommand)
         {
-            Contract.Requires(storage != null);
             Contract.Requires(context != null);
             Contract.Requires(productQueryUriTemplate != null);
             Contract.Requires(azureBlobUriTemplate != null);
@@ -77,7 +69,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             this.getProductQueryDatabaseCommand = getProductQueryDatabaseCommand;
             this.monitorLink = new ProductQueryMonitorLink("monitor", monitorUriTemplate, new TargetAttributes(null, "image/png", null));
             this.selfLink = new ProductQueryLink(productQueryUriTemplate);
-            this.storage = storage;
         }
 
         /// <summary>

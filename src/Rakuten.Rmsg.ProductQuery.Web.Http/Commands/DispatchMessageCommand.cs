@@ -1,21 +1,22 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="CreateStorageBlobCommand.cs" company="Rakuten">
+// <copyright file="DispatchMessageCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
     using System;
+    using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
     using System.Threading.Tasks;
-
     using Rakuten.Rmsg.ProductQuery.Configuration;
+    using Rakuten.WindowsAzure.ServiceBus;
     using Rakuten.WindowsAzure.Storage;
 
     /// <summary>
-    /// Represents a command for preparing a product query
+    /// Represents a command that dispatches a product query message to the queue.
     /// </summary>
-    public class CreateStorageBlobCommand : AsyncCommand<CreateStorageBlobCommandParameters, Uri>
+    public class DispatchMessageCommand : AsyncCommandAction<DispatchMessageCommandParameters>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -25,22 +26,22 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// The object for interacting with storage.
         /// </summary>
-        private readonly IStorage storage;
+        private readonly IMessageQueue messageQueue;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateStorageBlobCommand"/> class
+        /// Initializes a new instance of the <see cref="DispatchMessageCommand"/> class
         /// </summary>
         /// <param name="context">The context in which this instance is running.</param>
-        /// <param name="storage">A means to interact with storage for the product query</param>
-        public CreateStorageBlobCommand(
+        /// <param name="messageQueue">A means to interact with the message queue.</param>
+        public DispatchMessageCommand(
             IApiContext context,
-            IStorage storage)
+            IMessageQueue messageQueue)
         {
-            Contract.Requires(storage != null);
+            Contract.Requires(messageQueue != null);
             Contract.Requires(context != null);
 
             this.context = context;
-            this.storage = storage;
+            this.messageQueue = messageQueue;
         }
 
         /// <summary>
@@ -48,24 +49,21 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// </summary>
         /// <param name="parameters">The input parameters enabling the product query to be uniquely identified</param>
         /// <returns>A task that does the work.</returns>
-        public override Task<Uri> ExecuteAsync(CreateStorageBlobCommandParameters parameters)
+        public override async Task ExecuteAsync(DispatchMessageCommandParameters parameters)
         {
             Contract.Requires(parameters != null);
 
-            return Task.Run(() =>
+            // Create the message
+            var message = new ProductQuery
             {
-                // Construct the blob's file name
-                string blobFileName = string.Format(
-                    this.context.BlobFileNameMask,
-                    parameters.DateCreated.ToString("yyyy-MM-dd"),
-                    parameters.Id);
+                Links = new Collection<Link> { parameters.ProductQuery }
+            };
 
-                // Create blob in storage
-                return this.storage.GetSharedAccessSignature(
-                    this.context.StorageConnectionString,
-                    this.context.BlobContainerName,
-                    blobFileName);
-            });
+            // Dispatch the message
+            await this.messageQueue.DispatchMessage(
+                this.context.ServiceBusConnectionString,
+                "rmsg-product-query", // TODO: [WB 16-Apr-2015] Replace with config setting
+                message);
         }
     }
 }

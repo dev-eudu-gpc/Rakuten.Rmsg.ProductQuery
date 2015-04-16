@@ -45,11 +45,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly ProductQueryLink selfLink;
 
         /// <summary>
-        /// The object for interacting with storage.
-        /// </summary>
-        private readonly IStorage storage;
-
-        /// <summary>
         /// A command for updating a product query's uri.
         /// </summary>
         private readonly ICommand<UpdateProductQueryUriCommandParameters, Task> updateProductQueryUriCommand;
@@ -57,7 +52,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateProductQueryCommand"/> class
         /// </summary>
-        /// <param name="storage">A means to interact with storage for the product query</param>
         /// <param name="context">The context in which this instance is running.</param>
         /// <param name="productQueryUriTemplate">A link template representing the canonical location of the resource.</param>
         /// <param name="azureBlobUriTemplate">A link template representing the canonical location of the blob in Azure storage.</param>
@@ -65,7 +59,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <param name="createStorageBlobCommand">A command for creating a blob in storage for the product query file</param>
         /// <param name="updateProductQueryUriCommand">A command for updating a product query's uri</param>
         public CreateProductQueryCommand(
-            IStorage storage,
             IApiContext context,
             IUriTemplate productQueryUriTemplate,
             IUriTemplate azureBlobUriTemplate,
@@ -73,7 +66,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             ICommand<CreateStorageBlobCommandParameters, Task<Uri>> createStorageBlobCommand,
             ICommand<UpdateProductQueryUriCommandParameters, Task> updateProductQueryUriCommand)
         {
-            Contract.Requires(storage != null);
             Contract.Requires(context != null);
             Contract.Requires(productQueryUriTemplate != null);
             Contract.Requires(azureBlobUriTemplate != null);
@@ -86,7 +78,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             this.createStorageBlobCommand = createStorageBlobCommand;
             this.createProductQueryDatabaseCommand = createProductQueryDatabaseCommand;
             this.selfLink = new ProductQueryLink(productQueryUriTemplate);
-            this.storage = storage;
             this.updateProductQueryUriCommand = updateProductQueryUriCommand;
         }
 
