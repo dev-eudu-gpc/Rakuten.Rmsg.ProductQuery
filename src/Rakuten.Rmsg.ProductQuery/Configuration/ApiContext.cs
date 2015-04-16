@@ -3,11 +3,9 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //----------------------------------------------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
+namespace Rakuten.Rmsg.ProductQuery.Configuration
 {
     using System.Diagnostics.Contracts;
-
-    using Rakuten.Gpc.Configuration;
 
     /// <summary>
     /// The current set of conditions under which this instance should operate.
@@ -28,6 +26,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
         /// The connection string for the database.
         /// </summary>
         private readonly string databaseConnectionString;
+
+        /// <summary>
+        /// The connection string for the diagnostics storage account.
+        /// </summary>
+        private readonly string diagnosticsStorageConnectionString;
 
         /// <summary>
         /// The environment in which this GPC is running.
@@ -63,6 +66,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
             string blobContainerName,
             string blobFileNameMask,
             string databaseConnectionString,
+            string diagnosticsStorageConnectionString,
             string environmentName,
             int maximumQueriesPerGroup,
             string region,
@@ -71,6 +75,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
             Contract.Requires(blobContainerName != null);
             Contract.Requires(blobFileNameMask != null);
             Contract.Requires(databaseConnectionString != null);
+            Contract.Requires(diagnosticsStorageConnectionString != null);
             Contract.Requires(environmentName != null);
             Contract.Requires(region != null);
             Contract.Requires(storageConnectionString != null);
@@ -78,6 +83,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
             this.blobContainerName = blobContainerName;
             this.blobFileNameMask = blobFileNameMask;
             this.databaseConnectionString = databaseConnectionString;
+            this.diagnosticsStorageConnectionString = diagnosticsStorageConnectionString;
             this.environmentName = environmentName;
             this.maximumQueriesPerGroup = maximumQueriesPerGroup;
             this.region = region;
@@ -109,6 +115,17 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
         public string DatabaseConnectionString
         {
             get { return this.databaseConnectionString; }
+        }
+
+        /// <summary>
+        /// Gets the connection string to the storage account where diagnostics information should be written.
+        /// </summary>
+        public string DiagnosticsStorageConnectionString
+        {
+            get
+            {
+                return this.diagnosticsStorageConnectionString;
+            }
         }
 
         /// <summary>

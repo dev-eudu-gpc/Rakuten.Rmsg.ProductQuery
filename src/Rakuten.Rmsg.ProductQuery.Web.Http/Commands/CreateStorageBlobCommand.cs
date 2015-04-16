@@ -8,7 +8,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using System;
     using System.Diagnostics.Contracts;
     using System.Threading.Tasks;
-    using Rakuten.Rmsg.ProductQuery.Web.Http.Configuration;
+
+    using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.WindowsAzure.Storage;
 
     /// <summary>

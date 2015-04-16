@@ -9,7 +9,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Threading.Tasks;
-    using Rakuten.Rmsg.ProductQuery.Web.Http.Configuration;
+
+    using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
 
     /// <summary>

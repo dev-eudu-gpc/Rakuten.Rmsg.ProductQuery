@@ -3,7 +3,7 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //----------------------------------------------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
+namespace Rakuten.Rmsg.ProductQuery.Configuration
 {
     /// <summary>
     /// Provides configuration settings for the context in which the application is operating
@@ -24,6 +24,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
         /// Gets the connection string for the database.
         /// </summary>
         string DatabaseConnectionString { get; }
+
+        /// <summary>
+        /// Gets the connection string to the storage account where diagnostics information should be written.
+        /// </summary>
+        string DiagnosticsStorageConnectionString { get; }
 
         /// <summary>
         /// Gets the environment in which this GPC is running.

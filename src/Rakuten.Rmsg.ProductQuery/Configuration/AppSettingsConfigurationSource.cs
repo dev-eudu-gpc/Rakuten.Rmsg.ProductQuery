@@ -3,9 +3,8 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //----------------------------------------------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
+namespace Rakuten.Rmsg.ProductQuery.Configuration
 {
-    using System;
     using System.Configuration;
 
     /// <summary>

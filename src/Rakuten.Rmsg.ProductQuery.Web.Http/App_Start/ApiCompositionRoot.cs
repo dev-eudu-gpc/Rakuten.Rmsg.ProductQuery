@@ -12,8 +12,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using System.Web.Http.Dispatcher;
     using System.Web.Routing;
     using System.Web.SessionState;
+
+    using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
-    using Rakuten.Rmsg.ProductQuery.Web.Http.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
     using Rakuten.WindowsAzure.Storage;
 

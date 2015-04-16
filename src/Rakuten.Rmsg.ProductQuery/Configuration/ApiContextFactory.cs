@@ -3,7 +3,7 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //----------------------------------------------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
+namespace Rakuten.Rmsg.ProductQuery.Configuration
 {
     using System;
     using System.Diagnostics.Contracts;
@@ -87,10 +87,24 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
                 throw new InvalidOperationException("Storage account key not configured.");
             }
 
-            string storageConnectionString = string.Format(
-                "DefaultEndpointsProtocol=https;AccountName={0}gpc{1}app;AccountKey={2}",
+            string storageConnectionString = GenerateStorageAccountConnectionString(
                 environmentName,
-                region.Replace(" ", string.Empty),
+                region,
+                "app",
+                storageAccountKey);
+
+            // Get the storage account key for diagnostic storage
+            storageAccountKey = source.GetConfigurationSettingValue(SettingKey.DiagnosticStorageAccountKey);
+
+            if (storageAccountKey == null)
+            {
+                throw new InvalidOperationException("Diagnostic storage account key not configured.");
+            }
+
+            string diagnosticSorageConnectionString = GenerateStorageAccountConnectionString(
+                environmentName,
+                region,
+                "diag",
                 storageAccountKey);
 
             // Configure the database connection string
@@ -151,10 +165,40 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
                 blobContainerName,
                 blobFileNameMask,
                 databaseConnectionString,
+                diagnosticSorageConnectionString,
                 environmentName,
                 maxQueriesPerGroup,
                 region,
                 storageConnectionString);
+        }
+
+        /// <summary>
+        /// Generates and returns a storage account connection string using the specified details.
+        /// </summary>
+        /// <param name="environmentName">The currently targeted environment.</param>
+        /// <param name="region">The region in which the storage account is located.</param>
+        /// <param name="instance">A <see cref="string"/> identifying the account.</param>
+        /// <param name="accountKey">The shared key assigned to the storage account.</param>
+        /// <returns>The generate connection string.</returns>
+        private static string GenerateStorageAccountConnectionString(
+            string environmentName, 
+            string region, 
+            string instance,
+            string accountKey)
+        {
+            const string ConnectionStringTemplate = "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}";
+
+            // Create the connection string to the storage account.
+            string accountName = string.Format(
+                "{0}gpc{1}{2}",
+                environmentName,
+                region.Replace(" ", string.Empty),
+                instance);
+
+            return string.Format(
+                ConnectionStringTemplate,
+                accountName,
+                accountKey);
         }
 
         /// <summary>
@@ -186,6 +230,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Configuration
             /// Indicates the setting for the database user.
             /// </summary>
             public const string DatabaseUser = "Rakuten.Gpc.Azure.SqlServer.Login.Username";
+
+            /// <summary>
+            /// Indicates the setting name for the storage account for diagnostic data.
+            /// </summary>
+            public const string DiagnosticStorageAccountKey = "Rakuten.Gpc.Diag.Azure.Storage.PrimaryKey";
 
             /// <summary>
             /// Indicates the setting for the environment name.

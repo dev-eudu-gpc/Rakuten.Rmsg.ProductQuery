@@ -10,11 +10,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using System.Web.Http;
     using System.Web.Http.Dispatcher;
     using System.Web.Http.ExceptionHandling;
+
     using Owin;
+
     using Rakuten.Gpc.Api.Web.Http.ExceptionHandling;
     using Rakuten.Net.Http.Formatting;
     using Rakuten.Reflection.Emit;
-    using Rakuten.Rmsg.ProductQuery.Web.Http.Configuration;
+    using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Web.Http;
     using Rakuten.Web.Http.ExceptionHandling;
     using Rakuten.Web.Http.Results;
