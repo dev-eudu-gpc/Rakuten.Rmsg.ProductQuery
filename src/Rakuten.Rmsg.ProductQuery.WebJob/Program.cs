@@ -11,6 +11,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using Microsoft.Azure.WebJobs;
 
     using Rakuten.Azure.WebJobs;
+    using Rakuten.Rmsg.ProductQuery.Configuration;
 
     /// <summary>
     /// An application that will execute as a WebJob in Microsoft's Azure.
@@ -23,17 +24,18 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         public static void Main()
         {
             // Generate the connection strings to the diagnostics storage.
+            IApiContext context = new ApiContextFactory(new AppSettingsConfigurationSource()).Create();
 
+            var host = new JobHost(new JobHostConfiguration(context.DiagnosticsStorageConnectionString)
+            {
+                NameResolver = new CloudConfigNameResolver(),
+                ServiceBusConnectionString = context.ServiceBusConnectionString
+            });
 
-
-            var host = new JobHost(new JobHostConfiguration { NameResolver = new CloudConfigNameResolver() });
-
-            Action<string, TextWriter> process = (s, writer) =>
+            ProcessProductQueryFile.Process = (s, writer) =>
             {
                 writer.WriteLine("process.");
             };
-
-            ProcessProductQueryFile.Process = process;
 
             // The following code ensures that the WebJob will be running continuously
             host.RunAndBlock();

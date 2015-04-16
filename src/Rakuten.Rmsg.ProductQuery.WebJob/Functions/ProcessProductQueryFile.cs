@@ -6,6 +6,7 @@
 namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System;
+    using System.Diagnostics.Contracts;
     using System.IO;
 
     using Microsoft.Azure.WebJobs;
@@ -25,8 +26,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// </summary>
         /// <param name="message"></param>
         /// <param name="log"></param>
-        public static void Execute([ServiceBusTrigger("")] string message, TextWriter log)
+        public static void Execute([ServiceBusTrigger("rmsg-product-query")] string message, TextWriter log)
         {
+            Contract.Requires(log != null);
+
             Process(message, log);
             log.WriteLine(message);
         }

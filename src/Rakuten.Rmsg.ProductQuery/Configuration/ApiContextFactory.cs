@@ -133,6 +133,14 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
                 databaseUser,
                 databasePassword);
 
+            string serviceBusConnectionString =
+                source.GetConfigurationSettingValue(SettingKey.ServiceBusConnectionString);
+
+            if (serviceBusConnectionString == null)
+            {
+                throw new InvalidOperationException("Service Bus connection string not configured.");
+            }
+
             // Get the maximum number of queryes allowed per query group
             string maxQueriesPerGroupString = source.GetConfigurationSettingValue(SettingKey.MaximumQueriesPerGroup);
             if (maxQueriesPerGroupString == null)
@@ -169,6 +177,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
                 environmentName,
                 maxQueriesPerGroup,
                 region,
+                serviceBusConnectionString,
                 storageConnectionString);
         }
 
@@ -255,6 +264,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             /// Indicates the setting for the run target of the current GPC instance.
             /// </summary>
             public const string RunTarget = "Rakuten.Rmsg.ProductQuery.RunTarget";
+
+            /// <summary>
+            /// Indicates the setting for the connection string to the service bus/
+            /// </summary>
+            public const string ServiceBusConnectionString = "Microsoft.ServiceBus.ConnectionString";
 
             /// <summary>
             /// Indicates the setting for the connection string to the storage account.

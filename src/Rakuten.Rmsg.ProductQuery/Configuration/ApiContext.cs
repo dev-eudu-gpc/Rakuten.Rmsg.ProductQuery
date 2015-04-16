@@ -48,6 +48,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         private readonly int maximumQueriesPerGroup;
 
         /// <summary>
+        /// The connection string to the service bus.
+        /// </summary>
+        private readonly string serviceBusConnectionString;
+
+        /// <summary>
         /// The connection string for the storage account.
         /// </summary>
         private readonly string storageConnectionString;
@@ -61,6 +66,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// <param name="environmentName">The environment in which the application is running.</param>
         /// <param name="maximumQueriesPerGroup">The maximum number of queries per query group.</param>
         /// <param name="region">The geographical region in which the application is running.</param>
+        /// <param name="serviceBusConnectionString">The connection string to the service bus.</param>
         /// <param name="storageConnectionString">The connection string for the storage account.</param>
         public ApiContext(
             string blobContainerName,
@@ -70,6 +76,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             string environmentName,
             int maximumQueriesPerGroup,
             string region,
+            string serviceBusConnectionString,
             string storageConnectionString)
         {
             Contract.Requires(blobContainerName != null);
@@ -78,6 +85,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             Contract.Requires(diagnosticsStorageConnectionString != null);
             Contract.Requires(environmentName != null);
             Contract.Requires(region != null);
+            Contract.Requires(serviceBusConnectionString != null);
             Contract.Requires(storageConnectionString != null);
 
             this.blobContainerName = blobContainerName;
@@ -87,6 +95,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             this.environmentName = environmentName;
             this.maximumQueriesPerGroup = maximumQueriesPerGroup;
             this.region = region;
+            this.serviceBusConnectionString = serviceBusConnectionString;
             this.storageConnectionString = storageConnectionString;
         }
 
@@ -150,6 +159,14 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         public string Region
         {
             get { return this.region; }
+        }
+
+        /// <summary>
+        /// Gets the connection string to the Service Bus in which a queue will be utilized.
+        /// </summary>
+        public string ServiceBusConnectionString
+        {
+            get { return this.serviceBusConnectionString; }
         }
 
         /// <summary>

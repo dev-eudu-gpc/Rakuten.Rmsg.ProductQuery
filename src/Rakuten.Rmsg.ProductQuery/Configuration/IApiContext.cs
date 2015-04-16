@@ -46,6 +46,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         string Region { get; }
 
         /// <summary>
+        /// Gets the connection string to the Service Bus in which a queue will be utilized.
+        /// </summary>
+        string ServiceBusConnectionString { get; }
+
+        /// <summary>
         /// Gets a connection string for a storage account that can be used for persisting configuration information.
         /// </summary>
         string StorageConnectionString { get; }
