@@ -298,8 +298,6 @@
     <Compile Include="Web\Http\ExceptionHandling\ProblemActivator.cs" />
     <Compile Include="Web\Http\HttpStatusCodeMapper.cs" />
     <Compile Include="Web\Http\Results\NegotiatedContentResultFactory.cs" />
-    <Compile Include="WindowsAzure\ServiceBusQueue\AzureServiceBusQueue.cs" />
-    <Compile Include="WindowsAzure\ServiceBusQueue\IMessageQueue.cs" />
     <Compile Include="WindowsAzure\Storage\AzureStorage.cs" />
     <Compile Include="WindowsAzure\Storage\IStorage.cs" />
   </ItemGroup>

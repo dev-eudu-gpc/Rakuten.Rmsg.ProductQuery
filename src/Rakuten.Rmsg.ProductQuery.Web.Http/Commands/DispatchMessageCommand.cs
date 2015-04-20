@@ -5,13 +5,11 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
-    using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
     using System.Threading.Tasks;
+    using Microsoft.ServiceBus.Messaging;
     using Rakuten.Rmsg.ProductQuery.Configuration;
-    using Rakuten.WindowsAzure.ServiceBus;
-    using Rakuten.WindowsAzure.Storage;
 
     /// <summary>
     /// Represents a command that dispatches a product query message to the queue.
@@ -24,46 +22,44 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly IApiContext context;
 
         /// <summary>
-        /// The object for interacting with storage.
-        /// </summary>
-        private readonly IMessageQueue messageQueue;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DispatchMessageCommand"/> class
         /// </summary>
         /// <param name="context">The context in which this instance is running.</param>
-        /// <param name="messageQueue">A means to interact with the message queue.</param>
-        public DispatchMessageCommand(
-            IApiContext context,
-            IMessageQueue messageQueue)
+        public DispatchMessageCommand(IApiContext context)
         {
-            Contract.Requires(messageQueue != null);
             Contract.Requires(context != null);
 
             this.context = context;
-            this.messageQueue = messageQueue;
         }
 
         /// <summary>
-        /// Creates a blob in storage for a product query.
+        /// Dispatches a message containing the link to the product query's blob.
         /// </summary>
-        /// <param name="parameters">The input parameters enabling the product query to be uniquely identified</param>
+        /// <param name="parameters">Parameters for the message</param>
         /// <returns>A task that does the work.</returns>
-        public override async Task ExecuteAsync(DispatchMessageCommandParameters parameters)
+        public override Task ExecuteAsync(DispatchMessageCommandParameters parameters)
         {
             Contract.Requires(parameters != null);
 
             // Create the message
             var message = new ProductQuery
             {
-                Links = new Collection<Link> { parameters.ProductQuery }
+                Links = new Collection<Link> { parameters.BlobLink }
             };
 
-            // Dispatch the message
-            await this.messageQueue.DispatchMessage(
-                this.context.ServiceBusConnectionString,
-                "rmsg-product-query", // TODO: [WB 16-Apr-2015] Replace with config setting
-                message);
+            return Task.Run(() =>
+            {
+                // Create a queue client
+                QueueClient client = QueueClient.CreateFromConnectionString(
+                    this.context.ServiceBusConnectionString,
+                    "rmsg-product-query"); // TODO: [WB 16-Apr-2015] Replace with config setting
+
+                // Dispatch the message
+                client.Send(new BrokeredMessage(message));
+
+                var x = 2;
+                x++;
+            });
         }
     }
 }

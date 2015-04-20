@@ -16,7 +16,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
     using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
-    using Rakuten.WindowsAzure.ServiceBus;
     using Rakuten.WindowsAzure.Storage;
 
     /// <summary>
@@ -67,7 +66,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             {
                 case "ProductQuery":
                     var databaseContext = new ProductQueryDbContext();
-                    var messageQueue = new AzureServiceBusQueue();
                     var storage = new AzureStorage();
 
                     // Database commands
@@ -76,9 +74,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     var updateProductQueryStatusDatabaseCommand = new UpdateProductQueryStatusDatabaseCommand(this.context, databaseContext);
                     var updateProductQueryUriDatabaseCommand = new UpdateProductQueryUriCommand(this.context, databaseContext);                   
 
-                    // Storage commands
+                    // Storage and messaging commands
                     var createStorageBlobCommand = new CreateStorageBlobCommand(this.context, storage);
-                    var dispatchMessageCommand = new DispatchMessageCommand(this.context, messageQueue);
+                    var dispatchMessageCommand = new DispatchMessageCommand(this.context);
 
                     // Macro commands
                     var createCommand = new CreateProductQueryCommand(

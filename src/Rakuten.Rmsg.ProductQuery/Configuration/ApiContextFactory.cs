@@ -146,7 +146,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
                 environmentName,
                 region,
                 "app",
-                storageAccountKey);
+                serviceBusKey);
 
             // Get the maximum number of queries allowed per query group
             string maxQueriesPerGroupString = source.GetConfigurationSettingValue(SettingKey.MaximumQueriesPerGroup);
@@ -231,12 +231,13 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             string instance,
             string accountKey)
         {
-            const string ConnectionStringTemplate = "Endpoint=sb://{0}.servicebus.windows.net/;SharedAccessKeyName=RootManagerSharedAccessKey;SharedSecretValue={1}";
+            ////const string ConnectionStringTemplate = "Endpoint=sb://{0}.servicebus.windows.net/;SharedAccessKeyName=RootManagerSharedAccessKey;SharedSecretValue={1}";
+            const string ConnectionStringTemplate = "Endpoint=sb://{0}.servicebus.windows.net/;SharedSecretIssuer=owner;SharedSecretValue={1}";
 
             // Create the connection string to the storage account.
             string accountName = string.Format("{0}-gpc-{1}-bus",
                 environmentName,
-                region.Replace(" ", string.Empty));
+                region.Replace(" ", "-"));
 
             return string.Format(ConnectionStringTemplate,
                 accountName,
