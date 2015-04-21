@@ -22,6 +22,12 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Entities
         public DateTime Completed { get; set; }
 
         /// <summary>
+        /// Gets or sets the GRAN of the product that matches this request.
+        /// </summary>
+        [Column("gran")]
+        public string Gran { get; set; }
+
+        /// <summary>
         /// Gets or sets the identifier of the product whose information has been requested.
         /// </summary>
         [Key]

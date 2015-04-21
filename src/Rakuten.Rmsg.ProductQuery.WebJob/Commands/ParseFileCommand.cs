@@ -24,7 +24,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// </summary>
         /// <param name="serializer">The serializer to be used.</param>
         /// <param name="stream">The stream containing the data.</param>
-        /// <returns>A collection of <see cref="Item"/> instances.</returns>
+        /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
         public static Task<IEnumerable<Item>> Execute(LumenWorksSerializer<Item> serializer, Stream stream)
         {
             Contract.Requires(serializer != null);

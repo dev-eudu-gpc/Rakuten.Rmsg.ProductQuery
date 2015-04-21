@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
-    using System;
     using System.Diagnostics.Contracts;
     using System.IO;
     using System.Threading.Tasks.Dataflow;
@@ -13,24 +12,32 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using Rakuten.Threading.Tasks.Dataflow;
 
     /// <summary>
-    /// The process file dataflow.
+    /// Represents a Dataflow pipeline that will process a product query request.
     /// </summary>
     internal class ProcessFileDataflow : Dataflow<Message, MessageState>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProcessFileDataflow"/> class.
+        /// Initializes a new instance of the <see cref="ProcessFileDataflow"/> class using the specified 
+        /// <see cref="IDataflowBlock"/>s.
         /// </summary>
-        /// <param name="downloadFileBlock"></param>
-        /// <param name="parseFileBlock"></param>
-        /// <param name="getEntityBlock"></param>
+        /// <param name="downloadFileBlock">The <see cref="IDataflowBlock"/> to download a specified blob.</param>
+        /// <param name="parseFileBlock">A <see cref="IDataflowBlock"/> that will parse the uploaded file.</param>
+        /// <param name="getEntityBlock">
+        /// A <see cref="IDataflowBlock"/> that will look for an entity for a product query.
+        /// </param>
+        /// <param name="createEntityBlock">
+        /// The <see cref="IDataflowBlock"/> that will create a record in the persistent storage for a request.
+        /// </param>
         public ProcessFileDataflow(
-            TransformBlock<Message, Stream> downloadFileBlock,
-            TransformManyBlock<Stream, MessageState> parseFileBlock,
-            TransformBlock<MessageState, MessageState> getEntityBlock)
+            IPropagatorBlock<Message, Stream> downloadFileBlock,
+            IPropagatorBlock<Stream, MessageState> parseFileBlock,
+            IPropagatorBlock<MessageState, MessageState> getEntityBlock,
+            IPropagatorBlock<MessageState, MessageState> createEntityBlock)
         {
             Contract.Requires(downloadFileBlock != null);
             Contract.Requires(parseFileBlock != null);
             Contract.Requires(getEntityBlock != null);
+            Contract.Requires(createEntityBlock != null);
 
             // Set the start block for the pipeline.
             this.StartBlock = downloadFileBlock;
@@ -38,6 +45,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             downloadFileBlock.LinkTo(parseFileBlock);
 
             parseFileBlock.LinkTo(getEntityBlock);
+
+            getEntityBlock.LinkTo(createEntityBlock, state => state.Query == null);
         }
 
         /// <summary>
@@ -50,11 +59,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         public override bool Post(Message item)
         {
             Contract.Requires(item != null);
-
-            if (this.StartBlock == null)
-            {
-                throw new InvalidOperationException("The start block must be defined before posting data to it.");
-            }
 
             return this.StartBlock.Post(item);
         }

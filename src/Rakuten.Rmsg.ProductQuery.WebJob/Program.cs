@@ -13,6 +13,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using System.Threading.Tasks;
 
     using Microsoft.Azure.WebJobs;
+    using Microsoft.WindowsAzure.Storage;
+    using Microsoft.WindowsAzure.Storage.Blob;
 
     using Rakuten.Azure.WebJobs;
     using Rakuten.Rmsg.ProductQuery.Configuration;
@@ -32,28 +34,28 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             // Generate the connection strings to the diagnostics storage.
             IApiContext apiContext = new ApiContextFactory(new AppSettingsConfigurationSource()).Create();
 
-            // Create a new host specifying the configuration.
-            var host = new JobHost(new JobHostConfiguration(apiContext.DiagnosticsStorageConnectionString)
-            {
-                NameResolver = new CloudConfigNameResolver(),
-                ServiceBusConnectionString = apiContext.ServiceBusConnectionString
-            });
-
             // Create a new database connection.
             var databaseContext = new ProductQueryContext();
 
-            var stream = new MemoryStream();
+            // Create a connection to blob storage
+            CloudBlobClient blobClient = 
+                CloudStorageAccount.Parse(apiContext.StorageConnectionString).CreateCloudBlobClient();
 
+            CloudBlobContainer blobContainer = blobClient.GetContainerReference(apiContext.BlobContainerName);
+
+            // Create the delegate that the bound function will invoke.
             ProcessProductQueryFile.Process = (message, writer) =>
             {
-                var transform1 = CreateParseFileTransform(Guid.NewGuid());
+                var transform1 = CreateParseFileTransform(message.Id);
                 var transform2 = CreateGetQueryItemTransform(databaseContext);
+                var transform3 = CreateCreateQueryItemTransform(databaseContext);
 
                 var dataflow = new ProcessFileDataflow(
-                    TransformBlockFactory.Create<Message, Stream>(m => 
-                        DownloadFileCommand.Execute(null, m, stream)),
+                    TransformBlockFactory.Create<Message, Stream>(m =>
+                        DownloadFileCommand.Execute(blobContainer, m, new MemoryStream())),
                     TransformManyBlockFactory.Create<Stream, MessageState>(file => transform1(file, writer)),
-                    TransformBlockFactory.Create<MessageState, MessageState>(state => transform2(state, writer)));
+                    TransformBlockFactory.Create<MessageState, MessageState>(state => transform2(state, writer)),
+                    TransformBlockFactory.Create<MessageState, MessageState>(state => transform3(state, writer)));
 
                 dataflow.Post(message);
                 dataflow.Complete();
@@ -63,8 +65,40 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 writer.WriteLine("process.");
             };
 
+            // Create a new host specifying the configuration.
+            var host = new JobHost(new JobHostConfiguration(apiContext.DiagnosticsStorageConnectionString)
+            {
+                NameResolver = new CloudConfigNameResolver(),
+                ServiceBusConnectionString = apiContext.ServiceBusConnectionString
+            });
+
             // The following code ensures that the WebJob will be running continuously
             host.RunAndBlock();
+        }
+
+        /// <summary>
+        /// Returns a delegate that when executed will attempt to write a record to persistent storage for this query.
+        /// </summary>
+        /// <param name="context">The instance through which the persistent storage can be queried.</param>
+        /// <returns>A <see cref="Func{T1,T2,TResult}"/></returns>
+        private static Func<MessageState, TextWriter, Task<MessageState>> CreateCreateQueryItemTransform(
+            ProductQueryContext context)
+        {
+            return async (state, writer) =>
+            {
+                try
+                {
+                    var query = await CreateProductQueryItemCommand.Execute(context, state.Id, state.Item.GtinValue);
+
+                    return new MessageState(state.Id, state.Item, query);
+                }
+                catch (Exception ex)
+                {
+                    writer.WriteLine("An issue was encountered creating a query record: " + ex.ToString());
+
+                    return null;
+                }
+            };
         }
 
         /// <summary>

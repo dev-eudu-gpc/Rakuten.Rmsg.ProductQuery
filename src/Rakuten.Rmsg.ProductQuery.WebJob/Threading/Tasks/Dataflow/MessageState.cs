@@ -23,13 +23,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// </summary>
         /// <param name="id">The unique identifier of the current query.</param>
         /// <param name="item">The details of the product query request..</param>
-        /// <param name="queryItem">The record of the GTIN search.</param>
-        public MessageState(Guid id, Item item, ProductQueryItem queryItem)
+        /// <param name="query">The record of the GTIN search.</param>
+        public MessageState(Guid id, Item item, ProductQueryItem query)
             : this(id, item)
         {
             Contract.Requires(item != null);
 
-            this.QueryItem = queryItem;
+            this.Query = query;
         }
 
         /// <summary>
@@ -65,6 +65,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <summary>
         /// Gets the database record of the search.
         /// </summary>
-        public ProductQueryItem QueryItem { get; private set; }
+        public ProductQueryItem Query { get; private set; }
     }
 }

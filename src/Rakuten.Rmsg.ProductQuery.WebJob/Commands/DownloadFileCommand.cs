@@ -27,13 +27,22 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         public static async Task<Stream> Execute(CloudBlobContainer container, Message message, Stream stream)
         {
             Contract.Requires(container != null);
+            Contract.Requires(container.Exists());
             Contract.Requires(message != null);
             Contract.Requires(stream != null);
 
             var enclosure = new Uri(message.Link.Target);
 
+            if (enclosure.Segments.Length < 3)
+            {
+                throw new InvalidOperationException("The given blob reference was not of the correct format.");
+            }
+
             // Parse the blob name from the URI.
-            var filename = enclosure.Segments[enclosure.Segments.Length - 1];
+            var filename = string.Format(
+                "{0}/{1}", 
+                enclosure.Segments[enclosure.Segments.Length - 2],
+                enclosure.Segments[enclosure.Segments.Length - 1]);
 
             // Get a reference to the blob in the container.
             CloudBlockBlob blob = container.GetBlockBlobReference(filename);
