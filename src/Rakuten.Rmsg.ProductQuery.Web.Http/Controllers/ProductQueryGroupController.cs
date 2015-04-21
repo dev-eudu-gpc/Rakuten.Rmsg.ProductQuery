@@ -77,9 +77,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             // Reconstitute the date
             var date = new DateTime(year, month, day, (int)Math.Floor(time / 100d), time % 100, 0);
 
-            // If the date is too recent then redirect
             if (date > DateTime.UtcNow.AddSeconds(0 - granularity))
             {
+                // The requested date is too recent, send a redirection
                 var serverTime = DateTime.UtcNow;
 
                 var location = this.monitorLink
@@ -97,9 +97,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             }
             else
             {
+                // Get an image representation of the progress map
                 var image = await this.getProgressCommand.Execute(
                     new GetProductQueryGroupProgressCommandParameters(id, date));
 
+                // Return a message containing the image
                 return new ImageResult(image, this);
             }
         }
