@@ -90,7 +90,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                 productQuery.Links = new Collection<Link> 
                 {
                     this.selfLink.ForId(parameters.Id.ToString()).ToLink(true),
-                    this.monitorLink.ForId(productQuery.GroupId.ToString()).ToLink(true)
+                    this.monitorLink
+                        .ForId(productQuery.GroupId.ToString())
+                        .ToLink(true)
                 };
                 if (!string.IsNullOrEmpty(productQuery.Uri))
                 {

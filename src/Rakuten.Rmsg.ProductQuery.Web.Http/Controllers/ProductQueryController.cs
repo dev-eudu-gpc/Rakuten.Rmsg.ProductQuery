@@ -12,6 +12,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using System.Web.Http;
     using System.Web.Http.Results;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
     /// <summary>
     /// Defines endpoints for creating and obtaining information for product queries.
@@ -60,8 +61,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <param name="id">The unique identifier for the product query.</param>
         /// <param name="source">A new representation of the product query.</param>
         /// <returns>A representation of the new product query.</returns>
-        [HttpPut, Route("product-query/{id}")]
-        public async Task<IHttpActionResult> PutNewProductQueryAsync(Guid id, ProductQuery source)
+        [Route("product-query/{id}")]
+        public async Task<IHttpActionResult> PutAsync(Guid id, ProductQuery source)
         {
             if (source == null)
             {
