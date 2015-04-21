@@ -47,6 +47,14 @@ namespace Rakuten.Threading.Tasks.Dataflow
         /// <returns>
         /// <see langword="true"/> if the item was accepted by the target block; otherwise, <see langword="false"/>.
         /// </returns>
-        public abstract bool Post(TInput item);
+        public virtual bool Post(TInput item)
+        {
+            if (this.StartBlock == null)
+            {
+                throw new InvalidOperationException("The start block must be defined before posting data to it.");
+            }
+
+            return this.StartBlock.Post(item);
+        }
     }
 }
