@@ -14,6 +14,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels
     
     public partial class rmsgProductQuery
     {
+        public rmsgProductQuery()
+        {
+            this.rmsgProductQueryItems = new HashSet<rmsgProductQueryItem>();
+        }
+    
         public System.Guid rmsgProductQueryID { get; set; }
         public System.Guid rmsgProductQueryGroupID { get; set; }
         public short index { get; set; }
@@ -23,5 +28,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels
     
         public virtual rmsgProductQueryGroup rmsgProductQueryGroup { get; set; }
         public virtual rmsgProductQueryStatu rmsgProductQueryStatu { get; set; }
+        public virtual ICollection<rmsgProductQueryItem> rmsgProductQueryItems { get; set; }
     }
 }

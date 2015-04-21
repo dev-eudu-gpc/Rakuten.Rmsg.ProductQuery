@@ -52,6 +52,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             Type controllerType)
         {
             IHttpController controller = null;
+            ProductQueryDbContext databaseContext = null;
 
             // Initialize common collection of Uri templates
             var uriTemplates = new
@@ -65,7 +66,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             switch (controllerDescriptor.ControllerName)
             {
                 case "ProductQuery":
-                    var databaseContext = new ProductQueryDbContext();
+                    databaseContext = new ProductQueryDbContext();
                     var storage = new AzureStorage();
 
                     // Database commands
@@ -100,7 +101,29 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                         getCommand,
                         updateProductQueryStatusDatabaseCommand);
 
-                    controller = new ProductQueryController(getCommand, createCommand, readyForProcessingCommand);
+                    controller = new ProductQueryController(
+                        getCommand,
+                        createCommand,
+                        readyForProcessingCommand);
+
+                    break;
+                case "ProductQueryGroup":
+                    databaseContext = new ProductQueryDbContext();
+
+                    // Commands
+                    var getProductQueryGroupProgressDatabaseCommand = new GetProductQueryGroupProgressDatabaseCommand(databaseContext);
+                    var createProgressMapImageCommand = new CreateProductQueryGroupProgressImageCommand(this.context);
+
+                    // Macro commands
+                    var getProductQueryGroupProgressCommand = new GetProductQueryGroupProgressCommand(
+                        this.context,
+                        uriTemplates.ProductQueryMonitorLink,
+                        createProgressMapImageCommand,
+                        getProductQueryGroupProgressDatabaseCommand);
+
+                    controller = new ProductQueryGroupController(
+                        getProductQueryGroupProgressCommand,
+                        uriTemplates.ProductQueryMonitorLink);
 
                     break;
             }
