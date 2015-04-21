@@ -16,6 +16,7 @@ namespace Rakuten.WindowsAzure.Storage
     using Microsoft.WindowsAzure.Storage.Shared.Protocol;
     using Rakuten.Gpc;
     using Rakuten.Gpc.Api;
+    using Rakuten.Rmsg.ProductQuery;
     using Rakuten.Rmsg.ProductQuery.Web.Http;
 
     /// <summary>

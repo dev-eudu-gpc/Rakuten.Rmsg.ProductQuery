@@ -106,10 +106,6 @@
     <Compile Include="Gpc\Exceptions\ProductUploadFileEmptyException.cs" />
     <Compile Include="Exceptions\NoAttributesSpecifiedException.cs" />
     <Compile Include="Gpc\Api\Client\UriBuilder{T}.cs" />
-    <Compile Include="Gpc\Api\IUriTemplate.cs" />
-    <Compile Include="Gpc\Api\IUriTemplateVariableComponent.cs" />
-    <Compile Include="Gpc\Api\IUriTemplateComponent.cs" />
-    <Compile Include="Gpc\Api\IVarSpec.cs" />
     <Compile Include="Gpc\Exceptions\ApiAggregateException.cs" />
     <Compile Include="Gpc\Exceptions\ApiException.cs" />
     <Compile Include="Gpc\Exceptions\ApiExceptionAttribute.cs" />
@@ -136,24 +132,10 @@
     <Compile Include="Gpc\Api\Links\ProductLink.cs" />
     <Compile Include="Gpc\Api\Links\TranslatorLink.cs" />
     <Compile Include="Gpc\Api\Links\UploaderLink.cs" />
-    <Compile Include="Gpc\Api\Literal.cs" />
-    <Compile Include="Gpc\Api\UriTemplate.cs" />
-    <Compile Include="Gpc\Api\UriTemplateExtensions.cs" />
-    <Compile Include="Gpc\Api\VarSpec.cs" />
-    <Compile Include="Gpc\Api\VariablePathSegment.cs" />
-    <Compile Include="Linking\DefaultLinkActivator.cs" />
-    <Compile Include="Linking\ILinkActivator.cs" />
     <Compile Include="Linking\ILinkBuilder.cs" />
     <Compile Include="Linking\ITypedLinkBuilder.cs" />
     <Compile Include="Linking\LinkBuilder.cs" />
     <Compile Include="Linking\LinkBuilder{T}.cs" />
-    <Compile Include="Linking\LinkCollection.cs" />
-    <Compile Include="Linking\LinkReader.cs" />
-    <Compile Include="Linking\LinkReader{T}.cs" />
-    <Compile Include="Linking\LinkRelationAttribute.cs" />
-    <Compile Include="Linking\LinkTemplate.cs" />
-    <Compile Include="Linking\LinkTypeInfo.cs" />
-    <Compile Include="Linking\TargetAttributes.cs" />
     <Compile Include="Linking\TargetAttributesExtensions.cs" />
     <Compile Include="Net\Http\HttpResponseValidator.cs" />
     <Compile Include="Gpc\Api\Client\IExceptionRegister.cs" />
@@ -188,6 +170,10 @@
     <None Include="Settings.StyleCop" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rakuten.Core\Rakuten.Core.csproj">
+      <Project>{b1f93214-9eef-409c-8520-a0906288f557}</Project>
+      <Name>Rakuten.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rakuten.Gpc.Resources\Rakuten.Gpc.Resources.csproj">
       <Project>{a9b6848d-391e-42ba-a648-1ad2f71ca014}</Project>
       <Name>Rakuten.Gpc.Resources</Name>

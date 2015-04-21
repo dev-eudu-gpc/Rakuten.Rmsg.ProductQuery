@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rakuten.Rmsg.ProductQuery.WebJob</RootNamespace>
     <AssemblyName>Rakuten.Rmsg.ProductQuery.WebJob</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -78,16 +79,34 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="LumenWorks.Framework.IO">
+      <HintPath>..\packages\LumenWorksCsvReader.3.8.3\lib\net20\LumenWorks.Framework.IO.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.WebJobs.ServiceBus">
       <HintPath>..\packages\Microsoft.Azure.WebJobs.ServiceBus.1.0.0\lib\net45\Microsoft.Azure.WebJobs.ServiceBus.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ServiceBus">
       <HintPath>..\packages\WindowsAzure.ServiceBus.2.3.1.0\lib\net40-full\Microsoft.ServiceBus.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Threading.Tasks.Dataflow, Version=4.5.9.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Tpl.Dataflow.4.5.24\lib\portable-net45+win8+wpa81\System.Threading.Tasks.Dataflow.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -119,15 +138,22 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\WindowsAzure.Storage.4.2.1\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\DownloadFileCommand.cs" />
+    <Compile Include="Commands\GetProductQueryItemCommand.cs" />
+    <Compile Include="Commands\ParseFileCommand.cs" />
+    <Compile Include="Entities\ProductQuery.cs" />
+    <Compile Include="Entities\ProductQueryContext.cs" />
+    <Compile Include="Entities\ProductQueryGroup.cs" />
+    <Compile Include="Entities\ProductQueryItem.cs" />
+    <Compile Include="Entities\ProductQueryStatus.cs" />
+    <Compile Include="Models\Item.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Functions\ProcessProductQueryFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\MessageState.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\ProcessFileDataflow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -140,11 +166,32 @@
       <Project>{81eea445-b03e-4e07-8579-9cb75c5e7ca8}</Project>
       <Name>Rakuten.Azure.WebJobs.Host</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rakuten.Core\Rakuten.Core.csproj">
+      <Project>{b1f93214-9eef-409c-8520-a0906288f557}</Project>
+      <Name>Rakuten.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rakuten.Gpc.Api.Client\Rakuten.Gpc.Api.Client.csproj">
+      <Project>{924d65b3-56eb-4bff-abb9-e1df0c5da412}</Project>
+      <Name>Rakuten.Gpc.Api.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rakuten.Gpc.Resources\Rakuten.Gpc.Resources.csproj">
+      <Project>{a9b6848d-391e-42ba-a648-1ad2f71ca014}</Project>
+      <Name>Rakuten.Gpc.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rakuten.IO.Csv\Rakuten.IO.Delimited.csproj">
+      <Project>{1e0b210c-fe27-4511-8d51-240295cb1b5b}</Project>
+      <Name>Rakuten.IO.Delimited</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rakuten.Rmsg.ProductQuery\Rakuten.Rmsg.ProductQuery.csproj">
       <Project>{9ad4ec9a-333a-4779-9f7d-4245710f19a2}</Project>
       <Name>Rakuten.Rmsg.ProductQuery</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rakuten.Threading.Tasks.Dataflow\Rakuten.Threading.Tasks.Dataflow.csproj">
+      <Project>{0cdc25b7-4f06-4c94-9bf8-02be03022074}</Project>
+      <Name>Rakuten.Threading.Tasks.Dataflow</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
