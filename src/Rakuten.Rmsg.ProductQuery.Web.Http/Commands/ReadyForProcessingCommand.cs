@@ -6,13 +6,10 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
     using System;
-    using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Threading.Tasks;
     using Rakuten.Rmsg.ProductQuery.Configuration;
-    using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
-    using Rakuten.WindowsAzure.Storage;
 
     /// <summary>
     /// Represents a command for making a product query ready for processing.
@@ -70,7 +67,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <returns>A task that does the work.</returns>
         public override async Task<ProductQuery> ExecuteAsync(ReadyForProcessingCommandParameters parameters)
         {
-            Contract.Requires(parameters != null);
+            Contract.Assume(parameters != null);
+
+            // TODO: [WB 20-Apr-2015] Implement sad paths
 
             // Initialize
             var dateCreated = DateTime.Now;

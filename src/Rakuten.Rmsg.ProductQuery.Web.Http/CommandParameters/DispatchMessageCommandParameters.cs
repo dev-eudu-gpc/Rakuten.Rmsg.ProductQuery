@@ -17,17 +17,17 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="DispatchMessageCommandParameters"/> class.
         /// </summary>
-        /// <param name="productQuery">The product query to dispatch a message for.</param>
-        public DispatchMessageCommandParameters(Link productQuery)
+        /// <param name="blobLink">The product query to dispatch a message for.</param>
+        public DispatchMessageCommandParameters(Link blobLink)
         {
-            Contract.Requires(productQuery != null);
+            Contract.Requires(blobLink != null);
 
-            this.ProductQuery = productQuery;
+            this.BlobLink = blobLink;
         }
 
         /// <summary>
         /// Gets the product query to dispatch a message for.
         /// </summary>
-        public Link ProductQuery { get; private set; }
+        public Link BlobLink { get; private set; }
     }
 }
