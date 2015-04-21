@@ -19,7 +19,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <summary>
         /// Gets or sets the <see cref="Action{T}"/> that the triggered function will execute.
         /// </summary>
-        public static Action<string, TextWriter> Process { get; set; }
+        public static Action<Uri, TextWriter> Process { get; set; }
 
         /// <summary>
         /// When triggered will pickup and process a product file from the specified queue.
@@ -30,7 +30,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         {
             Contract.Requires(log != null);
 
-            Process(message, log);
+            Process(new Uri(message), log);
             log.WriteLine(message);
         }
     }
