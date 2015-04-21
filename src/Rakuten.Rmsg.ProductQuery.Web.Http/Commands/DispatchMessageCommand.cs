@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
     using System.Threading.Tasks;
@@ -42,10 +43,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             Contract.Requires(parameters != null);
 
             // Create the message
-            var message = new ProductQuery
-            {
-                Links = new Collection<Link> { parameters.BlobLink }
-            };
+            var message = new Message(Guid.NewGuid(), parameters.BlobLink);
 
             return Task.Run(() =>
             {

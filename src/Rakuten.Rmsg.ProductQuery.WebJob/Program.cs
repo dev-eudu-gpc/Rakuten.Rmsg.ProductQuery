@@ -42,19 +42,20 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             // Create a new database connection.
             var databaseContext = new ProductQueryContext();
 
-            Func<Stream, TextWriter, Task<IEnumerable<MessageState>>> transform1 = CreateParseFileTransform(Guid.NewGuid());
-            Func<MessageState, TextWriter, Task<MessageState>> transform2 = CreateGetQueryItemTransform(databaseContext);
-
             var stream = new MemoryStream();
 
-            ProcessProductQueryFile.Process = (s, writer) =>
+            ProcessProductQueryFile.Process = (message, writer) =>
             {
+                var transform1 = CreateParseFileTransform(Guid.NewGuid());
+                var transform2 = CreateGetQueryItemTransform(databaseContext);
+
                 var dataflow = new ProcessFileDataflow(
-                    TransformBlockFactory.Create<Uri, Stream>(uri => DownloadFileCommand.Execute(null, uri, stream)),
+                    TransformBlockFactory.Create<Message, Stream>(m => 
+                        DownloadFileCommand.Execute(null, m, stream)),
                     TransformManyBlockFactory.Create<Stream, MessageState>(file => transform1(file, writer)),
                     TransformBlockFactory.Create<MessageState, MessageState>(state => transform2(state, writer)));
 
-                dataflow.Post(s);
+                dataflow.Post(message);
                 dataflow.Complete();
 
                 dataflow.Completion.Wait();

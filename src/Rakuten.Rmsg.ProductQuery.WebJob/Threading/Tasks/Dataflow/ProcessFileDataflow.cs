@@ -15,7 +15,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     /// <summary>
     /// The process file dataflow.
     /// </summary>
-    internal class ProcessFileDataflow : Dataflow<Uri, MessageState>
+    internal class ProcessFileDataflow : Dataflow<Message, MessageState>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcessFileDataflow"/> class.
@@ -24,7 +24,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <param name="parseFileBlock"></param>
         /// <param name="getEntityBlock"></param>
         public ProcessFileDataflow(
-            TransformBlock<Uri, Stream> downloadFileBlock,
+            TransformBlock<Message, Stream> downloadFileBlock,
             TransformManyBlock<Stream, MessageState> parseFileBlock,
             TransformBlock<MessageState, MessageState> getEntityBlock)
         {
@@ -47,7 +47,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <returns>
         /// <see langword="true"/> if the item was accepted by the target block; otherwise, <see langword="false"/>.
         /// </returns>
-        public override bool Post(Uri item)
+        public override bool Post(Message item)
         {
             Contract.Requires(item != null);
 

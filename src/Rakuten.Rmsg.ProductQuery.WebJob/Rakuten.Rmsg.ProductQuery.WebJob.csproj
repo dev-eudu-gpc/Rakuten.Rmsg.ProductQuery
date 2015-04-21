@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rakuten.Rmsg.ProductQuery.WebJob</RootNamespace>
     <AssemblyName>Rakuten.Rmsg.ProductQuery.WebJob</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -93,6 +94,10 @@
     <Reference Include="Microsoft.ServiceBus">
       <HintPath>..\packages\WindowsAzure.ServiceBus.2.3.1.0\lib\net40-full\Microsoft.ServiceBus.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -133,10 +138,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\WindowsAzure.Storage.4.2.1\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\DownloadFileCommand.cs" />
@@ -164,6 +165,18 @@
     <ProjectReference Include="..\Rakuten.Azure.WebJobs.Host\Rakuten.Azure.WebJobs.Host.csproj">
       <Project>{81eea445-b03e-4e07-8579-9cb75c5e7ca8}</Project>
       <Name>Rakuten.Azure.WebJobs.Host</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rakuten.Core\Rakuten.Core.csproj">
+      <Project>{b1f93214-9eef-409c-8520-a0906288f557}</Project>
+      <Name>Rakuten.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rakuten.Gpc.Api.Client\Rakuten.Gpc.Api.Client.csproj">
+      <Project>{924d65b3-56eb-4bff-abb9-e1df0c5da412}</Project>
+      <Name>Rakuten.Gpc.Api.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rakuten.Gpc.Resources\Rakuten.Gpc.Resources.csproj">
+      <Project>{a9b6848d-391e-42ba-a648-1ad2f71ca014}</Project>
+      <Name>Rakuten.Gpc.Resources</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rakuten.IO.Csv\Rakuten.IO.Delimited.csproj">
       <Project>{1e0b210c-fe27-4511-8d51-240295cb1b5b}</Project>
