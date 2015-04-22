@@ -27,15 +27,18 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <param name="status">The status of the product query.</param>
         /// <param name="itemCount">The number of items in the product query.</param>
         /// <param name="completedItemCount">The number of items that have been completed.</param>
+        /// <param name="proportionOfTimeAllocatedForFinalization">The estimated proportion of product query processing that is used by the finalization process.</param>
         public ProductQueryProgress(
             int index,
             ProductQueryStatus status,
             int itemCount,
-            int completedItemCount)
+            int completedItemCount,
+            double proportionOfTimeAllocatedForFinalization)
         {
             this.CompletedItemCount = completedItemCount;
             this.Index = index;
             this.ItemCount = itemCount;
+            this.ProportionOfTimeAllocatedForFinalization = proportionOfTimeAllocatedForFinalization;
             this.Status = status;
         }
 
@@ -70,18 +73,22 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                         return 0;
 
                     case ProductQueryStatus.Submitted:
-                        // A product query is only 100% completed when it is also in 
-                        // the "completed" status.
-                        return percentage == 100d ? 99d : percentage;
+                        // Adjust the percentage to allow for finalization
+                        return percentage * (1 - this.ProportionOfTimeAllocatedForFinalization);
 
                     case ProductQueryStatus.Completed:
-                        return percentage;
+                        return 100d;
 
                     default:
                         return 0;
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets the estimated proportion of product query processing that is used by the finalization process.
+        /// </summary>
+        public double ProportionOfTimeAllocatedForFinalization { get; set; }
 
         /// <summary>
         /// Gets or sets the status of the product query.

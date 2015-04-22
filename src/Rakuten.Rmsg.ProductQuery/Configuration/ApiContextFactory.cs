@@ -149,18 +149,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
                 serviceBusKey);
 
             // Get the maximum number of queries allowed per query group
-            string maxQueriesPerGroupString = source.GetConfigurationSettingValue(SettingKey.MaximumQueriesPerGroup);
-            if (maxQueriesPerGroupString == null)
-            {
-                throw new InvalidOperationException("Maximum queries per group is not configured.");
-            }
+            int maxQueriesPerGroup = GetSettingInt(source, SettingKey.MaximumQueriesPerGroup);
 
-            int maxQueriesPerGroup;
-
-            if (!int.TryParse(maxQueriesPerGroupString, out maxQueriesPerGroup))
-            {
-                throw new InvalidOperationException("Maximum queries per group must be an integer.");
-            }
+            // Get progress map settings
+            int progressMapInterval = GetSettingInt(source, SettingKey.ProgressMapIntervalInSeconds);
+            double proportionOfTimeAllocatedForFinalization = GetSettingDouble(source, SettingKey.ProportionOfTimeAllocatedForFinalization);
 
             // Get the blob file name mask
             string blobFileNameMask = source.GetConfigurationSettingValue(SettingKey.BlobFileNameMask);
@@ -183,6 +176,8 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
                 diagnosticSorageConnectionString,
                 environmentName,
                 maxQueriesPerGroup,
+                progressMapInterval,
+                proportionOfTimeAllocatedForFinalization,
                 region,
                 serviceBusConnectionString,
                 storageConnectionString);
@@ -245,6 +240,54 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         }
 
         /// <summary>
+        /// Gets a double value from a config source.
+        /// </summary>
+        /// <param name="source">The config source.</param>
+        /// <param name="KeyName">The name of the setting in the config source.</param>
+        /// <returns>A value of the config setting as a double</returns>
+        private static double GetSettingDouble(ConfigurationSource source, string KeyName)
+        {
+            string valueString = source.GetConfigurationSettingValue(KeyName);
+
+            if (valueString == null)
+            {
+                throw new InvalidOperationException(string.Format("{0} is not configured", KeyName));
+            }
+
+            double value;
+
+            if (!double.TryParse(valueString, out value))
+            {
+                throw new InvalidOperationException(string.Format("{0} setting must be a double.", KeyName));
+            }
+            return value;
+        }
+
+
+        /// <summary>
+        /// Gets an integer value from a config source.
+        /// </summary>
+        /// <param name="source">The config source.</param>
+        /// <param name="KeyName">The name of the setting in the config source.</param>
+        /// <returns>A value of the config setting as an integer</returns>
+        private static int GetSettingInt(ConfigurationSource source, string KeyName)
+        {
+            string valueString = source.GetConfigurationSettingValue(KeyName);
+
+            if (valueString == null)
+            {
+                throw new InvalidOperationException(string.Format("{0} is not configured", KeyName));
+            }
+
+            int valueInt;
+
+            if (!int.TryParse(valueString, out valueInt))
+            {
+                throw new InvalidOperationException(string.Format("{0} setting must be an integer.", KeyName));
+            }
+            return valueInt;
+        }
+        /// <summary>
         /// Provides names of the keys for the GPC configuration settings.
         /// </summary>
         private static class SettingKey
@@ -288,6 +331,17 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             /// Indicates the setting for the maximum number of queries per query group
             /// </summary>
             public const string MaximumQueriesPerGroup = "Rakuten.Rmsg.ProductQuery.MaximumQueriesPerGroup";
+
+            /// <summary>
+            /// Indicates the setting for the number of seconds between progress maps
+            /// </summary>
+            public const string ProgressMapIntervalInSeconds = "Rakuten.Rmsg.ProductQuery.ProgressMapIntervalInSeconds";
+
+            /// <summary>
+            /// Indicates the setting for the estimated proportion of product query processing 
+            /// that is used by the finalization process.
+            /// </summary>
+            public const string ProportionOfTimeAllocatedForFinalization = "Rakuten.Rmsg.ProductQuery.ProportionOfTimeAllocatedForFinalization";
 
             /// <summary>
             /// Indicates the setting for the geographical region in which this GPC instance is running.

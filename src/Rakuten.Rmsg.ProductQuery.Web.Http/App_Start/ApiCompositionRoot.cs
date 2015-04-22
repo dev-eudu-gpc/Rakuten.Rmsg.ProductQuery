@@ -111,7 +111,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     databaseContext = new ProductQueryDbContext();
 
                     // Commands
-                    var getProductQueryGroupProgressDatabaseCommand = new GetProgressDatabaseCommand(databaseContext);
+                    var getProductQueryGroupProgressDatabaseCommand = new GetProgressDatabaseCommand(this.context, databaseContext);
                     var createProgressMapImageCommand = new CreateProgressImageCommand(this.context);
 
                     // Macro commands
@@ -122,6 +122,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                         getProductQueryGroupProgressDatabaseCommand);
 
                     controller = new ProductQueryGroupController(
+                        this.context,
                         getProductQueryGroupProgressCommand,
                         uriTemplates.ProductQueryMonitorLink);
 

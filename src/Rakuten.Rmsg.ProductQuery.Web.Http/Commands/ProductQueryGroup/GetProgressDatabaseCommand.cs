@@ -20,6 +20,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     public class GetProgressDatabaseCommand : AsyncCommand<GetProgressDatabaseCommandParameters, IQueryable<ProductQueryProgress>>
     {
         /// <summary>
+        /// The context under which this instance is operating.
+        /// </summary>
+        private readonly IApiContext context;
+
+        /// <summary>
         /// The context in which to perform database operations.
         /// </summary>
         private readonly ProductQueryDbContext databaseContext;
@@ -27,12 +32,16 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="GetProgressDatabaseCommand"/> class
         /// </summary>
+        /// <param name="context">The context in which this instance is running.</param>
         /// <param name="databaseContext">A context in which to perform database operations.</param>
         public GetProgressDatabaseCommand(
+            IApiContext context,
             ProductQueryDbContext databaseContext)
         {
+            Contract.Requires(context != null);
             Contract.Requires(databaseContext != null);
 
+            this.context = context;
             this.databaseContext = databaseContext;
         }
 
@@ -59,7 +68,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                             Index = query.index,
                             Status = (ProductQueryStatus)query.rmsgProductQueryStatusID,
                             ItemCount = items.Count(),
-                            CompletedItemCount = items.Count(item => item.dateCompleted <= parameters.Datetime)
+                            CompletedItemCount = items.Count(item => item.dateCompleted <= parameters.Datetime),
+                            ProportionOfTimeAllocatedForFinalization = this.context.ProportionOfTimeAllocatedForFinalization
                         });
 
                  return progressMap;
