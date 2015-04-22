@@ -288,7 +288,9 @@
     <Compile Include="Exceptions\BadRequestException.cs" />
     <Compile Include="Exceptions\ConstraintViolationException.cs" />
     <Compile Include="Exceptions\InternalServerException.cs" />
+    <Compile Include="Exceptions\InvalidStatusException.cs" />
     <Compile Include="Exceptions\ObjectNotFoundException.cs" />
+    <Compile Include="Exceptions\ProductQueryNotFoundException.cs" />
     <Compile Include="Exceptions\ValidationFailedException.cs" />
     <Compile Include="Links\AzureBlobLink.cs" />
     <Compile Include="Links\ProductQueryLink.cs" />

@@ -80,6 +80,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
             if (productQuery == null)
             {
+                throw new ProductQueryNotFoundException(parameters.Id.ToString());
             }
 
             if (productQuery.Status == ProductQueryStatus.New)

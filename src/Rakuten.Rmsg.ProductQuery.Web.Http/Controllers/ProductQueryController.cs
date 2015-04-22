@@ -11,6 +11,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.Http.Results;
+    using Rakuten.Gpc.Api;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
@@ -116,16 +117,24 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             // Ensure that the requested status is "submitted"
             if (source.Status != ProductQueryStatus.Submitted)
             {
+                throw new ValidationFailedException(new InvalidStatusException());
             }
 
             // Call the command
-            ProductQuery productQuery = await this.readyForProcessingCommand.Execute(
-                new ReadyForProcessingCommandParameters(id));
+            try
+            {
+                ProductQuery productQuery = await this.readyForProcessingCommand.Execute(
+                    new ReadyForProcessingCommandParameters(id));
 
-            return new NegotiatedContentResult<ProductQuery>(
-                HttpStatusCode.Accepted,
-                productQuery,
-                this);
+                return new NegotiatedContentResult<ProductQuery>(
+                    HttpStatusCode.Accepted,
+                    productQuery,
+                    this);
+            }
+            catch (ProductQueryNotFoundException ex)
+            {
+                throw new ObjectNotFoundException(ex);
+            }
         }
     }
 }
