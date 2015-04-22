@@ -8,6 +8,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -17,8 +18,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using Microsoft.WindowsAzure.Storage.Blob;
 
     using Rakuten.Azure.WebJobs;
+    using Rakuten.Net.Http;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
+    using Rakuten.Rmsg.ProductQuery.WebJob.Linking;
     using Rakuten.Threading.Tasks.Dataflow;
 
     /// <summary>
@@ -46,7 +49,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             // Create the delegate that the bound function will invoke.
             ProcessProductQueryFile.Process = (message, writer) =>
             {
-                var transform1 = CreateParseFileTransform(message.Id);
+                var transform1 = CreateParseFileTransform(message.Id, new CultureInfo(message.Culture));
                 var transform2 = CreateGetQueryItemTransform(databaseContext);
                 var transform3 = CreateCreateQueryItemTransform(databaseContext);
 
@@ -80,7 +83,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// Returns a delegate that when executed will attempt to write a record to persistent storage for this query.
         /// </summary>
         /// <param name="context">The instance through which the persistent storage can be queried.</param>
-        /// <returns>A <see cref="Func{T1,T2,TResult}"/></returns>
+        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
         private static Func<MessageState, TextWriter, Task<MessageState>> CreateCreateQueryItemTransform(
             ProductQueryContext context)
         {
@@ -90,7 +93,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 {
                     var query = await CreateProductQueryItemCommand.Execute(context, state.Id, state.Item.GtinValue);
 
-                    return new MessageState(state.Id, state.Item, query);
+                    return new MessageState(state.Id, state.Culture, state.Item, query);
                 }
                 catch (Exception ex)
                 {
@@ -106,7 +109,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// storage of a <see cref="Item"/>.
         /// </summary>
         /// <param name="context">The instance through which the persistent storage can be queried.</param>
-        /// <returns>A <see cref="Func{T1,T2,TResult}"/></returns>
+        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
         private static Func<MessageState, TextWriter, Task<MessageState>> CreateGetQueryItemTransform(
             ProductQueryContext context)
         {
@@ -116,7 +119,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 {
                     var queryItem = await GetProductQueryItemCommand.Execute(context, state.Id, state.Item.GtinValue);
 
-                    return new MessageState(state.Id, state.Item, queryItem);
+                    return new MessageState(state.Id, state.Culture, state.Item, queryItem);
                 }
                 catch (Exception ex)
                 {
@@ -132,8 +135,11 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <see cref="MessageState"/> instances.
         /// </summary>
         /// <param name="id">The unique identifier for the current query.</param>
-        /// <returns>A <see cref="Func{T1,T2,TResult}"/></returns>
-        private static Func<Stream, TextWriter, Task<IEnumerable<MessageState>>> CreateParseFileTransform(Guid id)
+        /// <param name="culture">The culture in which the product data should be expressed.</param>
+        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
+        private static Func<Stream, TextWriter, Task<IEnumerable<MessageState>>> CreateParseFileTransform(
+            Guid id, 
+            CultureInfo culture)
         {
             Contract.Requires(id != Guid.Empty);
 
@@ -143,7 +149,38 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 {
                     IEnumerable<Item> items = await ParseFileCommand.Execute(null, stream);
 
-                    return from item in items select new MessageState(id, item);
+                    return from item in items select new MessageState(id, culture, item);
+                }
+                catch (Exception ex)
+                {
+                    writer.WriteLine("An issue was encountered parsing the uploaded file: " + ex.ToString());
+
+                    return null;
+                }
+            };
+        }
+
+        /// <summary>
+        /// Returns a delegate that when executed will search for products with a specific GTIN and are expressed in a
+        /// specific culture.
+        /// </summary>
+        /// <param name="client">An instance through which requests over HTTP can be made.</param>
+        /// <param name="link">A <see cref="LinkTemplate"/> that can be used to construct a product search URI.</param>
+        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
+        private static Func<MessageState, TextWriter, Task<MessageState>> CreateProductSearchTransform(
+            ApiClient client,
+            ProductSearchLink link)
+        {
+            Contract.Requires(client != null);
+            Contract.Requires(link != null);
+
+            return async (state, writer) =>
+            {
+                try
+                {
+                    var products = await ExecuteSearchCommand.Execute(client, link, state.Item.GtinValue, state.Culture);
+
+                    return new MessageState(state.Id, state.Culture, state.Item, state.Query, products);
                 }
                 catch (Exception ex)
                 {

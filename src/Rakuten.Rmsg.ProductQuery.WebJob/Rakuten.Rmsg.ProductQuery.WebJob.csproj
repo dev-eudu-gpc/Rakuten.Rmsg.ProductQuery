@@ -140,8 +140,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\Linking\ProductSearchLink.cs" />
     <Compile Include="Commands\CreateProductQueryItemCommand.cs" />
     <Compile Include="Commands\DownloadFileCommand.cs" />
+    <Compile Include="Commands\ExecuteSearchCommand.cs" />
     <Compile Include="Commands\GetProductQueryItemCommand.cs" />
     <Compile Include="Commands\ParseFileCommand.cs" />
     <Compile Include="Entities\ProductQuery.cs" />
@@ -149,6 +151,10 @@
     <Compile Include="Entities\ProductQueryGroup.cs" />
     <Compile Include="Entities\ProductQueryItem.cs" />
     <Compile Include="Entities\ProductQueryStatus.cs" />
+    <Compile Include="Models\Api\DataSource.cs" />
+    <Compile Include="Models\Api\Error.cs" />
+    <Compile Include="Models\Api\Product.cs" />
+    <Compile Include="Models\Api\ProductAttributeSet.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Functions\ProcessProductQueryFile.cs" />

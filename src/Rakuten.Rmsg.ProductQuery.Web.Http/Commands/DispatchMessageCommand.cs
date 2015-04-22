@@ -6,10 +6,11 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
     using System;
-    using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
     using System.Threading.Tasks;
+
     using Microsoft.ServiceBus.Messaging;
+
     using Rakuten.Rmsg.ProductQuery.Configuration;
 
     /// <summary>
@@ -43,7 +44,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             Contract.Requires(parameters != null);
 
             // Create the message
-            var message = new Message(Guid.NewGuid(), parameters.BlobLink);
+            // TODO: [MM, 22-APR-15] Populate the culture correctly.
+            var message = new Message(Guid.NewGuid(), "en-GB", parameters.BlobLink);
 
             return Task.Run(() =>
             {
