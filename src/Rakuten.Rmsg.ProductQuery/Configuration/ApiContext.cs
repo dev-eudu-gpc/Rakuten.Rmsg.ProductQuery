@@ -5,6 +5,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Configuration
 {
+    using System;
     using System.Diagnostics.Contracts;
 
     /// <summary>
@@ -12,6 +13,16 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
     /// </summary>
     internal class ApiContext : IApiContext
     {
+        /// <summary>
+        /// The authentication token to be supplied when making requests.
+        /// </summary>
+        private readonly string authenticationToken;
+
+        /// <summary>
+        /// The base address to be used when sending requests.
+        /// </summary>
+        private readonly Uri baseAddress;
+
         /// <summary>
         /// The name of the blob container.
         /// </summary>
@@ -43,7 +54,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         private readonly int progressMapIntervalInSeconds;
 
         /// <summary>
-        /// The estimated proportion of product query processing that is used by the finalisation process.
+        /// The estimated proportion of product query processing that is used by the finalization process.
         /// </summary>
         private readonly decimal proportionOfTimeAllocatedForFinalization;
 
@@ -70,17 +81,26 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiContext"/> class.
         /// </summary>
+        /// <param name="authenticationToken">The authentication token to be used when making requests.</param>
+        /// <param name="baseAddress">The address to which requests should be made.</param>
         /// <param name="blobContainerName">The name of the blob container.</param>
         /// <param name="blobFileNameMask">The mask for the name of the file in blob storage</param>
         /// <param name="databaseConnectionString">The connection string for the database.</param>
+        /// <param name="diagnosticsStorageConnectionString">
+        /// The connection string to the diagnostics storage account.
+        /// </param>
         /// <param name="environmentName">The environment in which the application is running.</param>
         /// <param name="maximumQueriesPerGroup">The maximum number of queries per query group.</param>
         /// <param name="progressMapIntervalInSeconds">The number of seconds between progress maps.</param>
-        /// <param name="proportionOfTimeAllocatedForFinalization">The estimated proportion of product query processing that is used by the finalisation process.</param>
+        /// <param name="proportionOfTimeAllocatedForFinalization">
+        /// The estimated proportion of product query processing that is used by the finalization process.
+        /// </param>
         /// <param name="region">The geographical region in which the application is running.</param>
         /// <param name="serviceBusConnectionString">The connection string to the service bus.</param>
         /// <param name="storageConnectionString">The connection string for the storage account.</param>
         public ApiContext(
+            string authenticationToken,
+            Uri baseAddress,
             string blobContainerName,
             string blobFileNameMask,
             string databaseConnectionString,
@@ -93,6 +113,8 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             string serviceBusConnectionString,
             string storageConnectionString)
         {
+            Contract.Requires(authenticationToken != null);
+            Contract.Requires(baseAddress != null);
             Contract.Requires(blobContainerName != null);
             Contract.Requires(blobFileNameMask != null);
             Contract.Requires(databaseConnectionString != null);
@@ -102,6 +124,8 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             Contract.Requires(serviceBusConnectionString != null);
             Contract.Requires(storageConnectionString != null);
 
+            this.authenticationToken = authenticationToken;
+            this.baseAddress = baseAddress;
             this.blobContainerName = blobContainerName;
             this.blobFileNameMask = blobFileNameMask;
             this.databaseConnectionString = databaseConnectionString;
@@ -113,6 +137,28 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             this.region = region;
             this.serviceBusConnectionString = serviceBusConnectionString;
             this.storageConnectionString = storageConnectionString;
+        }
+
+        /// <summary>
+        /// Gets the authentication token to be used when making requests to the external API.
+        /// </summary>
+        public string AuthenticationToken
+        {
+            get
+            {
+                return this.authenticationToken;
+            }
+        }
+
+        /// <summary>
+        /// Gets the base address of the Internet resource when sending requests.
+        /// </summary>
+        public Uri BaseAddress
+        {
+            get
+            {
+                return this.baseAddress;
+            }
         }
 
         /// <summary>

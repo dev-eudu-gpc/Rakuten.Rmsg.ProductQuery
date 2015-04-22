@@ -169,7 +169,25 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
                 throw new InvalidOperationException("Blob container name is not configured");
             }
 
+            // Get the address to which requests should be made.
+            string baseAddressString = source.GetConfigurationSettingValue(SettingKey.BaseAddressName);
+            if (baseAddressString == null)
+            {
+                throw new InvalidOperationException("The base address is not configured.");
+            }
+
+            var baseAddress = new Uri(baseAddressString);
+
+            // Get the blob file name mask
+            string authenticationToken = source.GetConfigurationSettingValue(SettingKey.AuthenticationToken);
+            if (authenticationToken == null)
+            {
+                throw new InvalidOperationException("The authentication token is not configured");
+            }
+
             return new ApiContext(
+                authenticationToken,
+                baseAddress,
                 blobContainerName,
                 blobFileNameMask,
                 databaseConnectionString,
@@ -287,11 +305,22 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             }
             return valueInt;
         }
+
         /// <summary>
         /// Provides names of the keys for the GPC configuration settings.
         /// </summary>
         private static class SettingKey
         {
+            /// <summary>
+            /// Indicates the setting for the authentication token.
+            /// </summary>
+            public const string AuthenticationToken = "Rakuten.Rmsg.ProductQuery.AuthenticationToken";
+
+            /// <summary>
+            /// Indicates the setting for the base address.
+            /// </summary>
+            public const string BaseAddressName = "Rakuten.Rmsg.ProductQuery.BaseAddress";
+
             /// <summary>
             /// Indicates the setting for the blob container name.
             /// </summary>

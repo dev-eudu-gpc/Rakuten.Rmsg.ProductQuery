@@ -11,6 +11,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
     using System.Threading.Tasks;
 
     using Microsoft.Azure.WebJobs;
@@ -18,6 +20,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using Microsoft.WindowsAzure.Storage.Blob;
 
     using Rakuten.Azure.WebJobs;
+    using Rakuten.Gpc.Api.Client;
     using Rakuten.Net.Http;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
@@ -40,11 +43,18 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             // Create a new database connection.
             var databaseContext = new ProductQueryContext();
 
-            // Create a connection to blob storage
+            // Create a connection to blob storage.
             CloudBlobClient blobClient = 
                 CloudStorageAccount.Parse(apiContext.StorageConnectionString).CreateCloudBlobClient();
 
             CloudBlobContainer blobContainer = blobClient.GetContainerReference(apiContext.BlobContainerName);
+
+            // Create a product search template.
+            var productSearchLink = new ProductSearchLink(new Rakuten.UriTemplate(
+                "/v1/product?filter=(ISBN eq '{gtin}' or EAN eq '{gtin}' or JAN eq '{gtin}' or UPC eq '{gtin}')&culture={culture}&skip={skip}&top={top}"));
+
+            // Create a client through which requests can be made.
+            var client = CreateApiClient(apiContext);
 
             // Create the delegate that the bound function will invoke.
             ProcessProductQueryFile.Process = (message, writer) =>
@@ -52,6 +62,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 var transform1 = CreateParseFileTransform(message.Id, new CultureInfo(message.Culture));
                 var transform2 = CreateGetQueryItemTransform(databaseContext);
                 var transform3 = CreateCreateQueryItemTransform(databaseContext);
+                var transform4 = CreateProductSearchTransform(client, productSearchLink);
 
                 var dataflow = new ProcessFileDataflow(
                     TransformBlockFactory.Create<Message, Stream>(m =>
@@ -77,6 +88,30 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
             // The following code ensures that the WebJob will be running continuously
             host.RunAndBlock();
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="ApiClient"/>.
+        /// </summary>
+        /// <param name="environment">Environmental settings for the current GPC instance.</param>
+        /// <param name="uriBuilders">
+        /// The collection of <see cref="IUriBuilder"/> implementations to use when constructing URIs.
+        /// </param>
+        /// <returns>A new <see cref="ApiClient"/>.</returns>
+        private static ApiClient CreateApiClient(IApiContext environment, params IUriBuilder[] uriBuilders)
+        {
+            var context = new ApiClientContext(environment);
+
+            return new ApiClient(
+                   context,
+                   new UriBuilderMediator(uriBuilders),
+                   new HttpRequestHandler(
+                       context,
+                       new HttpClient(),
+                       () => Task.FromResult(new AuthenticationHeaderValue("Basic", context.AuthorizationToken))),
+                   new HttpResponseHandler(
+                       new HttpResponseValidator(
+                           new ExceptionRegister())));
         }
 
         /// <summary>
