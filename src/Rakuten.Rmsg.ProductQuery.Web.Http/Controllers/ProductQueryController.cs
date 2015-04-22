@@ -114,7 +114,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         private async Task<IHttpActionResult> ReadyForProcessingAsync(Guid id, ProductQuery source)
         {
             // Ensure that the requested status is "submitted"
-            if (!source.Status.Equals("submitted", StringComparison.InvariantCultureIgnoreCase))
+            if (source.Status != ProductQueryStatus.Submitted)
             {
             }
 

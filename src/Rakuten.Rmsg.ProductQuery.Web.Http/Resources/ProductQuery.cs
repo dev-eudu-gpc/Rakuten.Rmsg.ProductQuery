@@ -62,7 +62,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// Gets or sets the status of the product query
         /// </summary>
-        public string Status { get; set; }
+        public ProductQueryStatus Status { get; set; }
 
         /// <summary>
         /// Gets the time at which the product query was created.

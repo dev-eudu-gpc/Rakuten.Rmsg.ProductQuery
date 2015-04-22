@@ -29,12 +29,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <param name="completedItemCount">The number of items that have been completed.</param>
         public ProductQueryProgress(
             int index,
-            string status,
+            ProductQueryStatus status,
             int itemCount,
             int completedItemCount)
         {
-            Contract.Requires(status != null);
-
             this.CompletedItemCount = completedItemCount;
             this.Index = index;
             this.ItemCount = itemCount;
@@ -66,17 +64,17 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                 // Calculate the percentage of items completed.
                 double percentage = this.ItemCount > 0 ? (double)((double)this.CompletedItemCount / this.ItemCount) : 0d;
                         
-                switch (this.Status.ToLowerInvariant())
+                switch (this.Status)
                 {
-                    case "new":
+                    case ProductQueryStatus.New:
                         return 0;
 
-                    case "submitted":
+                    case ProductQueryStatus.Submitted:
                         // A product query is only 100% completed when it is also in 
                         // the "completed" status.
                         return percentage == 100d ? 99d : percentage;
 
-                    case "completed":
+                    case ProductQueryStatus.Completed:
                         return percentage;
 
                     default:
@@ -88,6 +86,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// Gets or sets the status of the product query.
         /// </summary>
-        public string Status { get; set; }
+        public ProductQueryStatus Status { get; set; }
     }
 }

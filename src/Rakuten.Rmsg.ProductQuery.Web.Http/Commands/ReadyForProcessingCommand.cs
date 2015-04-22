@@ -82,14 +82,17 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             {
             }
 
-            // Update the status of the product query in the database.
-            await this.updateProductQueryStatusDatabaseCommand.Execute(
-                new UpdateProductQueryStatusDatabaseCommandParameters(parameters.Id, "submitted"));
+            if (productQuery.Status == ProductQueryStatus.New)
+            {
+                // Send a message to the queue.
+                var blobLink = productQuery.Links.First(link => link.RelationType.Equals("enclosure", StringComparison.InvariantCultureIgnoreCase));
 
-            // Send a message to the queue.
-            var blobLink = productQuery.Links.First(link => link.RelationType.Equals("enclosure", StringComparison.InvariantCultureIgnoreCase));
+                // Update the status of the product query in the database.
+                await this.updateProductQueryStatusDatabaseCommand.Execute(
+                    new UpdateProductQueryStatusDatabaseCommandParameters(parameters.Id, "submitted"));
 
-            await this.dispatchMessageCommand.Execute(new DispatchMessageCommandParameters(blobLink));
+                await this.dispatchMessageCommand.Execute(new DispatchMessageCommandParameters(blobLink));
+            }
 
             return productQuery;
         }

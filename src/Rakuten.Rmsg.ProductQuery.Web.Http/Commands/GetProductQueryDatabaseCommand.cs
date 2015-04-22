@@ -65,7 +65,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                         DateCreated = query.dateCreated,
                         Index = query.index,
                         GroupId = query.rmsgProductQueryGroupID,
-                        Status = query.rmsgProductQueryStatu.name,
+                        Status = (ProductQueryStatus)query.rmsgProductQueryStatusID,
                         Uri  = query.uri
                     }
                     : null;

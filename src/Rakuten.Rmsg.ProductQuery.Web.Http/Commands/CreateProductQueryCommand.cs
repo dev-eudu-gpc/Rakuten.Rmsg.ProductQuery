@@ -115,7 +115,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                     this.selfLink.ForId(parameters.Id.ToString()).ToLink(true),
                     this.azureBlobLink.ForId(blobUri.ToString()).ToLink(true)
                 },
-                Status = "new"
+                Status = ProductQueryStatus.New
             };
         }
     }

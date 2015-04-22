@@ -57,7 +57,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                         (query, items) => new ProductQueryProgress
                         {
                             Index = query.index,
-                            Status = query.rmsgProductQueryStatu.name,
+                            Status = (ProductQueryStatus)query.rmsgProductQueryStatusID,
                             ItemCount = items.Count(),
                             CompletedItemCount = items.Count(item => item.dateCompleted <= parameters.Datetime)
                         });
