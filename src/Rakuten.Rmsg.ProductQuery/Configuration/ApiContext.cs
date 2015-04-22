@@ -45,7 +45,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// <summary>
         /// The estimated proportion of product query processing that is used by the finalisation process.
         /// </summary>
-        private readonly double proportionOfTimeAllocatedForFinalization;
+        private readonly decimal proportionOfTimeAllocatedForFinalization;
 
         /// <summary>
         /// The geographical region in which this GPC instance is running.
@@ -88,7 +88,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             string environmentName,
             int maximumQueriesPerGroup,
             int progressMapIntervalInSeconds,
-            double proportionOfTimeAllocatedForFinalization,
+            decimal proportionOfTimeAllocatedForFinalization,
             string region,
             string serviceBusConnectionString,
             string storageConnectionString)
@@ -172,7 +172,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// <summary>
         /// Gets the estimated proportion of product query processing that is used by the finalisation process.
         /// </summary>
-        public double ProportionOfTimeAllocatedForFinalization 
+        public decimal ProportionOfTimeAllocatedForFinalization 
         {
             get { return this.proportionOfTimeAllocatedForFinalization; }
         }

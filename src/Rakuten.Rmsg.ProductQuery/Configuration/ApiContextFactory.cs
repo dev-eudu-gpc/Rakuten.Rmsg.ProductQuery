@@ -153,7 +153,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
 
             // Get progress map settings
             int progressMapInterval = GetSettingInt(source, SettingKey.ProgressMapIntervalInSeconds);
-            double proportionOfTimeAllocatedForFinalization = GetSettingDouble(source, SettingKey.ProportionOfTimeAllocatedForFinalization);
+            decimal proportionOfTimeAllocatedForFinalization = GetSettingDecimal(source, SettingKey.ProportionOfTimeAllocatedForFinalization);
 
             // Get the blob file name mask
             string blobFileNameMask = source.GetConfigurationSettingValue(SettingKey.BlobFileNameMask);
@@ -240,12 +240,12 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         }
 
         /// <summary>
-        /// Gets a double value from a config source.
+        /// Gets a decimal value from a config source.
         /// </summary>
         /// <param name="source">The config source.</param>
         /// <param name="KeyName">The name of the setting in the config source.</param>
-        /// <returns>A value of the config setting as a double</returns>
-        private static double GetSettingDouble(ConfigurationSource source, string KeyName)
+        /// <returns>A value of the config setting as a decimal</returns>
+        private static decimal GetSettingDecimal(ConfigurationSource source, string KeyName)
         {
             string valueString = source.GetConfigurationSettingValue(KeyName);
 
@@ -254,9 +254,9 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
                 throw new InvalidOperationException(string.Format("{0} is not configured", KeyName));
             }
 
-            double value;
+            decimal value;
 
-            if (!double.TryParse(valueString, out value))
+            if (!decimal.TryParse(valueString, out value))
             {
                 throw new InvalidOperationException(string.Format("{0} setting must be a double.", KeyName));
             }

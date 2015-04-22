@@ -48,7 +48,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             {
                 // Construct an image for the progress map
                 var edgeLength = (int)Math.Ceiling(Math.Sqrt(this.context.MaximumQueriesPerGroup));
-                var pixels = new byte[this.context.MaximumQueriesPerGroup];
+                var pixels = new byte[edgeLength * edgeLength];
 
                 // Define the image palette
                 var myPalette = BitmapPalettes.Gray256;
@@ -56,7 +56,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                 // Set the pixel for each product query in the progress map
                 foreach (var productQuery in parameters.ProgressMap)
                 {
-                    pixels[productQuery.Index] = (byte)(productQuery.PercentageComplete * 255d);
+                    pixels[productQuery.Index - 1] = (byte)(productQuery.PercentageComplete * 255m);
                 }
 
                 // Create the image

@@ -33,7 +33,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             ProductQueryStatus status,
             int itemCount,
             int completedItemCount,
-            double proportionOfTimeAllocatedForFinalization)
+            decimal proportionOfTimeAllocatedForFinalization)
         {
             this.CompletedItemCount = completedItemCount;
             this.Index = index;
@@ -60,27 +60,27 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// Gets the percentage of items in the query that have been completed.
         /// </summary>
-        public double PercentageComplete
+        public decimal PercentageComplete
         {
             get
             {
-                // Calculate the percentage of items completed.
-                double percentage = this.ItemCount > 0 ? (double)((double)this.CompletedItemCount / this.ItemCount) : 0d;
-                        
                 switch (this.Status)
                 {
                     case ProductQueryStatus.New:
-                        return 0;
+                        return 0m;
 
                     case ProductQueryStatus.Submitted:
-                        // Adjust the percentage to allow for finalization
+                        // Calculate the percentage of items completed.
+                        decimal percentage = this.ItemCount > 0 ? (decimal)this.CompletedItemCount / this.ItemCount : 0m;
+                        
+                        // Adjust the percentage to allow for finalization and return it;
                         return percentage * (1 - this.ProportionOfTimeAllocatedForFinalization);
 
                     case ProductQueryStatus.Completed:
-                        return 100d;
+                        return 1m;
 
                     default:
-                        return 0;
+                        return 0m;
                 }
             }
         }
@@ -88,7 +88,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// Gets or sets the estimated proportion of product query processing that is used by the finalization process.
         /// </summary>
-        public double ProportionOfTimeAllocatedForFinalization { get; set; }
+        public decimal ProportionOfTimeAllocatedForFinalization { get; set; }
 
         /// <summary>
         /// Gets or sets the status of the product query.

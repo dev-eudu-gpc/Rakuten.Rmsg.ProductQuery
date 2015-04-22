@@ -48,7 +48,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// <summary>
         /// Gets the estimated proportion of product query processing that is used by the finalisation process.
         /// </summary>
-        double ProportionOfTimeAllocatedForFinalization { get; }
+        decimal ProportionOfTimeAllocatedForFinalization { get; }
 
         /// <summary>
         /// Gets the geographical region in which this GPC instance is running.
