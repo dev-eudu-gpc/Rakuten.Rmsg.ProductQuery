@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="UpdateProductQueryStatusDatabaseCommand.cs" company="Rakuten">
+// <copyright file="UpdateStatusDatabaseCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -13,9 +13,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
 
     /// <summary>
-    /// Represents a command for preparing a product query
+    /// Represents a command for updating the status of a product query in the database.
     /// </summary>
-    public class UpdateProductQueryStatusDatabaseCommand : AsyncCommandAction<UpdateProductQueryStatusDatabaseCommandParameters>
+    public class UpdateStatusDatabaseCommand : AsyncCommandAction<UpdateStatusDatabaseCommandParameters>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -28,11 +28,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly ProductQueryDbContext databaseContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateProductQueryStatusDatabaseCommand"/> class
+        /// Initializes a new instance of the <see cref="UpdateStatusDatabaseCommand"/> class
         /// </summary>
         /// <param name="apiContext">The context in which this instance is running.</param>
         /// <param name="databaseContext">A context in which to perform database operations.</param>
-        public UpdateProductQueryStatusDatabaseCommand(
+        public UpdateStatusDatabaseCommand(
             IApiContext apiContext,
             ProductQueryDbContext databaseContext)
         {
@@ -48,7 +48,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// </summary>
         /// <param name="parameters">The necessary parameters to identify and update the product query in the database</param>
         /// <returns>A task that does the work.</returns>
-        public override Task ExecuteAsync(UpdateProductQueryStatusDatabaseCommandParameters parameters)
+        public override Task ExecuteAsync(UpdateStatusDatabaseCommandParameters parameters)
         {
             Contract.Requires(parameters != null);
 

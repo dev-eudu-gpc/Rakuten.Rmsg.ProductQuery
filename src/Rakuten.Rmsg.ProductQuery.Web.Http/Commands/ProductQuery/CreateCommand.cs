@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="CreateProductQueryCommand.cs" company="Rakuten">
+// <copyright file="CreateCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -12,12 +12,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
-    using Rakuten.WindowsAzure.Storage;
 
     /// <summary>
-    /// Represents a command for preparing a product query
+    /// Represents a command for creating a new product query.
     /// </summary>
-    public class CreateProductQueryCommand : AsyncCommand<CreateProductQueryCommandParameters, ProductQuery>
+    public class CreateCommand : AsyncCommand<CreateCommandParameters, ProductQuery>
     {
         /// <summary>
         /// A link representing the canonical location of the blob in Azure storage.
@@ -37,7 +36,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// A command that can create an entry in a database for the product query.
         /// </summary>
-        private readonly ICommand<CreateProductQueryDatabaseCommandParameters, Task> createProductQueryDatabaseCommand;
+        private readonly ICommand<CreateDatabaseCommandParameters, Task> createProductQueryDatabaseCommand;
 
         /// <summary>
         /// A link representing the canonical location of the resource.
@@ -47,10 +46,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// A command for updating a product query's uri.
         /// </summary>
-        private readonly ICommand<UpdateProductQueryUriCommandParameters, Task> updateProductQueryUriCommand;
+        private readonly ICommand<UpdateUriDatabaseCommandParameters, Task> updateProductQueryUriCommand;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateProductQueryCommand"/> class
+        /// Initializes a new instance of the <see cref="CreateCommand"/> class
         /// </summary>
         /// <param name="context">The context in which this instance is running.</param>
         /// <param name="productQueryUriTemplate">A link template representing the canonical location of the resource.</param>
@@ -58,13 +57,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <param name="createProductQueryDatabaseCommand">A command for creating an entry in a database for the product query.</param>
         /// <param name="createStorageBlobCommand">A command for creating a blob in storage for the product query file</param>
         /// <param name="updateProductQueryUriCommand">A command for updating a product query's uri</param>
-        public CreateProductQueryCommand(
+        public CreateCommand(
             IApiContext context,
             IUriTemplate productQueryUriTemplate,
             IUriTemplate azureBlobUriTemplate,
-            ICommand<CreateProductQueryDatabaseCommandParameters, Task> createProductQueryDatabaseCommand,
+            ICommand<CreateDatabaseCommandParameters, Task> createProductQueryDatabaseCommand,
             ICommand<CreateStorageBlobCommandParameters, Task<Uri>> createStorageBlobCommand,
-            ICommand<UpdateProductQueryUriCommandParameters, Task> updateProductQueryUriCommand)
+            ICommand<UpdateUriDatabaseCommandParameters, Task> updateProductQueryUriCommand)
         {
             Contract.Requires(context != null);
             Contract.Requires(productQueryUriTemplate != null);
@@ -86,7 +85,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// </summary>
         /// <param name="parameters">The input parameters enabling the product query to be uniquely identified</param>
         /// <returns>A task that does the work.</returns>
-        public override async Task<ProductQuery> ExecuteAsync(CreateProductQueryCommandParameters parameters)
+        public override async Task<ProductQuery> ExecuteAsync(CreateCommandParameters parameters)
         {
             Contract.Requires(parameters != null);
 
@@ -95,7 +94,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
             // Create an entry for the query in the database
             await this.createProductQueryDatabaseCommand.Execute(
-                new CreateProductQueryDatabaseCommandParameters(parameters.Id, dateCreated));
+                new CreateDatabaseCommandParameters(parameters.Id, dateCreated));
 
             // TODO: [WB 15-Apr-2015] Catch azure exceptions and update database accordingly
 
@@ -105,7 +104,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
             // Update the database with the blob Uri
             await this.updateProductQueryUriCommand.Execute(
-                new UpdateProductQueryUriCommandParameters(parameters.Id, blobUri));
+                new UpdateUriDatabaseCommandParameters(parameters.Id, blobUri));
 
             // Construct and return a new product query object
             return new ProductQuery
@@ -115,7 +114,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                     this.selfLink.ForId(parameters.Id.ToString()).ToLink(true),
                     this.azureBlobLink.ForId(blobUri.ToString()).ToLink(true)
                 },
-                Status = "new"
+                Status = ProductQueryStatus.New
             };
         }
     }

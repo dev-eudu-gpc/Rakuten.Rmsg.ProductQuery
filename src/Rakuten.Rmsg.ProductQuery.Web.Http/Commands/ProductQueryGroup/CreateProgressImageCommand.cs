@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="CreateProductQueryGroupProgressImageCommand.cs" company="Rakuten">
+// <copyright file="CreateProgressImageCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// A command that creates an image that represents the progress of
     /// product queries within a given product query group.
     /// </summary>
-    public class CreateProductQueryGroupProgressImageCommand : AsyncCommand<CreateProductQueryGroupProgressImageCommandParameters, Stream>
+    public class CreateProgressImageCommand : AsyncCommand<CreateProgressImageCommandParameters, Stream>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -25,10 +25,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly IApiContext context;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateProductQueryGroupProgressImageCommand"/> class
+        /// Initializes a new instance of the <see cref="CreateProgressImageCommand"/> class
         /// </summary>
         /// <param name="context">The context in which this instance is running.</param>
-        public CreateProductQueryGroupProgressImageCommand(IApiContext context)
+        public CreateProgressImageCommand(IApiContext context)
         {
             Contract.Requires(context != null);
 
@@ -40,7 +40,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// </summary>
         /// <param name="parameters">The input parameters required to build the image.</param>
         /// <returns>A task that creates an image representing the progress of a given query group.</returns>
-        public override async Task<Stream> ExecuteAsync(CreateProductQueryGroupProgressImageCommandParameters parameters)
+        public override async Task<Stream> ExecuteAsync(CreateProgressImageCommandParameters parameters)
         {
             Contract.Requires(parameters != null);
 
@@ -48,7 +48,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             {
                 // Construct an image for the progress map
                 var edgeLength = (int)Math.Ceiling(Math.Sqrt(this.context.MaximumQueriesPerGroup));
-                var pixels = new byte[this.context.MaximumQueriesPerGroup];
+                var pixels = new byte[edgeLength * edgeLength];
 
                 // Define the image palette
                 var myPalette = BitmapPalettes.Gray256;
@@ -56,7 +56,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                 // Set the pixel for each product query in the progress map
                 foreach (var productQuery in parameters.ProgressMap)
                 {
-                    pixels[productQuery.Index] = (byte)(productQuery.PercentageComplete * 255d);
+                    pixels[productQuery.Index - 1] = (byte)(productQuery.PercentageComplete * 255m);
                 }
 
                 // Create the image

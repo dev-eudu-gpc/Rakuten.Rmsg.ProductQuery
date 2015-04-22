@@ -11,6 +11,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.Http.Results;
+    using Rakuten.Gpc.Api;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
@@ -22,12 +23,12 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// A command that can prepare a new product query.
         /// </summary>
-        private readonly ICommand<CreateProductQueryCommandParameters, Task<ProductQuery>> createProductQueryCommand;
+        private readonly ICommand<CreateCommandParameters, Task<ProductQuery>> createProductQueryCommand;
 
         /// <summary>
         /// A command that can get a product query from a database.
         /// </summary>
-        private readonly ICommand<GetProductQueryCommandParameters, Task<ProductQuery>> getProductQueryCommand;
+        private readonly ICommand<GetCommandParameters, Task<ProductQuery>> getProductQueryCommand;
 
         /// <summary>
         /// A command that can make a product query ready for processing.
@@ -41,8 +42,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <param name="createProductQueryCommand">A command that creates a new product query.</param>
         /// <param name="readyForProcessingCommand">A command that can make a product query ready for processing.</param>
         public ProductQueryController(
-            ICommand<GetProductQueryCommandParameters, Task<ProductQuery>> getProductQueryCommand,
-            ICommand<CreateProductQueryCommandParameters, Task<ProductQuery>> createProductQueryCommand,
+            ICommand<GetCommandParameters, Task<ProductQuery>> getProductQueryCommand,
+            ICommand<CreateCommandParameters, Task<ProductQuery>> createProductQueryCommand,
             ICommand<ReadyForProcessingCommandParameters, Task<ProductQuery>> readyForProcessingCommand)
         {
             Contract.Requires(createProductQueryCommand != null);
@@ -86,12 +87,12 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
 
             // Try and get the product query
             ProductQuery query = await this.getProductQueryCommand.Execute(
-                new GetProductQueryCommandParameters(id));
+                new GetCommandParameters(id));
 
             if (query == null)
             {
                 // Create new product query
-                var parameters = new CreateProductQueryCommandParameters(id);
+                var parameters = new CreateCommandParameters(id);
 
                 return new NegotiatedContentResult<ProductQuery>(
                     HttpStatusCode.Created,
@@ -114,18 +115,26 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         private async Task<IHttpActionResult> ReadyForProcessingAsync(Guid id, ProductQuery source)
         {
             // Ensure that the requested status is "submitted"
-            if (!source.Status.Equals("submitted", StringComparison.InvariantCultureIgnoreCase))
+            if (source.Status != ProductQueryStatus.Submitted)
             {
+                throw new ValidationFailedException(new InvalidStatusException());
             }
 
             // Call the command
-            ProductQuery productQuery = await this.readyForProcessingCommand.Execute(
-                new ReadyForProcessingCommandParameters(id));
+            try
+            {
+                ProductQuery productQuery = await this.readyForProcessingCommand.Execute(
+                    new ReadyForProcessingCommandParameters(id));
 
-            return new NegotiatedContentResult<ProductQuery>(
-                HttpStatusCode.Accepted,
-                productQuery,
-                this);
+                return new NegotiatedContentResult<ProductQuery>(
+                    HttpStatusCode.Accepted,
+                    productQuery,
+                    this);
+            }
+            catch (ProductQueryNotFoundException ex)
+            {
+                throw new ObjectNotFoundException(ex);
+            }
         }
     }
 }

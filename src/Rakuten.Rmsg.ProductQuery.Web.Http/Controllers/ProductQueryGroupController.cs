@@ -14,6 +14,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.Http.Results;
+    using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
@@ -23,9 +24,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     public class ProductQueryGroupController : ApiController
     {
         /// <summary>
+        /// The context under which this instance is operating.
+        /// </summary>
+        private readonly IApiContext context;
+
+        /// <summary>
         /// A command that gets an image representing the progress of a given group at a given point in time.
         /// </summary>
-        private readonly ICommand<GetProductQueryGroupProgressCommandParameters, Task<Stream>> getProgressCommand;
+        private readonly ICommand<GetProgressCommandParameters, Task<Stream>> getProgressCommand;
 
         /// <summary>
         /// A link representing the canonical location for the status of a product
@@ -36,6 +42,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductQueryGroupController"/> class.
         /// </summary>
+        /// <param name="context">The context in which this instance is running.</param>
         /// <param name="getProgressCommand">
         /// A command that gets an image representing the progress of a given group at a given point in time.
         /// </param>
@@ -44,12 +51,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// that status of a product query at a particular point in time
         /// </param>
         public ProductQueryGroupController(
-            ICommand<GetProductQueryGroupProgressCommandParameters, Task<Stream>> getProgressCommand,
+            IApiContext context,
+            ICommand<GetProgressCommandParameters, Task<Stream>> getProgressCommand,
             IUriTemplate monitorUriTemplate)
         {
+            Contract.Requires(context != null);
             Contract.Requires(getProgressCommand != null);
             Contract.Requires(monitorUriTemplate != null);
 
+            this.context = context;
             this.getProgressCommand = getProgressCommand;
             this.monitorLink = new ProductQueryMonitorLink(monitorUriTemplate);
         }
@@ -71,13 +81,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             Contract.Requires(month >= 1 && month <= 12);
             Contract.Requires(day >= 1 && day <= 31);
 
-            // Window granularity
-            int granularity = 60;
-
             // Reconstitute the date
             var date = new DateTime(year, month, day, (int)Math.Floor(time / 100d), time % 100, 0);
 
-            if (date > DateTime.UtcNow.AddSeconds(0 - granularity))
+            if (date > DateTime.UtcNow.AddSeconds(0 - this.context.ProgressMapIntervalInSeconds))
             {
                 // The requested date is too recent, send a redirection
                 var serverTime = DateTime.UtcNow;
@@ -92,14 +99,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
 
                 return new SeeOtherResult(
                     new Uri(location.Target, UriKind.Relative),
-                    granularity,
+                    this.context.ProgressMapIntervalInSeconds,
                     this);
             }
             else
             {
                 // Get an image representation of the progress map
                 var image = await this.getProgressCommand.Execute(
-                    new GetProductQueryGroupProgressCommandParameters(id, date));
+                    new GetProgressCommandParameters(id, date));
 
                 // Return a message containing the image
                 return new ImageResult(image, this);

@@ -161,6 +161,7 @@
     <Reference Include="Microsoft.Owin.Host.SystemWeb">
       <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.ServiceBus">
       <HintPath>..\packages\WindowsAzure.ServiceBus.2.3.1.0\lib\net40-full\Microsoft.ServiceBus.dll</HintPath>
     </Reference>
@@ -230,31 +231,31 @@
     <Compile Include="App_Start\ApiCompositionRoot.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.cs" />
-    <Compile Include="CommandParameters\CreateProductQueryDatabaseCommandParameters.cs" />
-    <Compile Include="CommandParameters\CreateStorageBlobCommandParameters.cs" />
-    <Compile Include="CommandParameters\DispatchMessageCommandParameters.cs" />
-    <Compile Include="CommandParameters\GetProductQueryCommandParameters.cs" />
-    <Compile Include="CommandParameters\GetProductQueryDatabaseCommandParameters.cs" />
-    <Compile Include="CommandParameters\CreateProductQueryCommandParameters.cs" />
-    <Compile Include="CommandParameters\GetProductQueryGroupProgressCommandParameters.cs" />
-    <Compile Include="CommandParameters\GetProductQueryGroupProgressDatabaseCommandParameters.cs" />
-    <Compile Include="CommandParameters\CreateProductQueryGroupProgressImageCommandParameters.cs" />
-    <Compile Include="CommandParameters\UpdateProductQueryStatusDatabaseCommandParameters.cs" />
-    <Compile Include="CommandParameters\ReadyForProcessingCommandParameters.cs" />
-    <Compile Include="CommandParameters\UpdateProductQueryUriCommandParameters.cs" />
+    <Compile Include="CommandParameters\ProductQuery\CreateDatabaseCommandParameters.cs" />
+    <Compile Include="CommandParameters\Azure\CreateStorageBlobCommandParameters.cs" />
+    <Compile Include="CommandParameters\Azure\DispatchMessageCommandParameters.cs" />
+    <Compile Include="CommandParameters\ProductQuery\GetCommandParameters.cs" />
+    <Compile Include="CommandParameters\ProductQuery\GetDatabaseCommandParameters.cs" />
+    <Compile Include="CommandParameters\ProductQuery\CreateCommandParameters.cs" />
+    <Compile Include="CommandParameters\ProductQueryGroup\GetProgressCommandParameters.cs" />
+    <Compile Include="CommandParameters\ProductQueryGroup\GetProgressDatabaseCommandParameters.cs" />
+    <Compile Include="CommandParameters\ProductQueryGroup\CreateProgressImageCommandParameters.cs" />
+    <Compile Include="CommandParameters\ProductQuery\UpdateStatusDatabaseCommandParameters.cs" />
+    <Compile Include="CommandParameters\ProductQuery\ReadyForProcessingCommandParameters.cs" />
+    <Compile Include="CommandParameters\ProductQuery\UpdateUriDatabaseCommandParameters.cs" />
     <Compile Include="Commands\AsyncCommandAction.cs" />
-    <Compile Include="Commands\CreateProductQueryDatabaseCommand.cs" />
-    <Compile Include="Commands\CreateStorageBlobCommand.cs" />
-    <Compile Include="Commands\DispatchMessageCommand.cs" />
-    <Compile Include="Commands\GetProductQueryCommand.cs" />
-    <Compile Include="Commands\GetProductQueryDatabaseCommand.cs" />
-    <Compile Include="Commands\CreateProductQueryCommand.cs" />
-    <Compile Include="Commands\GetProductQueryGroupProgressCommand.cs" />
-    <Compile Include="Commands\GetProductQueryGroupProgressDatabaseCommand.cs" />
-    <Compile Include="Commands\CreateProductQueryGroupProgressImageCommand.cs" />
-    <Compile Include="Commands\UpdateProductQueryStatusDatabaseCommand.cs" />
-    <Compile Include="Commands\ReadyForProcessingCommand.cs" />
-    <Compile Include="Commands\UpdateProductQueryUriCommand.cs" />
+    <Compile Include="Commands\ProductQuery\CreateDatabaseCommand.cs" />
+    <Compile Include="Commands\Azure\CreateStorageBlobCommand.cs" />
+    <Compile Include="Commands\Azure\DispatchMessageCommand.cs" />
+    <Compile Include="Commands\ProductQuery\GetCommand.cs" />
+    <Compile Include="Commands\ProductQuery\GetDatabaseCommand.cs" />
+    <Compile Include="Commands\ProductQuery\CreateCommand.cs" />
+    <Compile Include="Commands\ProductQueryGroup\GetProgressCommand.cs" />
+    <Compile Include="Commands\ProductQueryGroup\GetProgressDatabaseCommand.cs" />
+    <Compile Include="Commands\ProductQueryGroup\CreateProgressImageCommand.cs" />
+    <Compile Include="Commands\ProductQuery\UpdateStatusDatabaseCommand.cs" />
+    <Compile Include="Commands\ProductQuery\ReadyForProcessingCommand.cs" />
+    <Compile Include="Commands\ProductQuery\UpdateUriDatabaseCommand.cs" />
     <Compile Include="Controllers\ProductQueryController.cs" />
     <Compile Include="Controllers\ProductQueryGroupController.cs" />
     <Compile Include="EntityModels\ProductQuery.Context.cs">
@@ -287,7 +288,9 @@
     <Compile Include="Exceptions\BadRequestException.cs" />
     <Compile Include="Exceptions\ConstraintViolationException.cs" />
     <Compile Include="Exceptions\InternalServerException.cs" />
+    <Compile Include="Exceptions\InvalidStatusException.cs" />
     <Compile Include="Exceptions\ObjectNotFoundException.cs" />
+    <Compile Include="Exceptions\ProductQueryNotFoundException.cs" />
     <Compile Include="Exceptions\ValidationFailedException.cs" />
     <Compile Include="Links\AzureBlobLink.cs" />
     <Compile Include="Links\ProductQueryLink.cs" />
@@ -297,6 +300,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\ProductQuery.cs" />
     <Compile Include="Resources\ProductQueryProgress.cs" />
+    <Compile Include="Resources\ProductQueryStatus.cs" />
     <Compile Include="Web\Http\Common\TaskHelpers.cs" />
     <Compile Include="Web\Http\ExceptionHandling\ApiExceptionMetadata.cs" />
     <Compile Include="Web\Http\ExceptionHandling\AttributeApiExceptionMetadataProvider.cs" />

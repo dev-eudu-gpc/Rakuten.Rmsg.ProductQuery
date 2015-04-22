@@ -27,17 +27,18 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <param name="status">The status of the product query.</param>
         /// <param name="itemCount">The number of items in the product query.</param>
         /// <param name="completedItemCount">The number of items that have been completed.</param>
+        /// <param name="proportionOfTimeAllocatedForFinalization">The estimated proportion of product query processing that is used by the finalization process.</param>
         public ProductQueryProgress(
             int index,
-            string status,
+            ProductQueryStatus status,
             int itemCount,
-            int completedItemCount)
+            int completedItemCount,
+            decimal proportionOfTimeAllocatedForFinalization)
         {
-            Contract.Requires(status != null);
-
             this.CompletedItemCount = completedItemCount;
             this.Index = index;
             this.ItemCount = itemCount;
+            this.ProportionOfTimeAllocatedForFinalization = proportionOfTimeAllocatedForFinalization;
             this.Status = status;
         }
 
@@ -59,35 +60,39 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// Gets the percentage of items in the query that have been completed.
         /// </summary>
-        public double PercentageComplete
+        public decimal PercentageComplete
         {
             get
             {
-                // Calculate the percentage of items completed.
-                double percentage = this.ItemCount > 0 ? (double)((double)this.CompletedItemCount / this.ItemCount) : 0d;
-                        
-                switch (this.Status.ToLowerInvariant())
+                switch (this.Status)
                 {
-                    case "new":
-                        return 0;
+                    case ProductQueryStatus.New:
+                        return 0m;
 
-                    case "submitted":
-                        // A product query is only 100% completed when it is also in 
-                        // the "completed" status.
-                        return percentage == 100d ? 99d : percentage;
+                    case ProductQueryStatus.Submitted:
+                        // Calculate the percentage of items completed.
+                        decimal percentage = this.ItemCount > 0 ? (decimal)this.CompletedItemCount / this.ItemCount : 0m;
+                        
+                        // Adjust the percentage to allow for finalization and return it;
+                        return percentage * (1 - this.ProportionOfTimeAllocatedForFinalization);
 
-                    case "completed":
-                        return percentage;
+                    case ProductQueryStatus.Completed:
+                        return 1m;
 
                     default:
-                        return 0;
+                        return 0m;
                 }
             }
         }
 
         /// <summary>
+        /// Gets or sets the estimated proportion of product query processing that is used by the finalization process.
+        /// </summary>
+        public decimal ProportionOfTimeAllocatedForFinalization { get; set; }
+
+        /// <summary>
         /// Gets or sets the status of the product query.
         /// </summary>
-        public string Status { get; set; }
+        public ProductQueryStatus Status { get; set; }
     }
 }

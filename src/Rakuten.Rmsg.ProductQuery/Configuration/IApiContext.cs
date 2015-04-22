@@ -41,6 +41,16 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         int MaximumQueriesPerGroup { get; }
 
         /// <summary>
+        /// Gets the number of seconds between progress maps
+        /// </summary>
+        int ProgressMapIntervalInSeconds { get; }
+
+        /// <summary>
+        /// Gets the estimated proportion of product query processing that is used by the finalisation process.
+        /// </summary>
+        decimal ProportionOfTimeAllocatedForFinalization { get; }
+
+        /// <summary>
         /// Gets the geographical region in which this GPC instance is running.
         /// </summary>
         string Region { get; }

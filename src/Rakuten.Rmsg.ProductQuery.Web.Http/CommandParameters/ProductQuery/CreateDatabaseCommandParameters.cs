@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="UpdateProductQueryUriCommandParameters.cs" company="Rakuten">
+// <copyright file="CreateDatabaseCommandParameters.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -9,24 +9,24 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using System.Diagnostics.Contracts;
 
     /// <summary>
-    /// The parameters for the <see cref="UpdateProductQueryUriCommand"/> class.
+    /// The parameters required for inserting a new product query into the database.
     /// </summary>
-    public class UpdateProductQueryUriCommandParameters
+    public class CreateDatabaseCommandParameters
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateProductQueryUriCommandParameters"/> class.
+        /// Initializes a new instance of the <see cref="CreateDatabaseCommandParameters"/> class.
         /// </summary>
         /// <param name="id">The unique identifier for the product query.</param>
-        /// <param name="uri">The uri for the product query blob in storage.</param>
-        public UpdateProductQueryUriCommandParameters(
+        /// <param name="dateCreated">The date/time on which the product query was created.</param>
+        public CreateDatabaseCommandParameters(
             Guid id,
-            Uri uri)
+            DateTime dateCreated)
         {
             Contract.Requires(id != null);
-            Contract.Requires(uri != null);
+            Contract.Requires(dateCreated != null);
 
             this.Id = id;
-            this.Uri = uri;
+            this.DateCreated = dateCreated;
         }
 
         /// <summary>
@@ -35,8 +35,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         public Guid Id { get; private set; }
 
         /// <summary>
-        /// Gets the uri for the product query blob in storage.
+        /// Gets the date and time on which the product query was created
         /// </summary>
-        public Uri Uri { get; private set; }
+        public DateTime DateCreated { get; private set; }
     }
 }

@@ -38,6 +38,16 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         private readonly string environmentName;
 
         /// <summary>
+        /// The number of seconds between progress maps
+        /// </summary>
+        private readonly int progressMapIntervalInSeconds;
+
+        /// <summary>
+        /// The estimated proportion of product query processing that is used by the finalisation process.
+        /// </summary>
+        private readonly decimal proportionOfTimeAllocatedForFinalization;
+
+        /// <summary>
         /// The geographical region in which this GPC instance is running.
         /// </summary>
         private readonly string region;
@@ -65,6 +75,8 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// <param name="databaseConnectionString">The connection string for the database.</param>
         /// <param name="environmentName">The environment in which the application is running.</param>
         /// <param name="maximumQueriesPerGroup">The maximum number of queries per query group.</param>
+        /// <param name="progressMapIntervalInSeconds">The number of seconds between progress maps.</param>
+        /// <param name="proportionOfTimeAllocatedForFinalization">The estimated proportion of product query processing that is used by the finalisation process.</param>
         /// <param name="region">The geographical region in which the application is running.</param>
         /// <param name="serviceBusConnectionString">The connection string to the service bus.</param>
         /// <param name="storageConnectionString">The connection string for the storage account.</param>
@@ -75,6 +87,8 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             string diagnosticsStorageConnectionString,
             string environmentName,
             int maximumQueriesPerGroup,
+            int progressMapIntervalInSeconds,
+            decimal proportionOfTimeAllocatedForFinalization,
             string region,
             string serviceBusConnectionString,
             string storageConnectionString)
@@ -94,6 +108,8 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             this.diagnosticsStorageConnectionString = diagnosticsStorageConnectionString;
             this.environmentName = environmentName;
             this.maximumQueriesPerGroup = maximumQueriesPerGroup;
+            this.progressMapIntervalInSeconds = progressMapIntervalInSeconds;
+            this.proportionOfTimeAllocatedForFinalization = proportionOfTimeAllocatedForFinalization;
             this.region = region;
             this.serviceBusConnectionString = serviceBusConnectionString;
             this.storageConnectionString = storageConnectionString;
@@ -145,6 +161,22 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             get { return this.environmentName; }
         }
 
+        /// <summary>
+        /// Gets the number of seconds between progress maps
+        /// </summary>
+        public int ProgressMapIntervalInSeconds 
+        {
+            get { return this.progressMapIntervalInSeconds; }
+        }
+
+        /// <summary>
+        /// Gets the estimated proportion of product query processing that is used by the finalisation process.
+        /// </summary>
+        public decimal ProportionOfTimeAllocatedForFinalization 
+        {
+            get { return this.proportionOfTimeAllocatedForFinalization; }
+        }
+        
         /// <summary>
         /// Gets the maximum number of queries per query group
         /// </summary>

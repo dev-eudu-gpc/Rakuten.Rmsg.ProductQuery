@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="UpdateProductQueryUriCommand.cs" company="Rakuten">
+// <copyright file="GetDatabaseCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -13,9 +13,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
 
     /// <summary>
-    /// Represents a command for preparing a product query
+    /// Represents a command for obtaining a product query from the database.
     /// </summary>
-    public class UpdateProductQueryUriCommand : AsyncCommandAction<UpdateProductQueryUriCommandParameters>
+    public class GetDatabaseCommand : AsyncCommand<GetDatabaseCommandParameters, ProductQuery>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -28,11 +28,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly ProductQueryDbContext databaseContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateProductQueryUriCommand"/> class
+        /// Initializes a new instance of the <see cref="GetDatabaseCommand"/> class
         /// </summary>
         /// <param name="apiContext">The context in which this instance is running.</param>
         /// <param name="databaseContext">A context in which to perform database operations.</param>
-        public UpdateProductQueryUriCommand(
+        public GetDatabaseCommand(
             IApiContext apiContext,
             ProductQueryDbContext databaseContext)
         {
@@ -44,32 +44,31 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         }
 
         /// <summary>
-        /// Updates the URI for a specified product query.
+        /// Gets a specified product query from the database
         /// </summary>
-        /// <param name="parameters">The necessary parameters to identify and update the product query in the database</param>
+        /// <param name="parameters">The necessary parameters to uniquely identify the product query.</param>
         /// <returns>A task that does the work.</returns>
-        public override Task ExecuteAsync(UpdateProductQueryUriCommandParameters parameters)
+        public override Task<ProductQuery> ExecuteAsync(GetDatabaseCommandParameters parameters)
         {
             Contract.Requires(parameters != null);
 
             return Task.Run(() =>
             {
-                // Update the product query's Uri column
+                // Determine if the product query already exists
                 var query = this.databaseContext.rmsgProductQueries
                     .Where(q => q.rmsgProductQueryID == parameters.Id)
                     .FirstOrDefault();
 
-                if (query != null)
-                {
-                    query.uri = parameters.Uri.ToString();
-                }
-                else
-                {
-                    // TODO: [WB 15-Apr-2015] Implement sad path
-                }
-
-                // Submit the changes to the database
-                this.databaseContext.SaveChanges();
+                return query != null ?
+                    new ProductQuery
+                    {
+                        DateCreated = query.dateCreated,
+                        Index = query.index,
+                        GroupId = query.rmsgProductQueryGroupID,
+                        Status = (ProductQueryStatus)query.rmsgProductQueryStatusID,
+                        Uri  = query.uri
+                    }
+                    : null;
             });
         }
     }

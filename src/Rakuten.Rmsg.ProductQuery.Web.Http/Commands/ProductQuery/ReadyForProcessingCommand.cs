@@ -29,12 +29,12 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// A command that can get a product query from a database.
         /// </summary>
-        private readonly ICommand<GetProductQueryCommandParameters, Task<ProductQuery>> getProductQueryCommand;
+        private readonly ICommand<GetCommandParameters, Task<ProductQuery>> getProductQueryCommand;
 
         /// <summary>
         /// A command that updates the status of a product query in the database.
         /// </summary>
-        private readonly ICommand<UpdateProductQueryStatusDatabaseCommandParameters, Task> updateProductQueryStatusDatabaseCommand;
+        private readonly ICommand<UpdateStatusDatabaseCommandParameters, Task> updateProductQueryStatusDatabaseCommand;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadyForProcessingCommand"/> class
@@ -46,8 +46,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         public ReadyForProcessingCommand(
             IApiContext context,
             ICommand<DispatchMessageCommandParameters, Task> dispatchMessageCommand,
-            ICommand<GetProductQueryCommandParameters, Task<ProductQuery>> getProductQueryCommand,
-            ICommand<UpdateProductQueryStatusDatabaseCommandParameters, Task> updateProductQueryStatusDatabaseCommand)
+            ICommand<GetCommandParameters, Task<ProductQuery>> getProductQueryCommand,
+            ICommand<UpdateStatusDatabaseCommandParameters, Task> updateProductQueryStatusDatabaseCommand)
         {
             Contract.Requires(context != null);
             Contract.Requires(dispatchMessageCommand != null);
@@ -76,20 +76,24 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
             // Try and get the product query
             ProductQuery productQuery = await this.getProductQueryCommand.Execute(
-                new GetProductQueryCommandParameters(parameters.Id));
+                new GetCommandParameters(parameters.Id));
 
             if (productQuery == null)
             {
+                throw new ProductQueryNotFoundException(parameters.Id.ToString());
             }
 
-            // Update the status of the product query in the database.
-            await this.updateProductQueryStatusDatabaseCommand.Execute(
-                new UpdateProductQueryStatusDatabaseCommandParameters(parameters.Id, "submitted"));
+            if (productQuery.Status == ProductQueryStatus.New)
+            {
+                // Send a message to the queue.
+                var blobLink = productQuery.Links.First(link => link.RelationType.Equals("enclosure", StringComparison.InvariantCultureIgnoreCase));
 
-            // Send a message to the queue.
-            var blobLink = productQuery.Links.First(link => link.RelationType.Equals("enclosure", StringComparison.InvariantCultureIgnoreCase));
+                // Update the status of the product query in the database.
+                await this.updateProductQueryStatusDatabaseCommand.Execute(
+                    new UpdateStatusDatabaseCommandParameters(parameters.Id, "submitted"));
 
-            await this.dispatchMessageCommand.Execute(new DispatchMessageCommandParameters(blobLink));
+                await this.dispatchMessageCommand.Execute(new DispatchMessageCommandParameters(blobLink));
+            }
 
             return productQuery;
         }
