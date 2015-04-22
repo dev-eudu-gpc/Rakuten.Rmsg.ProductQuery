@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="CreateProductQueryGroupProgressImageCommand.cs" company="Rakuten">
+// <copyright file="CreateProgressImageCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// A command that creates an image that represents the progress of
     /// product queries within a given product query group.
     /// </summary>
-    public class CreateProductQueryGroupProgressImageCommand : AsyncCommand<CreateProductQueryGroupProgressImageCommandParameters, Stream>
+    public class CreateProgressImageCommand : AsyncCommand<CreateProgressImageCommandParameters, Stream>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -25,10 +25,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly IApiContext context;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateProductQueryGroupProgressImageCommand"/> class
+        /// Initializes a new instance of the <see cref="CreateProgressImageCommand"/> class
         /// </summary>
         /// <param name="context">The context in which this instance is running.</param>
-        public CreateProductQueryGroupProgressImageCommand(IApiContext context)
+        public CreateProgressImageCommand(IApiContext context)
         {
             Contract.Requires(context != null);
 
@@ -40,7 +40,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// </summary>
         /// <param name="parameters">The input parameters required to build the image.</param>
         /// <returns>A task that creates an image representing the progress of a given query group.</returns>
-        public override async Task<Stream> ExecuteAsync(CreateProductQueryGroupProgressImageCommandParameters parameters)
+        public override async Task<Stream> ExecuteAsync(CreateProgressImageCommandParameters parameters)
         {
             Contract.Requires(parameters != null);
 

@@ -29,12 +29,12 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// A command that can get a product query from a database.
         /// </summary>
-        private readonly ICommand<GetProductQueryCommandParameters, Task<ProductQuery>> getProductQueryCommand;
+        private readonly ICommand<GetCommandParameters, Task<ProductQuery>> getProductQueryCommand;
 
         /// <summary>
         /// A command that updates the status of a product query in the database.
         /// </summary>
-        private readonly ICommand<UpdateProductQueryStatusDatabaseCommandParameters, Task> updateProductQueryStatusDatabaseCommand;
+        private readonly ICommand<UpdateStatusDatabaseCommandParameters, Task> updateProductQueryStatusDatabaseCommand;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadyForProcessingCommand"/> class
@@ -46,8 +46,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         public ReadyForProcessingCommand(
             IApiContext context,
             ICommand<DispatchMessageCommandParameters, Task> dispatchMessageCommand,
-            ICommand<GetProductQueryCommandParameters, Task<ProductQuery>> getProductQueryCommand,
-            ICommand<UpdateProductQueryStatusDatabaseCommandParameters, Task> updateProductQueryStatusDatabaseCommand)
+            ICommand<GetCommandParameters, Task<ProductQuery>> getProductQueryCommand,
+            ICommand<UpdateStatusDatabaseCommandParameters, Task> updateProductQueryStatusDatabaseCommand)
         {
             Contract.Requires(context != null);
             Contract.Requires(dispatchMessageCommand != null);
@@ -76,7 +76,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
             // Try and get the product query
             ProductQuery productQuery = await this.getProductQueryCommand.Execute(
-                new GetProductQueryCommandParameters(parameters.Id));
+                new GetCommandParameters(parameters.Id));
 
             if (productQuery == null)
             {
@@ -90,7 +90,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
                 // Update the status of the product query in the database.
                 await this.updateProductQueryStatusDatabaseCommand.Execute(
-                    new UpdateProductQueryStatusDatabaseCommandParameters(parameters.Id, "submitted"));
+                    new UpdateStatusDatabaseCommandParameters(parameters.Id, "submitted"));
 
                 await this.dispatchMessageCommand.Execute(new DispatchMessageCommandParameters(blobLink));
             }

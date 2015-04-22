@@ -9,7 +9,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using System.Diagnostics.Contracts;
 
     /// <summary>
-    /// The parameters for the <see cref="CreateStorageBlobCommand"/> class.
+    /// The parameters required for creating a new blob in storage for a product query.
     /// </summary>
     public class CreateStorageBlobCommandParameters
     {

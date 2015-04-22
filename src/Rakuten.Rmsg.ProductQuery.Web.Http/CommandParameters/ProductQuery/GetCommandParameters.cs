@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="GetProductQueryCommandParameters.cs" company="Rakuten">
+// <copyright file="GetCommandParameters.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -9,15 +9,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using System.Diagnostics.Contracts;
 
     /// <summary>
-    /// The parameters for the <see cref="GetProductQueryCommand"/> class.
+    /// The parameters required for obtaining an individual product query
     /// </summary>
-    public class GetProductQueryCommandParameters
+    public class GetCommandParameters
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetProductQueryCommandParameters"/> class
+        /// Initializes a new instance of the <see cref="GetCommandParameters"/> class
         /// </summary>
         /// <param name="id">The unique identifier for the product query</param>
-        public GetProductQueryCommandParameters(Guid id)
+        public GetCommandParameters(Guid id)
         {
             Contract.Requires(id != null);
 

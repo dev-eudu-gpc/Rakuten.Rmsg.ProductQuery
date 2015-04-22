@@ -70,17 +70,17 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     var storage = new AzureStorage();
 
                     // Database commands
-                    var createDatabaseCommand = new CreateProductQueryDatabaseCommand(this.context, databaseContext);
-                    var getDatabaseCommand = new GetProductQueryDatabaseCommand(this.context, databaseContext);
-                    var updateProductQueryStatusDatabaseCommand = new UpdateProductQueryStatusDatabaseCommand(this.context, databaseContext);
-                    var updateProductQueryUriDatabaseCommand = new UpdateProductQueryUriCommand(this.context, databaseContext);                   
+                    var createDatabaseCommand = new CreateDatabaseCommand(this.context, databaseContext);
+                    var getDatabaseCommand = new GetDatabaseCommand(this.context, databaseContext);
+                    var updateProductQueryStatusDatabaseCommand = new UpdateStatusDatabaseCommand(this.context, databaseContext);
+                    var updateProductQueryUriDatabaseCommand = new UpdateUriDatabaseCommand(this.context, databaseContext);                   
 
                     // Storage and messaging commands
                     var createStorageBlobCommand = new CreateStorageBlobCommand(this.context, storage);
                     var dispatchMessageCommand = new DispatchMessageCommand(this.context);
 
                     // Macro commands
-                    var createCommand = new CreateProductQueryCommand(
+                    var createCommand = new CreateCommand(
                         this.context,
                         uriTemplates.ProductQuery,
                         uriTemplates.AzureBlob,
@@ -88,7 +88,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                         createStorageBlobCommand,
                         updateProductQueryUriDatabaseCommand);
 
-                    var getCommand = new GetProductQueryCommand(
+                    var getCommand = new GetCommand(
                         this.context,
                         uriTemplates.ProductQuery,
                         uriTemplates.AzureBlob,
@@ -111,11 +111,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     databaseContext = new ProductQueryDbContext();
 
                     // Commands
-                    var getProductQueryGroupProgressDatabaseCommand = new GetProductQueryGroupProgressDatabaseCommand(databaseContext);
-                    var createProgressMapImageCommand = new CreateProductQueryGroupProgressImageCommand(this.context);
+                    var getProductQueryGroupProgressDatabaseCommand = new GetProgressDatabaseCommand(databaseContext);
+                    var createProgressMapImageCommand = new CreateProgressImageCommand(this.context);
 
                     // Macro commands
-                    var getProductQueryGroupProgressCommand = new GetProductQueryGroupProgressCommand(
+                    var getProductQueryGroupProgressCommand = new GetProgressCommand(
                         this.context,
                         uriTemplates.ProductQueryMonitorLink,
                         createProgressMapImageCommand,

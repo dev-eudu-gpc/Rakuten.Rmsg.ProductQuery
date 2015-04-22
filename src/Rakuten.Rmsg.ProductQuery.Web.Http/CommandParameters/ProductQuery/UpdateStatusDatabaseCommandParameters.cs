@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="CreateProductQueryDatabaseCommandParameters.cs" company="Rakuten">
+// <copyright file="UpdateStatusDatabaseCommandParameters.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -9,24 +9,24 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using System.Diagnostics.Contracts;
 
     /// <summary>
-    /// The parameters for the <see cref="CreateProductQueryCommand"/> class.
+    /// The parameters required for updating the status of a product query in the database
     /// </summary>
-    public class CreateProductQueryDatabaseCommandParameters
+    public class UpdateStatusDatabaseCommandParameters
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateProductQueryDatabaseCommandParameters"/> class.
+        /// Initializes a new instance of the <see cref="UpdateStatusDatabaseCommandParameters"/> class.
         /// </summary>
         /// <param name="id">The unique identifier for the product query.</param>
-        /// <param name="dateCreated">The date/time on which the product query was created.</param>
-        public CreateProductQueryDatabaseCommandParameters(
+        /// <param name="newStatus">The new status for the product query.</param>
+        public UpdateStatusDatabaseCommandParameters(
             Guid id,
-            DateTime dateCreated)
+            string newStatus)
         {
             Contract.Requires(id != null);
-            Contract.Requires(dateCreated != null);
+            Contract.Requires(newStatus != null);
 
             this.Id = id;
-            this.DateCreated = dateCreated;
+            this.NewStatus = newStatus;
         }
 
         /// <summary>
@@ -35,8 +35,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         public Guid Id { get; private set; }
 
         /// <summary>
-        /// Gets the date and time on which the product query was created
+        /// Gets the new status for the product query.
         /// </summary>
-        public DateTime DateCreated { get; private set; }
+        public string NewStatus { get; private set; }
     }
 }

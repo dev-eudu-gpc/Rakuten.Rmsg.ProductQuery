@@ -1,28 +1,22 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="GetProductQueryGroupProgressCommand.cs" company="Rakuten">
+// <copyright file="GetProgressCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
-    using Rakuten.WindowsAzure.Storage;
 
     /// <summary>
     /// A command for obtaining the progress of a given product query
     /// group at a given point in time.
     /// </summary>
-    public class GetProductQueryGroupProgressCommand : AsyncCommand<GetProductQueryGroupProgressCommandParameters, Stream>
+    public class GetProgressCommand : AsyncCommand<GetProgressCommandParameters, Stream>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -32,13 +26,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// A command that creates an images from a progress map.
         /// </summary>
-        private readonly ICommand<CreateProductQueryGroupProgressImageCommandParameters, Task<Stream>> createImageCommand;
+        private readonly ICommand<CreateProgressImageCommandParameters, Task<Stream>> createImageCommand;
 
         /// <summary>
         /// A command that gets the progress map of a product query group
         /// from the database.
         /// </summary>
-        private readonly ICommand<GetProductQueryGroupProgressDatabaseCommandParameters, Task<IQueryable<ProductQueryProgress>>> getProgressDatabaseCommand;
+        private readonly ICommand<GetProgressDatabaseCommandParameters, Task<IQueryable<ProductQueryProgress>>> getProgressDatabaseCommand;
 
         /// <summary>
         /// A link representing the canonical location of the monitor for the resource.
@@ -46,17 +40,17 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly ProductQueryMonitorLink monitorLink;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetProductQueryGroupProgressCommand"/> class
+        /// Initializes a new instance of the <see cref="GetProgressCommand"/> class
         /// </summary>
         /// <param name="context">The context in which this instance is running.</param>
         /// <param name="monitorUriTemplate">A link template representing the canonical location of the monitor for the resource.</param>
         /// <param name="createImageCommand">A command that creates an image from a progress map.</param>
         /// <param name="getProgressDatabaseCommand">A command that gets product query data from the database.</param>
-        public GetProductQueryGroupProgressCommand(
+        public GetProgressCommand(
             IApiContext context,
             IUriTemplate monitorUriTemplate,
-            ICommand<CreateProductQueryGroupProgressImageCommandParameters, Task<Stream>> createImageCommand,
-            ICommand<GetProductQueryGroupProgressDatabaseCommandParameters, Task<IQueryable<ProductQueryProgress>>> getProgressDatabaseCommand)
+            ICommand<CreateProgressImageCommandParameters, Task<Stream>> createImageCommand,
+            ICommand<GetProgressDatabaseCommandParameters, Task<IQueryable<ProductQueryProgress>>> getProgressDatabaseCommand)
         {
             Contract.Requires(context != null);
             Contract.Requires(createImageCommand != null);
@@ -74,19 +68,19 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// </summary>
         /// <param name="parameters">The input parameters for creating the map.</param>
         /// <returns>The progress map as an image.</returns>
-        public override async Task<Stream> ExecuteAsync(GetProductQueryGroupProgressCommandParameters parameters)
+        public override async Task<Stream> ExecuteAsync(GetProgressCommandParameters parameters)
         {
             Contract.Requires(parameters != null);
 
             // Get the progress map from the database
             var progressMap = await this.getProgressDatabaseCommand.Execute(
-                new GetProductQueryGroupProgressDatabaseCommandParameters(
+                new GetProgressDatabaseCommandParameters(
                     parameters.Id,
                     parameters.DateTime));
 
             // Create and return the image
             return await this.createImageCommand.Execute(
-                new CreateProductQueryGroupProgressImageCommandParameters(progressMap));
+                new CreateProgressImageCommandParameters(progressMap));
         }
     }
 }

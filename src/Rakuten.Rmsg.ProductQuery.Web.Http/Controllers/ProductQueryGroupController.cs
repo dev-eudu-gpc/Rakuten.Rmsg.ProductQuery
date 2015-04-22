@@ -25,7 +25,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// A command that gets an image representing the progress of a given group at a given point in time.
         /// </summary>
-        private readonly ICommand<GetProductQueryGroupProgressCommandParameters, Task<Stream>> getProgressCommand;
+        private readonly ICommand<GetProgressCommandParameters, Task<Stream>> getProgressCommand;
 
         /// <summary>
         /// A link representing the canonical location for the status of a product
@@ -44,7 +44,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// that status of a product query at a particular point in time
         /// </param>
         public ProductQueryGroupController(
-            ICommand<GetProductQueryGroupProgressCommandParameters, Task<Stream>> getProgressCommand,
+            ICommand<GetProgressCommandParameters, Task<Stream>> getProgressCommand,
             IUriTemplate monitorUriTemplate)
         {
             Contract.Requires(getProgressCommand != null);
@@ -99,7 +99,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             {
                 // Get an image representation of the progress map
                 var image = await this.getProgressCommand.Execute(
-                    new GetProductQueryGroupProgressCommandParameters(id, date));
+                    new GetProgressCommandParameters(id, date));
 
                 // Return a message containing the image
                 return new ImageResult(image, this);

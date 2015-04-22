@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="CreateProductQueryDatabaseCommand.cs" company="Rakuten">
+// <copyright file="CreateDatabaseCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -14,9 +14,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
 
     /// <summary>
-    /// Represents a command for preparing a product query
+    /// Represents a command for inserting a new product query into the database.
     /// </summary>
-    public class CreateProductQueryDatabaseCommand : AsyncCommandAction<CreateProductQueryDatabaseCommandParameters>
+    public class CreateDatabaseCommand : AsyncCommandAction<CreateDatabaseCommandParameters>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -29,11 +29,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly ProductQueryDbContext databaseContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateProductQueryDatabaseCommand"/> class
+        /// Initializes a new instance of the <see cref="CreateDatabaseCommand"/> class
         /// </summary>
         /// <param name="apiContext">The context in which this instance is running.</param>
         /// <param name="databaseContext">A context in which to perform database operations.</param>
-        public CreateProductQueryDatabaseCommand(
+        public CreateDatabaseCommand(
             IApiContext apiContext,
             ProductQueryDbContext databaseContext)
         {
@@ -49,7 +49,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// </summary>
         /// <param name="parameters">The necessary parameters to enter the product query into the database</param>
         /// <returns>A task that does the work.</returns>
-        public override Task ExecuteAsync(CreateProductQueryDatabaseCommandParameters parameters)
+        public override Task ExecuteAsync(CreateDatabaseCommandParameters parameters)
         {
             Contract.Requires(parameters != null);
 

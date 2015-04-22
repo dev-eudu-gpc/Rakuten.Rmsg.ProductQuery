@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="GetProductQueryGroupProgressDatabaseCommand.cs" company="Rakuten">
+// <copyright file="GetProgressDatabaseCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// A command for obtaining the progress of all product queries in
     /// a given product query group.
     /// </summary>
-    public class GetProductQueryGroupProgressDatabaseCommand : AsyncCommand<GetProductQueryGroupProgressDatabaseCommandParameters, IQueryable<ProductQueryProgress>>
+    public class GetProgressDatabaseCommand : AsyncCommand<GetProgressDatabaseCommandParameters, IQueryable<ProductQueryProgress>>
     {
         /// <summary>
         /// The context in which to perform database operations.
@@ -25,10 +25,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly ProductQueryDbContext databaseContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetProductQueryGroupProgressDatabaseCommand"/> class
+        /// Initializes a new instance of the <see cref="GetProgressDatabaseCommand"/> class
         /// </summary>
         /// <param name="databaseContext">A context in which to perform database operations.</param>
-        public GetProductQueryGroupProgressDatabaseCommand(
+        public GetProgressDatabaseCommand(
             ProductQueryDbContext databaseContext)
         {
             Contract.Requires(databaseContext != null);
@@ -41,7 +41,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// </summary>
         /// <param name="parameters">The parameters required to build the progress map.</param>
         /// <returns>A collection of progress objects for each product query in the group.</returns>
-        public override Task<IQueryable<ProductQueryProgress>> ExecuteAsync(GetProductQueryGroupProgressDatabaseCommandParameters parameters)
+        public override Task<IQueryable<ProductQueryProgress>> ExecuteAsync(GetProgressDatabaseCommandParameters parameters)
         {
             Contract.Requires(parameters != null);
 

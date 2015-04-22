@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="GetProductQueryCommand.cs" company="Rakuten">
+// <copyright file="GetCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -14,9 +14,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using Rakuten.WindowsAzure.Storage;
 
     /// <summary>
-    /// Represents a command for preparing a product query
+    /// Represents a command for obtaining a product query.
     /// </summary>
-    public class GetProductQueryCommand : AsyncCommand<GetProductQueryCommandParameters, ProductQuery>
+    public class GetCommand : AsyncCommand<GetCommandParameters, ProductQuery>
     {
         /// <summary>
         /// A link representing the canonical location of the blob in Azure storage.
@@ -31,7 +31,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// A command that can get a product query from a database.
         /// </summary>
-        private readonly ICommand<GetProductQueryDatabaseCommandParameters, Task<ProductQuery>> getProductQueryDatabaseCommand;
+        private readonly ICommand<GetDatabaseCommandParameters, Task<ProductQuery>> getProductQueryDatabaseCommand;
 
         /// <summary>
         /// A link representing the canonical location of the monitor for the resource.
@@ -44,19 +44,19 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly ProductQueryLink selfLink;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetProductQueryCommand"/> class
+        /// Initializes a new instance of the <see cref="GetCommand"/> class
         /// </summary>
         /// <param name="context">The context in which this instance is running.</param>
         /// <param name="productQueryUriTemplate">A link template representing the canonical location of the resource.</param>
         /// <param name="azureBlobUriTemplate">A link template representing the canonical location of the blob in Azure storage.</param>
         /// <param name="monitorUriTemplate">A link template representing the canonical location of the monitor for the resource.</param>
         /// <param name="getProductQueryDatabaseCommand">A command that gets product query data from the database.</param>
-        public GetProductQueryCommand(
+        public GetCommand(
             IApiContext context,
             IUriTemplate productQueryUriTemplate,
             IUriTemplate azureBlobUriTemplate,
             IUriTemplate monitorUriTemplate,
-            ICommand<GetProductQueryDatabaseCommandParameters, Task<ProductQuery>> getProductQueryDatabaseCommand)
+            ICommand<GetDatabaseCommandParameters, Task<ProductQuery>> getProductQueryDatabaseCommand)
         {
             Contract.Requires(context != null);
             Contract.Requires(productQueryUriTemplate != null);
@@ -76,13 +76,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// </summary>
         /// <param name="parameters">The input parameters enabling the product query to be uniquely identified</param>
         /// <returns>A task the gets a product query object.</returns>
-        public override async Task<ProductQuery> ExecuteAsync(GetProductQueryCommandParameters parameters)
+        public override async Task<ProductQuery> ExecuteAsync(GetCommandParameters parameters)
         {
             Contract.Requires(parameters != null);
 
             // Try and get the product query from the database
             ProductQuery productQuery = await this.getProductQueryDatabaseCommand.Execute(
-                new GetProductQueryDatabaseCommandParameters(parameters.Id));
+                new GetDatabaseCommandParameters(parameters.Id));
 
             if (productQuery != null)
             {

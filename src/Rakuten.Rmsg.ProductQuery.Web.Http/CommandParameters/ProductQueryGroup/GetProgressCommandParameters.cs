@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="GetProductQueryGroupProgressCommandParameters.cs" company="Rakuten">
+// <copyright file="GetProgressCommandParameters.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -9,16 +9,16 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using System.Diagnostics.Contracts;
 
     /// <summary>
-    /// The parameters for the <see cref="GetProductQueryGroupProgressCommand"/> class.
+    /// The parameters for the <see cref="GetProgressCommand"/> class.
     /// </summary>
-    public class GetProductQueryGroupProgressCommandParameters
+    public class GetProgressCommandParameters
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetProductQueryGroupProgressCommandParameters"/> class.
+        /// Initializes a new instance of the <see cref="GetProgressCommandParameters"/> class.
         /// </summary>
         /// <param name="id">The unique identifier for the product query group.</param>
         /// <param name="dateTime">The date and time for the status of the product query group.</param>
-        public GetProductQueryGroupProgressCommandParameters(
+        public GetProgressCommandParameters(
             Guid id,
             DateTime dateTime)
         {

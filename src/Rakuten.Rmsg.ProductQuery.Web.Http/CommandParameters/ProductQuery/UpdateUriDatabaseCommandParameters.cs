@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="UpdateProductQueryStatusDatabaseCommandParameters.cs" company="Rakuten">
+// <copyright file="UpdateUriDatabaseCommandParameters.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -9,24 +9,24 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using System.Diagnostics.Contracts;
 
     /// <summary>
-    /// The parameters required for updating the status of a product query in the database
+    /// The parameters required for updating the blob URI of an individual product query.
     /// </summary>
-    public class UpdateProductQueryStatusDatabaseCommandParameters
+    public class UpdateUriDatabaseCommandParameters
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateProductQueryStatusDatabaseCommandParameters"/> class.
+        /// Initializes a new instance of the <see cref="UpdateUriDatabaseCommandParameters"/> class.
         /// </summary>
         /// <param name="id">The unique identifier for the product query.</param>
-        /// <param name="newStatus">The new status for the product query.</param>
-        public UpdateProductQueryStatusDatabaseCommandParameters(
+        /// <param name="uri">The uri for the product query blob in storage.</param>
+        public UpdateUriDatabaseCommandParameters(
             Guid id,
-            string newStatus)
+            Uri uri)
         {
             Contract.Requires(id != null);
-            Contract.Requires(newStatus != null);
+            Contract.Requires(uri != null);
 
             this.Id = id;
-            this.NewStatus = newStatus;
+            this.Uri = uri;
         }
 
         /// <summary>
@@ -35,8 +35,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         public Guid Id { get; private set; }
 
         /// <summary>
-        /// Gets the new status for the product query.
+        /// Gets the uri for the product query blob in storage.
         /// </summary>
-        public string NewStatus { get; private set; }
+        public Uri Uri { get; private set; }
     }
 }
