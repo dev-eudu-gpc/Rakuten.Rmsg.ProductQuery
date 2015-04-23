@@ -69,7 +69,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                         DownloadFileCommand.Execute(blobContainer, m, new MemoryStream())),
                     TransformManyBlockFactory.Create<Stream, MessageState>(file => transform1(file, writer)),
                     TransformBlockFactory.Create<MessageState, MessageState>(state => transform2(state, writer)),
-                    TransformBlockFactory.Create<MessageState, MessageState>(state => transform3(state, writer)));
+                    TransformBlockFactory.Create<MessageState, MessageState>(state => transform3(state, writer)),
+                    TransformBlockFactory.Create<MessageState, MessageState>(state => transform4(state, writer)));
 
                 dataflow.Post(message);
                 dataflow.Complete();
