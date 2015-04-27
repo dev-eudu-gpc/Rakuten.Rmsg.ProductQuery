@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="IMessageState.cs" company="Rakuten">
+// <copyright file="MessageState.cs" company="Rakuten">
 //   Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
@@ -9,13 +9,13 @@ namespace Rakuten.Threading.Tasks.Dataflow
     using System.Collections.Immutable;
 
     /// <summary>
-    /// Defines a representation of the state of a message that is being process through a DataFlow pipeline or network.
+    /// Represents the current state of a message being processed through the DataFlow pipeline.
     /// </summary>
-    public interface IMessageState
+    public abstract class MessageState : IMessageState
     {
         /// <summary>
-        /// Gets the collection of exceptions that detail the issues encountered when processing this message.
+        /// Gets or sets the collection of exceptions that detail the issues encountered when processing this message.
         /// </summary>
-        ImmutableArray<Exception> Exceptions { get; }
+        public ImmutableArray<Exception> Exceptions { get; protected set; }
     }
 }

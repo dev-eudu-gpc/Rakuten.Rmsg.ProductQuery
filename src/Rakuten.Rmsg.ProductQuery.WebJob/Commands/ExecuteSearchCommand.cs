@@ -5,10 +5,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Globalization;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Rakuten.Net.Http;
@@ -26,33 +25,21 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         private const int PageSize = 1000;
 
         /// <summary>
-        /// A cached collection of <see cref="Product"/> indexed by a composite key of GTIN and culture.
-        /// </summary>
-        private static readonly ConcurrentDictionary<string, Task<IEnumerable<Product>>> CachedProducts;
-
-        /// <summary>
-        /// Initializes static members of the <see cref="ExecuteSearchCommand"/> class.
-        /// </summary>
-        static ExecuteSearchCommand()
-        {
-            CachedProducts = new ConcurrentDictionary<string, Task<IEnumerable<Product>>>();
-        }
-
-        /// <summary>
         /// Search for a specific product by GTIN in a given culture.
         /// </summary>
-        /// <param name="client">The <see cref="ApiClient"/> to be used when making requests over HTTP.</param>
-        /// <param name="link">A <see cref="LinkTemplate"/> to build the URI to perform a product search.</param>
+        /// <param name="cache">An instance that provides a method of caching collections of product.</param>
         /// <param name="gtin">The GTIN.</param>
         /// <param name="culture">The culture in which the product information should be retrieved.</param>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        public static Task<IEnumerable<Product>> Execute(
-            ApiClient client, 
-            ProductSearchLink link,
+        public static async Task<IEnumerable<Product>> Execute(
+            ICache<IEnumerable<Product>> cache, 
             string gtin, 
             CultureInfo culture)
         {
-            return CachedProducts.GetOrAdd(string.Concat(gtin, culture.Name), GetProducts(client, link, gtin, culture));
+            Contract.Requires(cache != null);
+            Contract.Requires(culture != null);
+
+            return await cache.GetOrAddAsync(string.Concat(gtin, culture.Name), gtin, culture.Name);
         }
 
         /// <summary>
@@ -61,18 +48,22 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// </summary>
         /// <param name="client">The <see cref="ApiClient"/> to be used when making requests over HTTP.</param>
         /// <param name="link">A <see cref="LinkTemplate"/> to build the URI to perform a product search.</param>
-        /// <param name="gtin">The GTIN.</param>
-        /// <param name="culture">The culture in which the product information should be retrieved.</param>
+        /// <param name="parameters">The parameters required to fetch a new collection of products.</param>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        private static async Task<IEnumerable<Product>> GetProducts(
+        public static async Task<IEnumerable<Product>> GetProducts(
             ApiClient client,
             ProductSearchLink link,
-            string gtin,
-            CultureInfo culture)
+            string[] parameters)
         {
+            Contract.Requires(client != null);
+            Contract.Requires(link != null);
+            Contract.Requires(parameters.Length == 2);
+
             var products = new List<Product>();
 
-            var template = link.ForGtin(gtin).ForCulture(culture).Taking(PageSize);
+            var culture = new CultureInfo(parameters[1]);
+
+            var template = link.ForGtin(parameters[0]).ForCulture(culture).Taking(PageSize);
 
             // Starting on the first page.
             var pageCount = 1;
@@ -87,8 +78,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
                 pageCount++;
             }
-
-            CachedProducts.TryAdd(string.Concat(gtin, culture.Name), Task.FromResult(products.AsEnumerable()));
 
             return products;
         }

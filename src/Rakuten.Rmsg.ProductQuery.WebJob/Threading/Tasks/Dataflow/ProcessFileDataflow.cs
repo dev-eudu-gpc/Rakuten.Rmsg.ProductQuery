@@ -7,6 +7,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System.Diagnostics.Contracts;
     using System.IO;
+    using System.Linq.Expressions;
     using System.Threading.Tasks.Dataflow;
 
     using Rakuten.Threading.Tasks.Dataflow;
@@ -29,18 +30,38 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// The <see cref="IDataflowBlock"/> that will create a record in the persistent storage for a request.
         /// </param>
         /// <param name="searchBlock">A <see cref="IDataflowBlock"/> that will search for a product by GTIN.</param>
+        /// <param name="filterBlock">
+        /// A <see cref="IDataflowBlock"/> that will filter a collection of products to a single selected product.
+        /// </param>
+        /// <param name="updateEntityBlock">
+        /// A <see cref="IDataflowBlock"/> that will update the persistent data store with the specified product.
+        /// </param>
+        /// <param name="getProductBlock">
+        /// A <see cref="IDataflowBlock"/> that will retrieve a specific products details.
+        /// </param>
+        /// <param name="aggregateBlock">
+        /// A <see cref="IDataflowBlock"/> that will aggregate item and product data.
+        /// </param>
         public ProcessFileDataflow(
             IPropagatorBlock<Message, Stream> downloadFileBlock,
-            IPropagatorBlock<Stream, MessageState> parseFileBlock,
-            IPropagatorBlock<MessageState, MessageState> getEntityBlock,
-            IPropagatorBlock<MessageState, MessageState> createEntityBlock,
-            IPropagatorBlock<MessageState, MessageState> searchBlock)
+            IPropagatorBlock<Stream, ItemMessageState> parseFileBlock,
+            IPropagatorBlock<ItemMessageState, QueryMessageState> getEntityBlock,
+            IPropagatorBlock<QueryMessageState, QueryMessageState> createEntityBlock,
+            IPropagatorBlock<QueryMessageState, ProductsMessageState> searchBlock,
+            IPropagatorBlock<ProductsMessageState, QueryMessageState> filterBlock,
+            IPropagatorBlock<QueryMessageState, QueryMessageState> updateEntityBlock,
+            IPropagatorBlock<QueryMessageState, ProductMessageState> getProductBlock,
+            IPropagatorBlock<ProductMessageState, ProductMessageState> aggregateBlock)
         {
             Contract.Requires(downloadFileBlock != null);
             Contract.Requires(parseFileBlock != null);
             Contract.Requires(getEntityBlock != null);
             Contract.Requires(createEntityBlock != null);
             Contract.Requires(searchBlock != null);
+            Contract.Requires(filterBlock != null);
+            Contract.Requires(updateEntityBlock != null);
+            Contract.Requires(getProductBlock != null);
+            Contract.Requires(aggregateBlock != null);
 
             // Set the start block for the pipeline.
             this.StartBlock = downloadFileBlock;
