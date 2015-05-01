@@ -12,7 +12,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// The parameters required for obtaining, from a database, the progress of all product 
     /// queries within a given product query group.
     /// </summary>
-    public class GetProgressDatabaseCommandParameters
+    internal class GetProgressDatabaseCommandParameters
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetProgressDatabaseCommandParameters"/> class.
@@ -23,9 +23,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             Guid id,
             DateTime dateTime)
         {
-            Contract.Requires(dateTime != null);
-            Contract.Requires(id != null);
-
             this.Datetime = dateTime;
             this.Id = id;
         }

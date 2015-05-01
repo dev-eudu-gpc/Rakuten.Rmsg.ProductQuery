@@ -17,6 +17,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
+    <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,9 +38,46 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Data.Edm, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Data.Edm.5.6.2\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Data.OData.5.6.2\lib\net40\Microsoft.Data.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.Services.Client, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Data.Services.Client.5.6.2\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.ServiceBus, Version=2.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WindowsAzure.ServiceBus.2.3.1.0\lib\net40-full\Microsoft.ServiceBus.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ServiceBus.2.3.0.0.Fakes">
+      <HintPath>FakesAssemblies\Microsoft.ServiceBus.2.3.0.0.Fakes.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=4.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WindowsAzure.Storage.4.3.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="Rakuten.Core.Fakes">
+      <HintPath>FakesAssemblies\Rakuten.Core.Fakes.dll</HintPath>
+    </Reference>
+    <Reference Include="Rakuten.Gpc.Core.Fakes">
+      <HintPath>FakesAssemblies\Rakuten.Gpc.Core.Fakes.dll</HintPath>
+    </Reference>
     <Reference Include="Rakuten.Rmsg.ProductQuery.Fakes">
       <HintPath>FakesAssemblies\Rakuten.Rmsg.ProductQuery.Fakes.dll</HintPath>
     </Reference>
@@ -51,10 +89,35 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.4.0.0.0.Fakes">
+      <HintPath>FakesAssemblies\System.Net.Http.4.0.0.0.Fakes.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting.5.2.2.0.Fakes">
+      <HintPath>FakesAssemblies\System.Net.Http.Formatting.5.2.2.0.Fakes.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Spatial, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Spatial.5.6.2\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -63,16 +126,51 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ProgressMapAssert.cs" />
+    <Compile Include="Factories\ProductQueryFactory.cs" />
     <Compile Include="Factories\ProgressMapImageFactory.cs" />
+    <Compile Include="Factories\Stubs\StubIUriTemplateFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\TestProductQuery.cs" />
+    <Compile Include="Tests\CommandParameters\Azure\CreateStorageBlobCommandParametersTest.cs" />
+    <Compile Include="Tests\CommandParameters\Azure\DispatchMessageCommandParametersTest.cs" />
+    <Compile Include="Tests\CommandParameters\ProductQueryGroup\CreateProgressImageCommandParametersTest.cs" />
+    <Compile Include="Tests\CommandParameters\ProductQueryGroup\GetProgressCommandParametersTest.cs" />
+    <Compile Include="Tests\CommandParameters\ProductQueryGroup\GetProgressDatabaseCommandParametersTest.cs" />
+    <Compile Include="Tests\CommandParameters\ProductQuery\CreateCommandParametersTest.cs" />
+    <Compile Include="Tests\CommandParameters\ProductQuery\CreateDatabaseCommandParametersTest.cs" />
+    <Compile Include="Tests\CommandParameters\ProductQuery\GetCommandParametersTest.cs" />
+    <Compile Include="Tests\CommandParameters\ProductQuery\ProductQueryCommandParametersTest.cs" />
+    <Compile Include="Tests\CommandParameters\ProductQuery\ReadyForProcessingCommandParametersTest.cs" />
+    <Compile Include="Tests\CommandParameters\ProductQuery\UpdateStatusDatabaseCommandParametersTest.cs" />
+    <Compile Include="Tests\CommandParameters\ProductQuery\UpdateUriDatabaseCommandParametersTest.cs" />
+    <Compile Include="Tests\Commands\ProductQuery\GetCommandTest.cs" />
     <Compile Include="Tests\Commands\ProductQueryGroup\CreateProgressImageCommandTest.cs" />
+    <Compile Include="Tests\Commands\ProductQueryGroup\GetProgressCommandTest.cs" />
+    <Compile Include="Tests\Controllers\ProductQueryControllerTest.cs" />
+    <Compile Include="Tests\Controllers\ProductQueryGroupControllerTest.cs" />
+    <Compile Include="Tests\Exceptions\InvalidCultureExceptionTest.cs" />
+    <Compile Include="Tests\Exceptions\InvalidDateExceptionTest.cs" />
+    <Compile Include="Tests\Exceptions\InvalidGuidExceptionTest.cs" />
+    <Compile Include="Tests\Exceptions\InvalidStatusExceptionTest.cs" />
+    <Compile Include="Tests\Exceptions\ProductQueryCultureNotFoundExceptionTest.cs" />
+    <Compile Include="Tests\Exceptions\ProductQueryNotFoundExceptionTest.cs" />
     <Compile Include="Tests\Resources\ProductQueryProgressTest.cs" />
+    <Compile Include="Tests\Resources\ProductQueryTest.cs" />
+    <Compile Include="Tests\Web\Http\Results\ImageResultTest.cs" />
+    <Compile Include="Tests\Web\Http\Results\SeeOtherResultTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <Fakes Include="Fakes\Rakuten.Rmsg.ProductQuery.fakes" />
     <Fakes Include="Fakes\Rakuten.Rmsg.ProductQuery.Web.Http.fakes" />
+    <Fakes Include="Fakes\Rakuten.Gpc.Core.fakes" />
+    <Fakes Include="Fakes\Rakuten.Core.fakes" />
+    <Fakes Include="Fakes\Microsoft.ServiceBus.fakes" />
+    <Fakes Include="Fakes\System.Net.Http.fakes" />
+    <Fakes Include="Fakes\System.Net.Http.Formatting.fakes" />
     <None Include="packages.config" />
+    <None Include="Performance\Microsoft.ServiceBus.MessagingPerformanceCounters.man" />
+    <Content Include="Settings.StyleCop" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\Rakuten.Core\Rakuten.Core.csproj">
@@ -91,15 +189,16 @@
       <Project>{a9b6848d-391e-42ba-a648-1ad2f71ca014}</Project>
       <Name>Rakuten.Gpc.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\Rakuten.Rmsg.ProductQuery.Web.Http\Rakuten.Rmsg.ProductQuery.Web.Http.csproj">
-      <Project>{49b80197-8663-4eb2-9f81-11f3a8d03bee}</Project>
-      <Name>Rakuten.Rmsg.ProductQuery.Web.Http</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\Rakuten.Rmsg.ProductQuery\Rakuten.Rmsg.ProductQuery.csproj">
       <Project>{9ad4ec9a-333a-4779-9f7d-4245710f19a2}</Project>
       <Name>Rakuten.Rmsg.ProductQuery</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rakuten.Rmsg.ProductQuery.Web.Http\Rakuten.Rmsg.ProductQuery.Web.Http.csproj">
+      <Project>{49b80197-8663-4eb2-9f81-11f3a8d03bee}</Project>
+      <Name>Rakuten.Rmsg.ProductQuery.Web.Http</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets" Condition="Exists('..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets')" />

@@ -246,6 +246,19 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
         }
 
         /// <summary>
+        /// Verifies that the default percentage is zero.
+        /// </summary>
+        [TestMethod]
+        public void PercentageForDefaultSwitchCaseReturnsZero()
+        {
+            // Act
+            var result = new ProductQueryProgress(1, (ProductQueryStatus)(-1), 10, 10, 0m);
+
+            // Assert
+            Assert.AreEqual(0, result.PercentageComplete);
+        }
+
+        /// <summary>
         /// Verifies the percentage for a product query in the "submitted" status that
         /// has items of which all are completed and with no percentage proportion allocated for finalization
         /// </summary>

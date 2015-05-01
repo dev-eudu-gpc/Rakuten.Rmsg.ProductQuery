@@ -5,9 +5,6 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http
 {
-    using System;
-    using System.Diagnostics.Contracts;
-
     /// <summary>
     /// Represents the progress of a product query.
     /// </summary>

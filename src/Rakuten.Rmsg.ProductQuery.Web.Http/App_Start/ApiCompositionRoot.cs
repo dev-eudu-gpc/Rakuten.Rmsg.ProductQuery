@@ -12,10 +12,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using System.Web.Http.Dispatcher;
     using System.Web.Routing;
     using System.Web.SessionState;
-
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
     using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
     using Rakuten.WindowsAzure.Storage;
 
     /// <summary>
@@ -58,8 +58,18 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             var uriTemplates = new
             {
                 AzureBlob = new Rakuten.UriTemplate("{id}"),
-                ProductQuery = new Rakuten.UriTemplate("/product-query/{id}"),
-                ProductQueryMonitorLink = new Rakuten.UriTemplate("/product-query-group/{id}/status/{year}/{month}/{day}/{time}")
+                ProductQuery = new Rakuten.UriTemplate("/product-query/{id}/culture/{culture}"),
+                ProductQueryMonitorLink = new Rakuten.UriTemplate("/product-query-group/{id}/status/{year}/{month}/{day}/{hour}/{minute}")
+            };
+
+            var uris = new
+            {
+                AzureBlobLink = new AzureBlobLink("enclosure", uriTemplates.AzureBlob),
+                ProductQueryLink = new ProductQueryLink(uriTemplates.ProductQuery),
+                ProductQueryMonitorLink = new ProductQueryMonitorLink(
+                    "monitor",
+                    uriTemplates.ProductQueryMonitorLink,
+                    new TargetAttributes(null, "image/png", null))
             };
 
             // Create appropriate controller based on the controller name
@@ -76,12 +86,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     var updateProductQueryUriDatabaseCommand = new UpdateUriDatabaseCommand(this.context, databaseContext);                   
 
                     // Storage and messaging commands
-                    var createStorageBlobCommand = new CreateStorageBlobCommand(this.context, storage);
-                    var dispatchMessageCommand = new DispatchMessageCommand(this.context);
+                    var createStorageBlobCommand = new CreateAzureBlobCommand(this.context, storage);
+                    var dispatchMessageCommand = new DispatchAzureMessageCommand(this.context);
 
                     // Macro commands
                     var createCommand = new CreateCommand(
                         this.context,
+                        ////uris.ProductQuerySelfLink,
+                        ////uris.AzureBlobLink,
                         uriTemplates.ProductQuery,
                         uriTemplates.AzureBlob,
                         createDatabaseCommand,
@@ -90,6 +102,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
 
                     var getCommand = new GetCommand(
                         this.context,
+                        ////uris.AzureBlobLink,
+                        ////uris.ProductQueryLink,
+                        ////uris.ProductQueryMonitorLink,
+                        ////uris.AzureBlobLink,
+                        ////uris.ProductQueryMonitorLink,
                         uriTemplates.ProductQuery,
                         uriTemplates.AzureBlob,
                         uriTemplates.ProductQueryMonitorLink,
@@ -117,13 +134,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     // Macro commands
                     var getProductQueryGroupProgressCommand = new GetProgressCommand(
                         this.context,
-                        uriTemplates.ProductQueryMonitorLink,
                         createProgressMapImageCommand,
                         getProductQueryGroupProgressDatabaseCommand);
 
                     controller = new ProductQueryGroupController(
                         this.context,
                         getProductQueryGroupProgressCommand,
+                        ////() => new ProductQueryMonitorLink(uriTemplates.ProductQueryMonitorLink));
                         uriTemplates.ProductQueryMonitorLink);
 
                     break;

@@ -38,6 +38,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// query group at a particular point in time.
         /// </summary>
         private readonly ProductQueryMonitorLink monitorLink;
+        ////private readonly ILink monitorLink;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductQueryGroupController"/> class.
@@ -50,7 +51,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// A link template representing the canonical location for
         /// that status of a product query at a particular point in time
         /// </param>
-        public ProductQueryGroupController(
+        internal ProductQueryGroupController(
             IApiContext context,
             ICommand<GetProgressCommandParameters, Task<Stream>> getProgressCommand,
             IUriTemplate monitorUriTemplate)
@@ -71,45 +72,48 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <param name="year">The year of the point in time.</param>
         /// <param name="month">The month of the point in time.</param>
         /// <param name="day">The day of the point in time.</param>
-        /// <param name="time">The time of the point in time.</param>
+        /// <param name="hour">The hour of the point in time.</param>
+        /// <param name="minute">The minute of the point in time.</param>
         /// <returns>The progress of the query group as an image.</returns>
-        [Route("product-query-group/{id}/status/{year}/{month}/{day}/{time}")]
-        public async Task<IHttpActionResult> GetProgressAsync(Guid id, int year, int month, int day, int time)
+        [Route("product-query-group/{id}/status/{year}/{month}/{day}/{hour}/{minute}")]
+        public async Task<IHttpActionResult> GetProgressAsync(string id, string year, string month, string day, string hour, string minute)
         {
+            Contract.Requires(day != null);
+            Contract.Requires(hour != null);
             Contract.Requires(id != null);
-            Contract.Requires(year >= 1 && year <= 9999);
-            Contract.Requires(month >= 1 && month <= 12);
-            Contract.Requires(day >= 1 && day <= 31);
+            Contract.Requires(minute != null);
+            Contract.Requires(month != null);
+            Contract.Requires(year != null);
 
-            // Reconstitute the date
-            var date = new DateTime(year, month, day, (int)Math.Floor(time / 100d), time % 100, 0);
+            // Construct the parameters for getting the progress of the product query group.
+            // Validation of those parameters occurs in the constructor.
+            var parameters = new GetProgressCommandParameters(id, year, month, day, hour, minute);
 
-            if (date > DateTime.UtcNow.AddSeconds(0 - this.context.ProgressMapIntervalInSeconds))
+            if (parameters.DateTime > DateTime.UtcNow.AddSeconds(0 - this.context.ProgressMapIntervalInSeconds))
             {
-                // The requested date is too recent, send a redirection
+                // The requested date is too recent, send a redirection to a monitor link
+                // for the current time but also ask the user to wait for a specified
+                // interval before following the link.
                 var serverTime = DateTime.UtcNow;
 
-                var location = this.monitorLink
+                Link location = ((ProductQueryMonitorLink)this.monitorLink)
                     .ForId(id.ToString())
-                    .ForYear(serverTime.Year.ToString())
-                    .ForMonth(serverTime.Month.ToString())
-                    .ForDay(serverTime.Day.ToString())
-                    .ForTime(serverTime.ToString("HHmm"))
+                    .ForYear(serverTime.Year.ToString("00"))
+                    .ForMonth(serverTime.Month.ToString("00"))
+                    .ForDay(serverTime.Day.ToString("00"))
+                    .ForHour(serverTime.Hour.ToString("00"))
+                    .ForMinute(serverTime.Minute.ToString("00"))
                     .ToLink(true);
 
                 return new SeeOtherResult(
                     new Uri(location.Target, UriKind.Relative),
                     this.context.ProgressMapIntervalInSeconds,
-                    this);
+                    this.Request);
             }
             else
             {
-                // Get an image representation of the progress map
-                var image = await this.getProgressCommand.Execute(
-                    new GetProgressCommandParameters(id, date));
-
-                // Return a message containing the image
-                return new ImageResult(image, this);
+                // Get an image representation of the progress map and return it.
+                return new ImageResult(await this.getProgressCommand.Execute(parameters), this.Request);
             }
         }
    }

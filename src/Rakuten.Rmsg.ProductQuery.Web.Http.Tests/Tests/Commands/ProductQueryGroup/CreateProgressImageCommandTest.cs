@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="CreateProductQueryGroupProgressImageCommandTest.cs" company="Rakuten">
+// <copyright file="CreateProgressImageCommandTest.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -14,6 +14,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Rakuten.Rmsg.ProductQuery.Configuration.Fakes;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Commands.Fakes;
 
     /// <summary>
     /// Defines tests for the <see cref="CreateProductQueryGroupProgressImageCommand"/> class.
@@ -22,7 +23,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
     public class CreateProgressImageCommandTest
     {
         /// <summary>
-        /// Ensures that the progress map image has the correct colour for pixels at
+        /// Ensures that the progress map image has the correct color for pixels at
         /// an index that has no product query.
         /// </summary>
         /// <returns>A task</returns>
@@ -40,7 +41,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             var context = new StubIApiContext() { MaximumQueriesPerGroupGet = () => maxQueriesPerGroup };
 
             // Arrange dependencies
-            var parameters = new CreateProgressImageCommandParameters(progressMap.AsQueryable());
+            var parameters = new StubCreateProgressImageCommandParameters(progressMap.AsQueryable());
 
             // Arrange the object to be tested
             var command = new CreateProgressImageCommand(context);
@@ -61,7 +62,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
         }
 
         /// <summary>
-        /// Ensures that the progress map has the correct colour for a 100% complete product query.
+        /// Ensures that the progress map has the correct color for a 100% complete product query.
         /// </summary>
         /// <returns>A task.</returns>
         [TestMethod]
@@ -78,7 +79,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             var context = new StubIApiContext() { MaximumQueriesPerGroupGet = () => maxQueriesPerGroup, };
 
             // Arrange dependencies
-            var parameters = new CreateProgressImageCommandParameters(progressMap.AsQueryable());
+            var parameters = new StubCreateProgressImageCommandParameters(progressMap.AsQueryable());
 
             // Arrange the object to be tested
             var command = new CreateProgressImageCommand(context);
@@ -93,7 +94,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
         }
 
         /// <summary>
-        /// Ensures that the progress map has the correct colour for a 0% complete product query.
+        /// Ensures that the progress map has the correct color for a 0% complete product query.
         /// </summary>
         /// <returns>A task.</returns>
         [TestMethod]
@@ -110,7 +111,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             var context = new StubIApiContext() { MaximumQueriesPerGroupGet = () => maxQueriesPerGroup, };
 
             // Arrange dependencies
-            var parameters = new CreateProgressImageCommandParameters(progressMap.AsQueryable());
+            var parameters = new StubCreateProgressImageCommandParameters(progressMap.AsQueryable());
 
             // Arrange the object to be tested
             var command = new CreateProgressImageCommand(context);
@@ -125,10 +126,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
         }
 
         /// <summary>
-        /// Ensures that the progress map image has the correct colours when the
+        /// Ensures that the progress map image has the correct colors when the
         /// supplied progress map is empty.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task that performs the test.</returns>
         public async Task ProgressMapImageHasCorrectColoursForAnEmptyProgressMap()
         {
             // Arrange a progress map
@@ -139,7 +140,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             var context = new StubIApiContext() { MaximumQueriesPerGroupGet = () => maxQueriesPerGroup };
 
             // Arrange dependencies
-            var parameters = new CreateProgressImageCommandParameters(progressMap.AsQueryable());
+            var parameters = new StubCreateProgressImageCommandParameters(progressMap.AsQueryable());
 
             // Arrange the object to be tested
             var command = new CreateProgressImageCommand(context);
@@ -157,7 +158,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
         }
 
         /// <summary>
-        /// Ensures that the progress map has the correct colours for a progress map
+        /// Ensures that the progress map has the correct colors for a progress map
         /// that completely fills the image.
         /// </summary>
         /// <returns>A task.</returns>
@@ -175,7 +176,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             var context = new StubIApiContext() { MaximumQueriesPerGroupGet = () => maxQueriesPerGroup };
 
             // Arrange dependencies
-            var parameters = new CreateProgressImageCommandParameters(progressMap);
+            var parameters = new StubCreateProgressImageCommandParameters(progressMap);
 
             // Arrange the object to be tested
             var command = new CreateProgressImageCommand(context);
@@ -188,6 +189,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             // Assert
             ProgressMapAssert.ArePercentagesEqual(progressMap, pixels);
         }
+
         /// <summary>
         /// Ensures that the progress map image has the correct dimensions when the
         /// maximum number of queries per group is set to a non square number.
@@ -204,7 +206,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             var context = new StubIApiContext() { MaximumQueriesPerGroupGet = () => maxQueriesPerGroup };
 
             // Arrange dependencies
-            var parameters = new CreateProgressImageCommandParameters(progressMap.AsQueryable());
+            var parameters = new StubCreateProgressImageCommandParameters(progressMap.AsQueryable());
 
             // Arrange the object to be tested
             var command = new CreateProgressImageCommand(context);
@@ -236,7 +238,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             var context = new StubIApiContext() { MaximumQueriesPerGroupGet = () => maxQueriesPerGroup };
 
             // Arrange dependencies
-            var parameters = new CreateProgressImageCommandParameters(progressMap.AsQueryable());
+            var parameters = new StubCreateProgressImageCommandParameters(progressMap.AsQueryable());
 
             // Arrange the object to be tested
             var command = new CreateProgressImageCommand(context);

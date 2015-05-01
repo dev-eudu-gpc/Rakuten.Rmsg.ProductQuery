@@ -6,12 +6,14 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Links
 {
     using System.Diagnostics.Contracts;
+    using System.Globalization;
+    using Rakuten.Rmsg.ProductQuery.Linking;
 
     /// <summary>
     /// Represents a link to a product query.
     /// </summary>
     [LinkRelation(Name = "http://rels.rakuten.com/rmsg/product-query")]
-    public class ProductQueryLink : LinkTemplate
+    internal class ProductQueryLink : LinkTemplate
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductQueryLink"/> class.
@@ -52,6 +54,20 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Links
         public ProductQueryLink ForId(string id)
         {
             var resolvedTemplate = this.Target.Bind("id", id);
+
+            Contract.Assume(resolvedTemplate != null);
+
+            return new ProductQueryLink(this.RelationType, resolvedTemplate, this.TargetAttributes);
+        }
+
+        /// <summary>
+        /// Gets a link to a product query with the specified culture.
+        /// </summary>
+        /// <param name="culture">The culture of the product query.</param>
+        /// <returns>A link to a product query with the specified culture.</returns>
+        public ProductQueryLink ForCulture(string culture)
+        {
+            var resolvedTemplate = this.Target.Bind("culture", culture);
 
             Contract.Assume(resolvedTemplate != null);
 

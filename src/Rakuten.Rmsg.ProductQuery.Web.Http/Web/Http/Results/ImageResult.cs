@@ -20,9 +20,9 @@ namespace System.Web.Http.Results
     public class ImageResult : IHttpActionResult
     {
         /// <summary>
-        /// The controller from which to obtain the dependencies needed for execution.
+        /// The value for the cache control header.
         /// </summary>
-        private readonly ApiController controller;
+        private readonly int cacheControlLifeSpanInDays;
 
         /// <summary>
         /// The stream that provides the image data.
@@ -30,16 +30,35 @@ namespace System.Web.Http.Results
         private readonly Stream stream;
 
         /// <summary>
+        /// The request message from which to obtain the dependencies needed for execution.
+        /// </summary>
+        private readonly HttpRequestMessage message;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ImageResult"/> class
         /// </summary>
         /// <param name="stream">The stream that provides the image data.</param>
-        /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public ImageResult(Stream stream, ApiController controller)
+        /// <param name="message">The controller from which to obtain the dependencies needed for execution.</param>
+        public ImageResult(Stream stream, HttpRequestMessage message)
+            : this(stream, 7, message)
         {
-            Contract.Requires(controller != null);
+            Contract.Requires(stream != null);
+            Contract.Requires(message != null);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageResult"/> class
+        /// </summary>
+        /// <param name="stream">The stream that provides the image data.</param>
+        /// <param name="cacheControlLifeSpanInDays">The value for the cache control header.</param>
+        /// <param name="message">The controller from which to obtain the dependencies needed for execution.</param>
+        public ImageResult(Stream stream, int cacheControlLifeSpanInDays, HttpRequestMessage message)
+        {
+            Contract.Requires(message != null);
             Contract.Requires(stream != null);
 
-            this.controller = controller;
+            this.cacheControlLifeSpanInDays = cacheControlLifeSpanInDays;
+            this.message = message;
             this.stream = stream;
             this.stream.Position = 0;
         }
@@ -50,12 +69,12 @@ namespace System.Web.Http.Results
         /// <returns>An HTTP response containing the image in the response body.</returns>
         public HttpResponseMessage Execute()
         {
-            var response = this.controller.Request.CreateResponse(HttpStatusCode.OK);
+            var response = this.message.CreateResponse(HttpStatusCode.OK);
 
             response.Content = new StreamContent(this.stream);
             response.Headers.CacheControl = new CacheControlHeaderValue
             {
-                MaxAge = TimeSpan.FromDays(7),
+                MaxAge = TimeSpan.FromDays(this.cacheControlLifeSpanInDays),
                 Public = true
             };
 

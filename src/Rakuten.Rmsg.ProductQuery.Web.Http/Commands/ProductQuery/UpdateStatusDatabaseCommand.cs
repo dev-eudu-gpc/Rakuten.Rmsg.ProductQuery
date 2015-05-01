@@ -15,7 +15,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// Represents a command for updating the status of a product query in the database.
     /// </summary>
-    public class UpdateStatusDatabaseCommand : AsyncCommandAction<UpdateStatusDatabaseCommandParameters>
+    internal class UpdateStatusDatabaseCommand : AsyncCommandAction<UpdateStatusDatabaseCommandParameters>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -50,8 +50,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <returns>A task that does the work.</returns>
         public override Task ExecuteAsync(UpdateStatusDatabaseCommandParameters parameters)
         {
-            Contract.Requires(parameters != null);
-
             return Task.Run(() =>
             {
                 // Update the product query's Uri column

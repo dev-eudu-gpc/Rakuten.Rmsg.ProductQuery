@@ -19,14 +19,14 @@ namespace System.Web.Http.Results
     public class SeeOtherResult : IHttpActionResult
     {
         /// <summary>
-        /// The controller from which to obtain the dependencies needed for execution.
-        /// </summary>
-        private readonly ApiController controller;
-
-        /// <summary>
         /// The URI for the location header.
         /// </summary>
         private readonly Uri location;
+
+        /// <summary>
+        /// The request message from which to obtain the dependencies needed for execution.
+        /// </summary>
+        private readonly HttpRequestMessage message;
 
         /// <summary>
         /// The minimum time the user-agent is asked wait before issuing the redirected request.
@@ -37,10 +37,12 @@ namespace System.Web.Http.Results
         /// Initializes a new instance of the <see cref="SeeOtherResult"/> class.
         /// </summary>
         /// <param name="location">The URI for the Location header.</param>
-        /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public SeeOtherResult(Uri location, ApiController controller)
-            : this(location, 0, controller)
+        /// <param name="message">The request message from which to obtain the dependencies needed for execution.</param>
+        public SeeOtherResult(Uri location, HttpRequestMessage message)
+            : this(location, 0, message)
         {
+            Contract.Requires(location != null);
+            Contract.Requires(message != null);
         }
 
         /// <summary>
@@ -48,13 +50,13 @@ namespace System.Web.Http.Results
         /// </summary>
         /// <param name="location">The URI for the Location header.</param>
         /// <param name="retryAfter">The minimum time, in seconds, that the user-agent is asked wait before issuing the redirected request.</param>
-        /// <param name="controller">The controller from which to obtain the dependencies needed for execution.</param>
-        public SeeOtherResult(Uri location, int retryAfter, ApiController controller)
+        /// <param name="message">The request message from which to obtain the dependencies needed for execution.</param>
+        public SeeOtherResult(Uri location, int retryAfter, HttpRequestMessage message)
         {
-            Contract.Requires(controller != null);
+            Contract.Requires(message != null);
             Contract.Requires(location != null);
 
-            this.controller = controller;
+            this.message = message;
             this.location = location;
             this.retryAfter = retryAfter;
         }
@@ -65,7 +67,7 @@ namespace System.Web.Http.Results
         /// <returns>An http response message with a status code of 303 See Other.</returns>
         public HttpResponseMessage Execute()
         {
-            var response = this.controller.Request.CreateResponse(HttpStatusCode.SeeOther);
+            var response = this.message.CreateResponse(HttpStatusCode.SeeOther);
 
             response.Headers.Location = this.location;
             response.Headers.RetryAfter = new RetryConditionHeaderValue(new TimeSpan(0, 0, this.retryAfter));

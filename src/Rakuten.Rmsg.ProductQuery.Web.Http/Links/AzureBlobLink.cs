@@ -11,7 +11,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Links
     /// Represents a link to a product query.
     /// </summary>
     [LinkRelation(Name = "http://rels.rakuten.com/azure-blob")]
-    public class AzureBlobLink : LinkTemplate
+    internal class AzureBlobLink : LinkTemplate
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AzureBlobLink"/> class.

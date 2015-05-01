@@ -12,7 +12,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// The parameters required for creating an image for the progress of product
     /// queries within a product query group.
     /// </summary>
-    public class CreateProgressImageCommandParameters
+    internal class CreateProgressImageCommandParameters
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateProgressImageCommandParameters"/> class.

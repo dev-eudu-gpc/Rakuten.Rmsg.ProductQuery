@@ -11,7 +11,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Links
     /// Represents a link to a product query.
     /// </summary>
     [LinkRelation(Name = "http://rels.rakuten.com/rmsg/product-query-monitor")]
-    public class ProductQueryMonitorLink : LinkTemplate
+    internal class ProductQueryMonitorLink : LinkTemplate
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductQueryMonitorLink"/> class.
@@ -87,13 +87,27 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Links
         }
 
         /// <summary>
-        /// Gets a link to a product query group status for the specified time.
+        /// Gets a link to a product query group status for the specified hour.
         /// </summary>
-        /// <param name="time">The time of day in hours and minutes.</param>
+        /// <param name="hour">The hour.</param>
         /// <returns>A link to a product query group status.</returns>
-        public ProductQueryMonitorLink ForTime(string time)
+        public ProductQueryMonitorLink ForHour(string hour)
         {
-            var resolvedTemplate = this.Target.Bind("time", time);
+            var resolvedTemplate = this.Target.Bind("hour", hour);
+
+            Contract.Assume(resolvedTemplate != null);
+
+            return new ProductQueryMonitorLink(this.RelationType, resolvedTemplate, this.TargetAttributes);
+        }
+
+        /// <summary>
+        /// Gets a link to a product query group status for the specified minute.
+        /// </summary>
+        /// <param name="minute">The minute.</param>
+        /// <returns>A link to a product query group status.</returns>
+        public ProductQueryMonitorLink ForMinute(string minute)
+        {
+            var resolvedTemplate = this.Target.Bind("minute", minute);
 
             Contract.Assume(resolvedTemplate != null);
 

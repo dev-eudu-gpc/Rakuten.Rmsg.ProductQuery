@@ -11,7 +11,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// The parameters required for updating the blob URI of an individual product query.
     /// </summary>
-    public class UpdateUriDatabaseCommandParameters
+    internal class UpdateUriDatabaseCommandParameters
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateUriDatabaseCommandParameters"/> class.
@@ -22,7 +22,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             Guid id,
             Uri uri)
         {
-            Contract.Requires(id != null);
             Contract.Requires(uri != null);
 
             this.Id = id;

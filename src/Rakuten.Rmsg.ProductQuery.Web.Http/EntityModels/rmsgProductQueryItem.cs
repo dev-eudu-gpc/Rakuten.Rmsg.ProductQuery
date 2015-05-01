@@ -14,9 +14,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels
     
     public partial class rmsgProductQueryItem
     {
+        public System.Guid rmsgProductQueryID { get; set; }
         public string gtin { get; set; }
         public Nullable<System.DateTime> dateCompleted { get; set; }
-        public System.Guid rmsgProductQueryID { get; set; }
     
         public virtual rmsgProductQuery rmsgProductQuery { get; set; }
     }

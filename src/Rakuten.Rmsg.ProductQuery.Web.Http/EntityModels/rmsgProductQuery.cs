@@ -25,6 +25,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels
         public System.DateTime dateCreated { get; set; }
         public byte rmsgProductQueryStatusID { get; set; }
         public string uri { get; set; }
+        public string culture { get; set; }
     
         public virtual rmsgProductQueryGroup rmsgProductQueryGroup { get; set; }
         public virtual rmsgProductQueryStatu rmsgProductQueryStatu { get; set; }

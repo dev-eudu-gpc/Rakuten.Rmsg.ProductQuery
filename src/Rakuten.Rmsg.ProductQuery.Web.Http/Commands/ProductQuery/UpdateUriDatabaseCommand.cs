@@ -15,7 +15,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// Represents a command for updating the blob URI for a product query in the database.
     /// </summary>
-    public class UpdateUriDatabaseCommand : AsyncCommandAction<UpdateUriDatabaseCommandParameters>
+    internal class UpdateUriDatabaseCommand : AsyncCommandAction<UpdateUriDatabaseCommandParameters>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -50,8 +50,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <returns>A task that does the work.</returns>
         public override Task ExecuteAsync(UpdateUriDatabaseCommandParameters parameters)
         {
-            Contract.Requires(parameters != null);
-
             return Task.Run(() =>
             {
                 // Update the product query's Uri column

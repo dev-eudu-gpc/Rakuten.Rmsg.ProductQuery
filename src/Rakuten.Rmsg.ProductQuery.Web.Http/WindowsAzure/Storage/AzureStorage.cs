@@ -16,13 +16,12 @@ namespace Rakuten.WindowsAzure.Storage
     using Microsoft.WindowsAzure.Storage.Shared.Protocol;
     using Rakuten.Gpc;
     using Rakuten.Gpc.Api;
-    using Rakuten.Rmsg.ProductQuery;
     using Rakuten.Rmsg.ProductQuery.Web.Http;
 
     /// <summary>
     /// Represents an implementation that interacts with storage on Microsoft Azure.
     /// </summary>
-    public class AzureStorage : IStorage
+    internal class AzureStorage : IStorage
     {
         /// <summary>
         /// The name to give to the shared access policy on the container.

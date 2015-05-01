@@ -21,7 +21,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
         /// Verifies that the pixel is set to the correct value according 
         /// to the source product query progress object
         /// </summary>
-        /// <param name="source">The progress object containing the source data for the pixel.</param>
+        /// <param name="progressMap">The progress object containing the source data for the pixel.</param>
         /// <param name="pixels">The full progress map image as an array of pixels of which the product query is part.</param>
         public static void ArePercentagesEqual(IQueryable<ProductQueryProgress> progressMap,  byte[] pixels)
         {

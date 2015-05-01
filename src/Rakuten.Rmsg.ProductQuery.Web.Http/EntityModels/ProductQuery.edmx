@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Rakuten.Rmsg.ProductQuery.EntityModels.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="rmsgProductQuery">
           <Key>
             <PropertyRef Name="rmsgProductQueryID" />
@@ -15,6 +15,7 @@
           <Property Name="dateCreated" Type="datetime2" Precision="4" Nullable="false" />
           <Property Name="rmsgProductQueryStatusID" Type="tinyint" Nullable="false" />
           <Property Name="uri" Type="nvarchar" MaxLength="2083" />
+          <Property Name="culture" Type="char" MaxLength="5" />
         </EntityType>
         <EntityType Name="rmsgProductQueryGroup">
           <Key>
@@ -25,6 +26,7 @@
         </EntityType>
         <EntityType Name="rmsgProductQueryItem">
           <Key>
+            <PropertyRef Name="rmsgProductQueryID" />
             <PropertyRef Name="gtin" />
           </Key>
           <Property Name="rmsgProductQueryID" Type="uniqueidentifier" Nullable="false" />
@@ -74,7 +76,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="RakutenRmsgProductQueryEntityModelsStoreContainer">
+        <EntityContainer Name="ModelStoreContainer">
           <EntitySet Name="rmsgProductQuery" EntityType="Self.rmsgProductQuery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="rmsgProductQueryGroup" EntityType="Self.rmsgProductQueryGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="rmsgProductQueryItem" EntityType="Self.rmsgProductQueryItem" Schema="dbo" store:Type="Tables" />
@@ -92,10 +94,11 @@
             <End Role="rmsgProductQueryItem" EntitySet="rmsgProductQueryItem" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="EntityModels" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="rmsgProductQuery">
           <Key>
             <PropertyRef Name="rmsgProductQueryID" />
@@ -106,26 +109,28 @@
           <Property Name="dateCreated" Type="DateTime" Nullable="false" Precision="4" />
           <Property Name="rmsgProductQueryStatusID" Type="Byte" Nullable="false" />
           <Property Name="uri" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
+          <Property Name="culture" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="rmsgProductQueryGroup" Relationship="Self.fkRmsgProductQuery_rmsgProductQueryGroup" FromRole="rmsgProductQuery" ToRole="rmsgProductQueryGroup" />
-          <NavigationProperty Name="rmsgProductQueryStatu" Relationship="EntityModels.fkRmsgProductQuery_rmsgProductQueryStatus" FromRole="rmsgProductQuery" ToRole="rmsgProductQueryStatu" />
-          <NavigationProperty Name="rmsgProductQueryItems" Relationship="EntityModels.fkRmsgProductQueryItem_rmsgProductQuery" FromRole="rmsgProductQuery" ToRole="rmsgProductQueryItem" />
+          <NavigationProperty Name="rmsgProductQueryStatu" Relationship="Self.fkRmsgProductQuery_rmsgProductQueryStatus" FromRole="rmsgProductQuery" ToRole="rmsgProductQueryStatus" />
+          <NavigationProperty Name="rmsgProductQueryItems" Relationship="Self.fkRmsgProductQueryItem_rmsgProductQuery" FromRole="rmsgProductQuery" ToRole="rmsgProductQueryItem" />
         </EntityType>
         <EntityType Name="rmsgProductQueryGroup">
           <Key>
             <PropertyRef Name="rmsgProductQueryGroupID" />
           </Key>
-          <Property Name="rmsgProductQueryGroupID" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="rmsgProductQueryGroupID" Type="Guid" Nullable="false" />
           <Property Name="count" Type="Int16" Nullable="false" />
           <NavigationProperty Name="rmsgProductQueries" Relationship="Self.fkRmsgProductQuery_rmsgProductQueryGroup" FromRole="rmsgProductQueryGroup" ToRole="rmsgProductQuery" />
         </EntityType>
         <EntityType Name="rmsgProductQueryItem">
           <Key>
+            <PropertyRef Name="rmsgProductQueryID" />
             <PropertyRef Name="gtin" />
           </Key>
+          <Property Name="rmsgProductQueryID" Type="Guid" Nullable="false" />
           <Property Name="gtin" Type="String" MaxLength="14" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="dateCompleted" Type="DateTime" Precision="4" />
-          <Property Name="rmsgProductQueryID" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="rmsgProductQuery" Relationship="EntityModels.fkRmsgProductQueryItem_rmsgProductQuery" FromRole="rmsgProductQueryItem" ToRole="rmsgProductQuery" />
+          <NavigationProperty Name="rmsgProductQuery" Relationship="Self.fkRmsgProductQueryItem_rmsgProductQuery" FromRole="rmsgProductQueryItem" ToRole="rmsgProductQuery" />
         </EntityType>
         <EntityType Name="rmsgProductQueryStatu">
           <Key>
@@ -133,7 +138,7 @@
           </Key>
           <Property Name="rmsgProductQueryStatusID" Type="Byte" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="rmsgProductQueries" Relationship="EntityModels.fkRmsgProductQuery_rmsgProductQueryStatus" FromRole="rmsgProductQueryStatu" ToRole="rmsgProductQuery" />
+          <NavigationProperty Name="rmsgProductQueries" Relationship="Self.fkRmsgProductQuery_rmsgProductQueryStatus" FromRole="rmsgProductQueryStatus" ToRole="rmsgProductQuery" />
         </EntityType>
         <Association Name="fkRmsgProductQuery_rmsgProductQueryGroup">
           <End Role="rmsgProductQueryGroup" Type="Self.rmsgProductQueryGroup" Multiplicity="1" />
@@ -147,29 +152,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="ProductQueryDbContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="rmsgProductQueries" EntityType="Self.rmsgProductQuery" />
-          <EntitySet Name="rmsgProductQueryGroups" EntityType="Self.rmsgProductQueryGroup" />
-          <EntitySet Name="rmsgProductQueryItems" EntityType="Self.rmsgProductQueryItem" />
-          <EntitySet Name="rmsgProductQueryStatus" EntityType="Self.rmsgProductQueryStatu" />
-          <AssociationSet Name="fkRmsgProductQuery_rmsgProductQueryGroup" Association="Self.fkRmsgProductQuery_rmsgProductQueryGroup">
-            <End Role="rmsgProductQueryGroup" EntitySet="rmsgProductQueryGroups" />
-            <End Role="rmsgProductQuery" EntitySet="rmsgProductQueries" />
-          </AssociationSet>
-          <AssociationSet Name="fkRmsgProductQuery_rmsgProductQueryStatus" Association="EntityModels.fkRmsgProductQuery_rmsgProductQueryStatus">
-            <End Role="rmsgProductQueryStatu" EntitySet="rmsgProductQueryStatus" />
-            <End Role="rmsgProductQuery" EntitySet="rmsgProductQueries" />
-          </AssociationSet>
-          <AssociationSet Name="fkRmsgProductQueryItem_rmsgProductQuery" Association="EntityModels.fkRmsgProductQueryItem_rmsgProductQuery">
-            <End Role="rmsgProductQuery" EntitySet="rmsgProductQueries" />
-            <End Role="rmsgProductQueryItem" EntitySet="rmsgProductQueryItems" />
-          </AssociationSet>
-        </EntityContainer>
         <Association Name="fkRmsgProductQuery_rmsgProductQueryStatus">
-          <End Type="EntityModels.rmsgProductQueryStatu" Role="rmsgProductQueryStatu" Multiplicity="1" />
-          <End Type="EntityModels.rmsgProductQuery" Role="rmsgProductQuery" Multiplicity="*" />
+          <End Role="rmsgProductQueryStatus" Type="Self.rmsgProductQueryStatu" Multiplicity="1" />
+          <End Role="rmsgProductQuery" Type="Self.rmsgProductQuery" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="rmsgProductQueryStatu">
+            <Principal Role="rmsgProductQueryStatus">
               <PropertyRef Name="rmsgProductQueryStatusID" />
             </Principal>
             <Dependent Role="rmsgProductQuery">
@@ -178,8 +165,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="fkRmsgProductQueryItem_rmsgProductQuery">
-          <End Type="EntityModels.rmsgProductQuery" Role="rmsgProductQuery" Multiplicity="1" />
-          <End Type="EntityModels.rmsgProductQueryItem" Role="rmsgProductQueryItem" Multiplicity="*" />
+          <End Role="rmsgProductQuery" Type="Self.rmsgProductQuery" Multiplicity="1" />
+          <End Role="rmsgProductQueryItem" Type="Self.rmsgProductQueryItem" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="rmsgProductQuery">
               <PropertyRef Name="rmsgProductQueryID" />
@@ -189,14 +176,32 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="ProductQueryDbContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="rmsgProductQueries" EntityType="Self.rmsgProductQuery" />
+          <EntitySet Name="rmsgProductQueryGroups" EntityType="Self.rmsgProductQueryGroup" />
+          <EntitySet Name="rmsgProductQueryItems" EntityType="Self.rmsgProductQueryItem" />
+          <EntitySet Name="rmsgProductQueryStatus" EntityType="Self.rmsgProductQueryStatu" />
+          <AssociationSet Name="fkRmsgProductQuery_rmsgProductQueryGroup" Association="Self.fkRmsgProductQuery_rmsgProductQueryGroup">
+            <End Role="rmsgProductQueryGroup" EntitySet="rmsgProductQueryGroups" />
+            <End Role="rmsgProductQuery" EntitySet="rmsgProductQueries" />
+          </AssociationSet>
+          <AssociationSet Name="fkRmsgProductQuery_rmsgProductQueryStatus" Association="Self.fkRmsgProductQuery_rmsgProductQueryStatus">
+            <End Role="rmsgProductQueryStatus" EntitySet="rmsgProductQueryStatus" />
+            <End Role="rmsgProductQuery" EntitySet="rmsgProductQueries" />
+          </AssociationSet>
+          <AssociationSet Name="fkRmsgProductQueryItem_rmsgProductQuery" Association="Self.fkRmsgProductQueryItem_rmsgProductQuery">
+            <End Role="rmsgProductQuery" EntitySet="rmsgProductQueries" />
+            <End Role="rmsgProductQueryItem" EntitySet="rmsgProductQueryItems" />
+          </AssociationSet>
+        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="RakutenRmsgProductQueryEntityModelsStoreContainer" CdmEntityContainer="ProductQueryDbContext">
+        <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="ProductQueryDbContext">
           <EntitySetMapping Name="rmsgProductQueries">
-            <EntityTypeMapping TypeName="EntityModels.rmsgProductQuery">
+            <EntityTypeMapping TypeName="Model.rmsgProductQuery">
               <MappingFragment StoreEntitySet="rmsgProductQuery">
                 <ScalarProperty Name="rmsgProductQueryID" ColumnName="rmsgProductQueryID" />
                 <ScalarProperty Name="rmsgProductQueryGroupID" ColumnName="rmsgProductQueryGroupID" />
@@ -204,11 +209,12 @@
                 <ScalarProperty Name="dateCreated" ColumnName="dateCreated" />
                 <ScalarProperty Name="rmsgProductQueryStatusID" ColumnName="rmsgProductQueryStatusID" />
                 <ScalarProperty Name="uri" ColumnName="uri" />
+                <ScalarProperty Name="culture" ColumnName="culture" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="rmsgProductQueryGroups">
-            <EntityTypeMapping TypeName="EntityModels.rmsgProductQueryGroup">
+            <EntityTypeMapping TypeName="Model.rmsgProductQueryGroup">
               <MappingFragment StoreEntitySet="rmsgProductQueryGroup">
                 <ScalarProperty Name="rmsgProductQueryGroupID" ColumnName="rmsgProductQueryGroupID" />
                 <ScalarProperty Name="count" ColumnName="count" />
@@ -216,7 +222,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="rmsgProductQueryItems">
-            <EntityTypeMapping TypeName="EntityModels.rmsgProductQueryItem">
+            <EntityTypeMapping TypeName="Model.rmsgProductQueryItem">
               <MappingFragment StoreEntitySet="rmsgProductQueryItem">
                 <ScalarProperty Name="rmsgProductQueryID" ColumnName="rmsgProductQueryID" />
                 <ScalarProperty Name="gtin" ColumnName="gtin" />
@@ -225,7 +231,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="rmsgProductQueryStatus">
-            <EntityTypeMapping TypeName="EntityModels.rmsgProductQueryStatu">
+            <EntityTypeMapping TypeName="Model.rmsgProductQueryStatu">
               <MappingFragment StoreEntitySet="rmsgProductQueryStatus">
                 <ScalarProperty Name="rmsgProductQueryStatusID" ColumnName="rmsgProductQueryStatusID" />
                 <ScalarProperty Name="name" ColumnName="name" />

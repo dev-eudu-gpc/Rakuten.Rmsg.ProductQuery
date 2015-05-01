@@ -41,7 +41,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <param name="getProductQueryCommand">A command that gets a specified product query.</param>
         /// <param name="createProductQueryCommand">A command that creates a new product query.</param>
         /// <param name="readyForProcessingCommand">A command that can make a product query ready for processing.</param>
-        public ProductQueryController(
+        internal ProductQueryController(
             ICommand<GetCommandParameters, Task<ProductQuery>> getProductQueryCommand,
             ICommand<CreateCommandParameters, Task<ProductQuery>> createProductQueryCommand,
             ICommand<ReadyForProcessingCommandParameters, Task<ProductQuery>> readyForProcessingCommand)
@@ -60,18 +60,22 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// servicing existing product queries.
         /// </summary>
         /// <param name="id">The unique identifier for the product query.</param>
+        /// <param name="culture">The culture of products for the query.</param>
         /// <param name="source">A new representation of the product query.</param>
         /// <returns>A representation of the new product query.</returns>
-        [Route("product-query/{id}")]
-        public async Task<IHttpActionResult> PutAsync(Guid id, ProductQuery source)
+        [Route("product-query/{id}/culture/{culture}")]
+        public async Task<IHttpActionResult> PutAsync(
+            string id,
+            string culture,
+            ProductQuery source)
         {
             if (source == null)
             {
-                return await this.CreateAsync(id);
+                return await this.CreateAsync(id, culture);
             }
             else
             {
-                return await this.ReadyForProcessingAsync(id, source);
+                return await this.ReadyForProcessingAsync(id, culture, source);
             }
         }
 
@@ -79,40 +83,84 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// Creates a new product query.
         /// </summary>
         /// <param name="id">The unique identifier for the product query.</param>
+        /// <param name="culture">The culture of products for the query.</param>
         /// <returns>A representation of the new product query.</returns>
-        private async Task<IHttpActionResult> CreateAsync(Guid id)
+        private async Task<IHttpActionResult> CreateAsync(string id, string culture)
         {
             Contract.Assume(this.getProductQueryCommand != null);
             Contract.Assume(this.createProductQueryCommand != null);
 
+            // Initialize
+            IHttpActionResult result = null;
+
+            // Create the parameters for getting the product query.
+            GetCommandParameters getCommandParameters = null;
+
+            try
+            {
+                getCommandParameters = new GetCommandParameters(id, culture);
+            }
+            catch (InvalidGuidException guidEx)
+            {
+                throw new BadRequestException(guidEx);
+            }
+            catch (InvalidCultureException cultureEx)
+            {
+                throw new BadRequestException(cultureEx);
+            }
+
             // Try and get the product query
-            ProductQuery query = await this.getProductQueryCommand.Execute(
-                new GetCommandParameters(id));
+            ProductQuery query = await this.getProductQueryCommand.Execute(getCommandParameters);
 
             if (query == null)
             {
-                // Create new product query
-                var parameters = new CreateCommandParameters(id);
+                // Query does not exist so create a new one
+                try
+                {
+                    var productQuery = await this.createProductQueryCommand.Execute(
+                        new CreateCommandParameters(getCommandParameters.Id, getCommandParameters.Culture));
 
-                return new NegotiatedContentResult<ProductQuery>(
-                    HttpStatusCode.Created,
-                    await this.createProductQueryCommand.Execute(parameters),
-                    this);
+                    result = new CreatedNegotiatedContentResult<ProductQuery>(
+                        productQuery.GetUri(),
+                        productQuery,
+                        this);
+                }
+                catch
+                {
+                    throw new InternalServerException(null);
+                }
             }
             else
             {
-                // Query already exists so return it
-                return new NegotiatedContentResult<ProductQuery>(HttpStatusCode.OK, query, this);
+                // Check culture
+                if (query.CultureName.Equals(getCommandParameters.Culture.Name, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // Query exists and is in the same culture as that specified
+                    // so just return the existing query
+                    result = new OkNegotiatedContentResult<ProductQuery>(query, this);
+                }
+                else
+                {
+                    // Query exists but is in a different culture to that specified
+                    // so redirect the user to the correct URI
+                    result = new SeeOtherResult(query.GetUri(), this.Request);
+                }
             }
+
+            return result;
         }
 
         /// <summary>
         /// Makes a product query ready for processing.
         /// </summary>
         /// <param name="id">The unique identifier of the product query.</param>
+        /// <param name="culture">The culture of products for the query.</param>
         /// <param name="source">The status of the product query.  This must be "submitted".</param>
         /// <returns>A full representation of the product query.</returns>
-        private async Task<IHttpActionResult> ReadyForProcessingAsync(Guid id, ProductQuery source)
+        private async Task<IHttpActionResult> ReadyForProcessingAsync(
+            string id,
+            string culture,
+            ProductQuery source)
         {
             // Ensure that the requested status is "submitted"
             if (source.Status != ProductQueryStatus.Submitted)
@@ -120,21 +168,30 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                 throw new ValidationFailedException(new InvalidStatusException());
             }
 
-            // Call the command
+            IHttpActionResult result = null;
             try
             {
+                // Execute the command
                 ProductQuery productQuery = await this.readyForProcessingCommand.Execute(
-                    new ReadyForProcessingCommandParameters(id));
+                    new ReadyForProcessingCommandParameters(id, culture));
 
-                return new NegotiatedContentResult<ProductQuery>(
-                    HttpStatusCode.Accepted,
-                    productQuery,
-                    this);
+                // Construct and return the response
+                result = new AcceptedNegotiatedContentResult<ProductQuery>(productQuery, this);
+                ////result = new NegotiatedContentResult<ProductQuery>(
+                ////    HttpStatusCode.Accepted,
+                ////    productQuery,
+                ////    this);
             }
-            catch (ProductQueryNotFoundException ex)
+            catch (ProductQueryCultureNotFoundException cultureException)
             {
-                throw new ObjectNotFoundException(ex);
+                result = new SeeOtherResult(cultureException.ProductQuery.GetUri(), this.Request);
             }
+            catch (ProductQueryNotFoundException notFoundException)
+            {
+                throw new ObjectNotFoundException(notFoundException);
+            }
+
+            return result;
         }
     }
 }

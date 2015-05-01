@@ -96,6 +96,8 @@
     <Compile Include="Configuration\AppSettingsConfigurationSource.cs" />
     <Compile Include="Configuration\ConfigurationSource.cs" />
     <Compile Include="Configuration\IApiContext.cs" />
+    <Compile Include="Linking\ICultureLink.cs" />
+    <Compile Include="Linking\IIdentifierLink.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

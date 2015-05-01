@@ -7,32 +7,29 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
     using System;
     using System.Diagnostics.Contracts;
+using System.Globalization;
 
     /// <summary>
     /// The parameters required for inserting a new product query into the database.
     /// </summary>
-    public class CreateDatabaseCommandParameters
+    internal class CreateDatabaseCommandParameters : ProductQueryCommandParameters
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateDatabaseCommandParameters"/> class.
         /// </summary>
         /// <param name="id">The unique identifier for the product query.</param>
+        /// <param name="culture">The culture for the products in the query.</param>
         /// <param name="dateCreated">The date/time on which the product query was created.</param>
         public CreateDatabaseCommandParameters(
             Guid id,
+            CultureInfo culture,
             DateTime dateCreated)
+            : base(id, culture)
         {
-            Contract.Requires(id != null);
-            Contract.Requires(dateCreated != null);
+            Contract.Requires(culture != null);
 
-            this.Id = id;
             this.DateCreated = dateCreated;
         }
-
-        /// <summary>
-        /// Gets the unique identifier of the product query.
-        /// </summary>
-        public Guid Id { get; private set; }
 
         /// <summary>
         /// Gets the date and time on which the product query was created

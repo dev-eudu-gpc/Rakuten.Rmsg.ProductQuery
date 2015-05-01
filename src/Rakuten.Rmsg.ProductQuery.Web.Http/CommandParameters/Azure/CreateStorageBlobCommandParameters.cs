@@ -11,7 +11,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// The parameters required for creating a new blob in storage for a product query.
     /// </summary>
-    public class CreateStorageBlobCommandParameters
+    internal class CreateStorageBlobCommandParameters
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateStorageBlobCommandParameters"/> class.
@@ -20,9 +20,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <param name="id">The unique identifier for the product query.</param>
         public CreateStorageBlobCommandParameters(DateTime dateCreated, Guid id)
         {
-            Contract.Requires(dateCreated != null);
-            Contract.Requires(id != null);
-
             this.DateCreated = dateCreated;
             this.Id = id;
         }

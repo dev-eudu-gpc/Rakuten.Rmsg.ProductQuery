@@ -5,14 +5,12 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
-    using System;
     using System.Diagnostics.Contracts;
-    using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
     /// <summary>
     /// The parameters required for dispatching a product query message to the queue.
     /// </summary>
-    public class DispatchMessageCommandParameters
+    internal class DispatchMessageCommandParameters
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DispatchMessageCommandParameters"/> class.
