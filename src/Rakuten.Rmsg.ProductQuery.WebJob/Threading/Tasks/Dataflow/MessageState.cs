@@ -8,8 +8,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
+    using System.Globalization;
     using System.Linq;
 
+    using Rakuten.Rmsg.ProductQuery.WebJob.Api;
     using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
     using Rakuten.Threading.Tasks.Dataflow;
 
@@ -22,12 +24,34 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// Initializes a new instance of the <see cref="MessageState"/> class.
         /// </summary>
         /// <param name="id">The unique identifier of the current query.</param>
+        /// <param name="culture">The culture in which the product data has been requested.</param>
         /// <param name="item">The details of the product query request..</param>
         /// <param name="query">The record of the GTIN search.</param>
-        public MessageState(Guid id, Item item, ProductQueryItem query)
-            : this(id, item)
+        /// <param name="products">A collection of products with the specified GTIN.</param>
+        public MessageState(
+            Guid id, 
+            CultureInfo culture, 
+            Item item, 
+            ProductQueryItem query, 
+            IEnumerable<Product> products)
+            : this(id, culture, item, query)
         {
-            Contract.Requires(item != null);
+            Contract.Requires(products != null);
+
+            this.Products = products;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageState"/> class.
+        /// </summary>
+        /// <param name="id">The unique identifier of the current query.</param>
+        /// <param name="culture">The culture in which the product data has been requested.</param>
+        /// <param name="item">The details of the product query request..</param>
+        /// <param name="query">The record of the GTIN search.</param>
+        public MessageState(Guid id, CultureInfo culture, Item item, ProductQueryItem query)
+            : this(id, culture, item)
+        {
+            Contract.Requires(query != null);
 
             this.Query = query;
         }
@@ -36,16 +60,25 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// Initializes a new instance of the <see cref="MessageState"/> class.
         /// </summary>
         /// <param name="id">The unique identifier of the current query.</param>
+        /// <param name="culture">The culture in which the product data has been requested.</param>
         /// <param name="item">The details of the product query request..</param>
-        public MessageState(Guid id, Item item)
+        public MessageState(Guid id, CultureInfo culture, Item item)
         {
             Contract.Requires(id != Guid.Empty);
             Contract.Requires(item != null);
 
             this.Id = id;
             this.Item = item;
+
+            this.Culture = culture;
+
             this.Exceptions = Enumerable.Empty<Exception>();
         }
+
+        /// <summary>
+        /// Gets the culture in which product data has been requested.
+        /// </summary>
+        public CultureInfo Culture { get; private set; }
 
         /// <summary>
         /// Gets the collection of exceptions that detail the issues encountered when processing this message.
@@ -61,6 +94,11 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// Gets the unique identifier given to this query.
         /// </summary>
         public Item Item { get; private set; }
+
+        /// <summary>
+        /// Gets the collection of products with the specified GTIN.
+        /// </summary>
+        public IEnumerable<Product> Products { get; private set; } 
 
         /// <summary>
         /// Gets the database record of the search.

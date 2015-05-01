@@ -5,11 +5,23 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Configuration
 {
+    using System;
+
     /// <summary>
     /// Provides configuration settings for the context in which the application is operating
     /// </summary>
     public interface IApiContext
     {
+        /// <summary>
+        /// Gets the authentication token to be used when making requests to the external API.
+        /// </summary>
+        string AuthenticationToken { get; }
+
+        /// <summary>
+        /// Gets the base address of the Internet resource when sending requests.
+        /// </summary>
+        Uri BaseAddress { get; }
+
         /// <summary>
         /// Gets the blob container name.
         /// </summary>

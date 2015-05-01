@@ -28,25 +28,36 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <param name="createEntityBlock">
         /// The <see cref="IDataflowBlock"/> that will create a record in the persistent storage for a request.
         /// </param>
+        /// <param name="searchBlock">A <see cref="IDataflowBlock"/> that will search for a product by GTIN.</param>
         public ProcessFileDataflow(
             IPropagatorBlock<Message, Stream> downloadFileBlock,
             IPropagatorBlock<Stream, MessageState> parseFileBlock,
             IPropagatorBlock<MessageState, MessageState> getEntityBlock,
-            IPropagatorBlock<MessageState, MessageState> createEntityBlock)
+            IPropagatorBlock<MessageState, MessageState> createEntityBlock,
+            IPropagatorBlock<MessageState, MessageState> searchBlock)
         {
             Contract.Requires(downloadFileBlock != null);
             Contract.Requires(parseFileBlock != null);
             Contract.Requires(getEntityBlock != null);
             Contract.Requires(createEntityBlock != null);
+            Contract.Requires(searchBlock != null);
 
             // Set the start block for the pipeline.
             this.StartBlock = downloadFileBlock;
 
+            // Once the file has been downloaded, parse it.
             downloadFileBlock.LinkTo(parseFileBlock);
 
+            // Once the file has been downloaded, check to see if we have a matching database record for each row.
             parseFileBlock.LinkTo(getEntityBlock);
 
+            // If we do not have a database record, create one.
             getEntityBlock.LinkTo(createEntityBlock, state => state.Query == null);
+
+            // If we have a database record but it has not GRAN search for a product.
+            getEntityBlock.LinkTo(
+                searchBlock, 
+                state => state.Query != null && string.IsNullOrWhiteSpace(state.Query.Gran));
         }
 
         /// <summary>
