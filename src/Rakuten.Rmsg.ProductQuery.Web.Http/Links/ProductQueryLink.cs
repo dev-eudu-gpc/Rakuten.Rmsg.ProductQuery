@@ -7,7 +7,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Links
 {
     using System.Diagnostics.Contracts;
     using System.Globalization;
-    using Rakuten.Rmsg.ProductQuery.Linking;
 
     /// <summary>
     /// Represents a link to a product query.

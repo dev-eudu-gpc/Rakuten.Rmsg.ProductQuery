@@ -10,15 +10,14 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Rakuten.Rmsg.ProductQuery")]
+[assembly: AssemblyTitle("Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Rakuten.Rmsg.ProductQuery")]
+[assembly: AssemblyProduct("Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: InternalsVisibleTo("Rakuten.Rmsg.ProductQuery.Web.Http")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -26,7 +25,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f7ab1126-9880-4859-9d6c-2698b22223bc")]
+[assembly: Guid("6cec1a76-863d-4b29-9278-7b06e985e67a")]
 
 // Version information for an assembly consists of the following four values:
 //

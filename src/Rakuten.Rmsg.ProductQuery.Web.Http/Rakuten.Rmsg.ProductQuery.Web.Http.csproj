@@ -298,7 +298,6 @@
     <Compile Include="Exceptions\ProductQueryNotFoundException.cs" />
     <Compile Include="Exceptions\Core\ValidationFailedException.cs" />
     <Compile Include="Links\AzureBlobLink.cs" />
-    <Compile Include="Links\IProductQueryLink.cs" />
     <Compile Include="Links\ProductQueryLink.cs" />
     <Compile Include="Links\ProductQueryMonitorLink.cs" />
     <Compile Include="Net\Http\Formatting\ResourceJsonMediaTypeFormatter.cs" />

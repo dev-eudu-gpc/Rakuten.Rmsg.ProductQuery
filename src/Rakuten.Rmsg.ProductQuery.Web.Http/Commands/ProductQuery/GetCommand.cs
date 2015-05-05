@@ -9,7 +9,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using System.Diagnostics.Contracts;
     using System.Threading.Tasks;
     using Rakuten.Rmsg.ProductQuery.Configuration;
-    using Rakuten.Rmsg.ProductQuery.Linking;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
     using Rakuten.WindowsAzure.Storage;
 
