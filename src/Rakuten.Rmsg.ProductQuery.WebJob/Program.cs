@@ -21,6 +21,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
     using Rakuten.Azure.WebJobs;
     using Rakuten.Gpc.Api.Client;
+    using Rakuten.IO.Delimited.Serialization;
     using Rakuten.Net.Http;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.WebJob.Api;
@@ -93,13 +94,15 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             var productCache = new ConcurrentDictionaryCache<Product>(
                 parameters => GetProductCommand.GetProductAsync(createApiClient, productLink, parameters).Result);
 
+            var serializer = new LumenWorksSerializer<Item>();
+
             // Wait for the collection of data sources to be returned.
             var dataSources = getDataSourcesTask.Result;
 
             // Create the delegate that the bound function will invoke.
             ProcessProductQueryFile.Process = (message, writer) =>
             {
-                var transform1 = CreateParseFileTransform(message.Id, new CultureInfo(message.Culture));
+                var transform1 = CreateParseFileTransform(serializer, message.Id, new CultureInfo(message.Culture));
                 var transform2 = CreateGetQueryItemTransform(databaseContext);
                 var transform3 = CreateCreateQueryItemTransform(databaseContext);
                 var transform4 = CreateProductSearchTransform(searchCache);
@@ -142,6 +145,12 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 }
 
                 //// Write out the list of items collected from the dataflow to the blob.
+                var stream = ParseItemsCommand.Execute(items, new MemoryStream(), serializer).Result;
+
+                WriteBlobCommand.Execute(blobContainer, message, stream).Wait();
+
+                // Mark the product query as processed.
+                UpdateProductQueryCommand.Execute(databaseContext, message.Id).Wait();
 
                 writer.WriteLine("process.");
             };
@@ -316,10 +325,12 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// Returns a delegate that when executed will take the stream and attempt to convert it into a collection of 
         /// <see cref="MessageState"/> instances.
         /// </summary>
+        /// <param name="serializer">The serializer to be used.</param>
         /// <param name="id">The unique identifier for the current query.</param>
         /// <param name="culture">The culture in which the product data should be expressed.</param>
         /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
         private static Func<Stream, TextWriter, Task<IEnumerable<ItemMessageState>>> CreateParseFileTransform(
+            LumenWorksSerializer<Item> serializer,
             Guid id, 
             CultureInfo culture)
         {
@@ -329,7 +340,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             {
                 try
                 {
-                    IEnumerable<Item> items = await ParseFileCommand.Execute(null, stream);
+                    IEnumerable<Item> items = await ParseFileCommand.Execute(serializer, stream);
 
                     return from item in items select new ItemMessageState(id, culture, item);
                 }

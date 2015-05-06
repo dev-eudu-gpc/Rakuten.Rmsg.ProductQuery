@@ -163,7 +163,10 @@
     <Compile Include="Commands\GetProductCommand.cs" />
     <Compile Include="Commands\GetProductQueryItemCommand.cs" />
     <Compile Include="Commands\ParseFileCommand.cs" />
+    <Compile Include="Commands\ParseItemsCommand.cs" />
     <Compile Include="Commands\UpdateEntityBlockCommand.cs" />
+    <Compile Include="Commands\UpdateProductQueryCommand.cs" />
+    <Compile Include="Commands\WriteBlobCommand.cs" />
     <Compile Include="Entities\ProductQuery.cs" />
     <Compile Include="Entities\ProductQueryContext.cs" />
     <Compile Include="Entities\ProductQueryGroup.cs" />
