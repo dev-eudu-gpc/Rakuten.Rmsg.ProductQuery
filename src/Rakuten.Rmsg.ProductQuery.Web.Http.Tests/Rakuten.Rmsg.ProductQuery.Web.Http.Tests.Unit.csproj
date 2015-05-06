@@ -14,7 +14,7 @@
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
     <NuGetPackageImportStamp>74b9631e</NuGetPackageImportStamp>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\</SolutionDir>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
     <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
@@ -173,23 +173,23 @@
     <Content Include="Settings.StyleCop" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\Rakuten.Core\Rakuten.Core.csproj">
+    <ProjectReference Include="..\Rakuten.Core\Rakuten.Core.csproj">
       <Project>{b1f93214-9eef-409c-8520-a0906288f557}</Project>
       <Name>Rakuten.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\Rakuten.Gpc.Api.Client\Rakuten.Gpc.Api.Client.csproj">
+    <ProjectReference Include="..\Rakuten.Gpc.Api.Client\Rakuten.Gpc.Api.Client.csproj">
       <Project>{924d65b3-56eb-4bff-abb9-e1df0c5da412}</Project>
       <Name>Rakuten.Gpc.Api.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\Rakuten.Gpc.Core\Rakuten.Gpc.Core.csproj">
+    <ProjectReference Include="..\Rakuten.Gpc.Core\Rakuten.Gpc.Core.csproj">
       <Project>{550e98d4-8daf-4cde-af14-a9e63650597d}</Project>
       <Name>Rakuten.Gpc.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\Rakuten.Gpc.Resources\Rakuten.Gpc.Resources.csproj">
+    <ProjectReference Include="..\Rakuten.Gpc.Resources\Rakuten.Gpc.Resources.csproj">
       <Project>{a9b6848d-391e-42ba-a648-1ad2f71ca014}</Project>
       <Name>Rakuten.Gpc.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\Rakuten.Rmsg.ProductQuery\Rakuten.Rmsg.ProductQuery.csproj">
+    <ProjectReference Include="..\Rakuten.Rmsg.ProductQuery\Rakuten.Rmsg.ProductQuery.csproj">
       <Project>{9ad4ec9a-333a-4779-9f7d-4245710f19a2}</Project>
       <Name>Rakuten.Rmsg.ProductQuery</Name>
     </ProjectReference>
@@ -201,12 +201,12 @@
   <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets" Condition="Exists('..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets')" />
+  <Import Project="..\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets" Condition="Exists('..\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\..\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets'))" />
+    <Error Condition="!Exists('..\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets'))" />
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
