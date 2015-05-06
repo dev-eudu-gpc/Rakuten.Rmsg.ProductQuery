@@ -22,15 +22,12 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <param name="context">The <see cref="DbContext"/> instance using which the database can be queried.</param>
         /// <param name="item">The instance representing the record to update.</param>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        public static Task Execute(ProductQueryContext context, ProductQueryItem item)
+        public static async Task Execute(ProductQueryContext context, ProductQueryItem item)
         {
-            return Task.Run(async () =>
-            {
-                context.ProductQueryItems.Attach(item);
-                context.Entry(item).Property(i => i.Gran).IsModified = true;
+            context.ProductQueryItems.Attach(item);
+            context.Entry(item).Property(i => i.Gran).IsModified = true;
 
-                return await context.SaveChangesAsync();
-            });
+            await context.SaveChangesAsync();
         }
     }
 }
