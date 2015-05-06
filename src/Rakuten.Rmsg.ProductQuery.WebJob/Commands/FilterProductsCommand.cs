@@ -33,7 +33,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 where product.ImprovedId == product.Id
                 from dataSource in array
                 where string.Compare(product.DataSource, dataSource.Name, StringComparison.OrdinalIgnoreCase) == 0
-                orderby dataSource.TrustScore, product.TimestampUpdate
+                orderby dataSource.TrustScore descending, product.TimestampUpdate descending, product.Id descending
                 select product).First());
         }
     }

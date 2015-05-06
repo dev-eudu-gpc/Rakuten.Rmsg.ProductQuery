@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
+    using System;
     using System.Diagnostics.Contracts;
     using System.Globalization;
     using System.Threading.Tasks;
@@ -36,15 +37,21 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <summary>
         /// Gets the product with the specified GRAN expressed in the given culture.
         /// </summary>
-        /// <param name="client">The <see cref="ApiClient"/> to be used when making requests over HTTP.</param>
+        /// <param name="createClient">A delegate that will create a new <see cref="ApiClient"/> instance.</param>
         /// <param name="link">A <see cref="LinkTemplate"/> to build the URI to get a product.</param>
         /// <param name="parameters">The parameters required to fetch a new collection of products.</param>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        public static async Task<Product> GetProductAsync(ApiClient client, ProductLink link, string[] parameters)
+        public static async Task<Product> GetProductAsync(
+            Func<ApiClient> createClient, 
+            ProductLink link, 
+            string[] parameters)
         {
-            Contract.Requires(client != null);
             Contract.Requires(link != null);
             Contract.Requires(parameters.Length == 2);
+
+            // Create the ApiClient instance.
+            var client = createClient();
+            Contract.Assume(client != null);
 
             var culture = new CultureInfo(parameters[1]);
 

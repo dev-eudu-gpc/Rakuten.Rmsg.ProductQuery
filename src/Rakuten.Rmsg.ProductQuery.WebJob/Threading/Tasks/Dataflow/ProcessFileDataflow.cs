@@ -7,7 +7,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System.Diagnostics.Contracts;
     using System.IO;
-    using System.Linq.Expressions;
+    using System.Threading.Tasks;
     using System.Threading.Tasks.Dataflow;
 
     using Rakuten.Threading.Tasks.Dataflow;
@@ -15,7 +15,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     /// <summary>
     /// Represents a Dataflow pipeline that will process a product query request.
     /// </summary>
-    internal class ProcessFileDataflow : Dataflow<Message, MessageState>
+    internal class ProcessFileDataflow : PropagatorDataflow<Message, Item>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcessFileDataflow"/> class using the specified 
@@ -51,7 +51,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             IPropagatorBlock<ProductsMessageState, QueryMessageState> filterBlock,
             IPropagatorBlock<QueryMessageState, QueryMessageState> updateEntityBlock,
             IPropagatorBlock<QueryMessageState, ProductMessageState> getProductBlock,
-            IPropagatorBlock<ProductMessageState, ProductMessageState> aggregateBlock)
+            TransformBlock<ProductMessageState, Item> aggregateBlock)
         {
             Contract.Requires(downloadFileBlock != null);
             Contract.Requires(parseFileBlock != null);
@@ -68,31 +68,54 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
             // Once the file has been downloaded, parse it.
             downloadFileBlock.LinkTo(parseFileBlock);
+            downloadFileBlock.OnFaultOrCompletion(parseFileBlock);
 
             // Once the file has been downloaded, check to see if we have a matching database record for each row.
             parseFileBlock.LinkTo(getEntityBlock);
+            parseFileBlock.OnFaultOrCompletion(getEntityBlock);
 
             // If we do not have a database record, create one.
             getEntityBlock.LinkTo(createEntityBlock, state => state.Query == null);
+            getEntityBlock.OnFaultOrCompletion(createEntityBlock);
+
+            // Once we have recorded the request, search for the product.
+            createEntityBlock.LinkTo(searchBlock);
 
             // If we have a database record but it has not GRAN search for a product.
             getEntityBlock.LinkTo(
-                searchBlock, 
+                searchBlock,
                 state => state.Query != null && string.IsNullOrWhiteSpace(state.Query.Gran));
-        }
 
-        /// <summary>
-        /// Posts an item to the process.
-        /// </summary>
-        /// <param name="item">The item being offered to the process.</param>
-        /// <returns>
-        /// <see langword="true"/> if the item was accepted by the target block; otherwise, <see langword="false"/>.
-        /// </returns>
-        public override bool Post(Message item)
-        {
-            Contract.Requires(item != null);
+            // Only complete the search block once the create entity and get entity blocks have completed.
+            Task.WhenAll(getEntityBlock.Completion, createEntityBlock.Completion)
+                .ContinueWith(_ => searchBlock.Complete());
 
-            return this.StartBlock.Post(item);
+            // Once we have received the product data, get the most appropriate product.
+            searchBlock.LinkTo(filterBlock);
+            searchBlock.OnFaultOrCompletion(filterBlock);
+
+            // Now we have filtered the results, record the GRAN in the database.
+            filterBlock.LinkTo(updateEntityBlock);
+            filterBlock.OnFaultOrCompletion(updateEntityBlock);
+
+            // Get all available details for the GRAN.
+            updateEntityBlock.LinkTo(getProductBlock);
+
+            // If we have a database record that has a registered GRAN then get that product.
+            getEntityBlock.LinkTo(
+                getProductBlock,
+                state => state.Query != null && !string.IsNullOrWhiteSpace(state.Query.Gran));
+
+            // Only complete the get product block once the update entity and get entity blocks have completed.
+            Task.WhenAll(getEntityBlock.Completion, updateEntityBlock.Completion)
+                .ContinueWith(_ => getProductBlock.Complete());
+
+            // Merge the data with the original.
+            getProductBlock.LinkTo(aggregateBlock);
+            getProductBlock.OnFaultOrCompletion(aggregateBlock);
+
+            this.Completion = aggregateBlock.Completion;
+            this.ReceivableBlock = aggregateBlock;
         }
     }
 }

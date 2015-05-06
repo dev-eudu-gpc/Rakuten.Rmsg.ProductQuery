@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Globalization;
@@ -46,16 +47,15 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// Fetches a collection of <see cref="Product"/>s that match the specified GTIN and are expressed in the 
         /// supplied culture.
         /// </summary>
-        /// <param name="client">The <see cref="ApiClient"/> to be used when making requests over HTTP.</param>
+        /// <param name="createClient">A delegate that will create a new <see cref="ApiClient"/> instance.</param>
         /// <param name="link">A <see cref="LinkTemplate"/> to build the URI to perform a product search.</param>
         /// <param name="parameters">The parameters required to fetch a new collection of products.</param>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
         public static async Task<IEnumerable<Product>> GetProducts(
-            ApiClient client,
+            Func<ApiClient> createClient,
             ProductSearchLink link,
             string[] parameters)
         {
-            Contract.Requires(client != null);
             Contract.Requires(link != null);
             Contract.Requires(parameters.Length == 2);
 
@@ -67,6 +67,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
             // Starting on the first page.
             var pageCount = 1;
+
+            // Create the ApiClient instance.
+            var client = createClient();
+            Contract.Assume(client != null);
 
             // Only get the next page when the number of records returned in the last batch was the maximum.
             while (((pageCount * PageSize) - products.Count) == PageSize)
