@@ -6,6 +6,7 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http
 {
     using System;
+    using System.Globalization;
     using System.Xml.Serialization;
     using Newtonsoft.Json;
 
@@ -14,6 +15,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     /// </summary>
     public class ProductQuery : Resource
     {
+        /// <summary>
+        /// Gets or sets the culture of the product query.
+        /// </summary>
+        [JsonIgnore]
+        [XmlIgnore]
+        public string CultureName { get; set; }
+
         /// <summary>
         /// Gets or sets the date on which the product query was created.
         /// </summary>
@@ -28,9 +36,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         {
             get
             {
-                return this.DateCreated == null ?
-                    null :
-                    this.DateCreated.Value.Day.ToString("00");
+                return this.DateCreated.HasValue ?
+                    this.DateCreated.Value.Day.ToString("00") :
+                    null;
             }
         }
 
@@ -53,9 +61,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         {
             get
             {
-                return this.DateCreated == null ?
-                    null :
-                    this.DateCreated.Value.Month.ToString("00");
+                return this.DateCreated.HasValue ?
+                    this.DateCreated.Value.Month.ToString("00") :
+                    null;
             }
         }
 
@@ -65,16 +73,29 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         public ProductQueryStatus Status { get; set; }
 
         /// <summary>
-        /// Gets the time at which the product query was created.
+        /// Gets the hour at which the product query was created.
         /// </summary>
-        public string Time 
+        public string Hour 
         { 
             get 
             {
-                return this.DateCreated == null ?
-                    null :
-                    this.DateCreated.Value.ToString("HHmm"); 
+                return this.DateCreated.HasValue ?
+                    this.DateCreated.Value.Hour.ToString("00") :
+                    null;
             } 
+        }
+
+        /// <summary>
+        /// Gets the minute at which the product query was created.
+        /// </summary>
+        public string Minute
+        {
+            get
+            {
+                return this.DateCreated.HasValue ?
+                    this.DateCreated.Value.Minute.ToString("00") :
+                    null;
+            }
         }
 
         /// <summary>
@@ -91,9 +112,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         {
             get
             {
-                return this.DateCreated == null ?
-                    null :
-                    this.DateCreated.Value.Year.ToString();
+                return this.DateCreated.HasValue ?
+                this.DateCreated.Value.Year.ToString() :
+                null;
             }
         }
     }

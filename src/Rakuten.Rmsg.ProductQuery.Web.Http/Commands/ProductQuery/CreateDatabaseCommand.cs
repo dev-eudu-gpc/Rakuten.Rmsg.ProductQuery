@@ -16,7 +16,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// Represents a command for inserting a new product query into the database.
     /// </summary>
-    public class CreateDatabaseCommand : AsyncCommandAction<CreateDatabaseCommandParameters>
+    internal class CreateDatabaseCommand : AsyncCommandAction<CreateDatabaseCommandParameters>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -51,8 +51,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <returns>A task that does the work.</returns>
         public override Task ExecuteAsync(CreateDatabaseCommandParameters parameters)
         {
-            Contract.Requires(parameters != null);
-
             return Task.Run(() =>
             {
                 // Get a query group that is not yet full
@@ -75,6 +73,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                 this.databaseContext.rmsgProductQueries.Add(
                     new rmsgProductQuery
                     {
+                        culture = parameters.Culture.Name,
                         dateCreated = parameters.DateCreated,
                         rmsgProductQueryID = parameters.Id,
                         rmsgProductQueryGroupID = queryGroup.rmsgProductQueryGroupID,

@@ -7,6 +7,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
     using System;
     using System.Diagnostics.Contracts;
+    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
     using Rakuten.Rmsg.ProductQuery.Configuration;
@@ -14,7 +15,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// Represents a command for making a product query ready for processing.
     /// </summary>
-    public class ReadyForProcessingCommand : AsyncCommand<ReadyForProcessingCommandParameters, ProductQuery>
+    internal class ReadyForProcessingCommand : AsyncCommand<ReadyForProcessingCommandParameters, ProductQuery>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -69,19 +70,26 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         {
             Contract.Assume(parameters != null);
 
-            // TODO: [WB 20-Apr-2015] Implement sad paths
-
             // Initialize
             var dateCreated = DateTime.Now;
 
             // Try and get the product query
             ProductQuery productQuery = await this.getProductQueryCommand.Execute(
-                new GetCommandParameters(parameters.Id));
+                new GetCommandParameters(parameters.Id, parameters.Culture));
 
+            // Ensure the product query was found
             if (productQuery == null)
             {
-                throw new ProductQueryNotFoundException(parameters.Id.ToString());
+                throw new ProductQueryNotFoundException(parameters.Id);
             }
+
+            // Ensure the product query is in the specified culture
+            if (!productQuery.CultureName.Equals(parameters.Culture.Name, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new ProductQueryCultureNotFoundException(parameters.Id, parameters.Culture, productQuery);
+            }
+
+            //// TODO: [WB 23-Apr-2015] Specific exception for status being wrong?
 
             if (productQuery.Status == ProductQueryStatus.New)
             {

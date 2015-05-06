@@ -11,13 +11,15 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Rakuten.Rmsg.ProductQuery.Web.Http")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Web API for handling product queries from RMSg")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Rakuten.Rmsg.ProductQuery.Web.Http")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: InternalsVisibleTo("Rakuten.Rmsg.ProductQuery.Web.Http.Fakes")]
+[assembly: InternalsVisibleTo("Rakuten.Rmsg.ProductQuery.Web.Http.Tests")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

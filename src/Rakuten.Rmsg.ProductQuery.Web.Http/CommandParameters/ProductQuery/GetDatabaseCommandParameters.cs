@@ -11,7 +11,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// The parameters required for obtaining an individual product query from the database.
     /// </summary>
-    public class GetDatabaseCommandParameters
+    internal class GetDatabaseCommandParameters
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetDatabaseCommandParameters"/> class.
@@ -19,8 +19,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <param name="id">The unique identifier for the product query.</param>
         public GetDatabaseCommandParameters(Guid id)
         {
-            Contract.Requires(id != null);
-
             this.Id = id;
         }
 

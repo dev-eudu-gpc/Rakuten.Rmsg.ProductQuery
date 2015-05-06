@@ -7,26 +7,31 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
     using System;
     using System.Diagnostics.Contracts;
+    using System.Globalization;
 
     /// <summary>
     /// The parameters required for obtaining an individual product query
     /// </summary>
-    public class GetCommandParameters
+    internal class GetCommandParameters : ProductQueryCommandParameters
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetCommandParameters"/> class
         /// </summary>
         /// <param name="id">The unique identifier for the product query</param>
-        public GetCommandParameters(Guid id)
+        /// <param name="culture">The culture of products for the query.</param>
+        public GetCommandParameters(string id, string culture)
+            : base(id, culture)
         {
-            Contract.Requires(id != null);
-
-            this.Id = id;
         }
 
         /// <summary>
-        /// Gets the unique identifier of the product query
+        /// Initializes a new instance of the <see cref="GetCommandParameters"/> class
         /// </summary>
-        public Guid Id { get; private set; }
+        /// <param name="id">The unique identifier for the product query</param>
+        /// <param name="culture">The culture of products for the query.</param>
+        public GetCommandParameters(Guid id, CultureInfo culture)
+            : base(id, culture)
+        {
+        }
     }
 }

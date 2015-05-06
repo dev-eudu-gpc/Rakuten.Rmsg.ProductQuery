@@ -5,8 +5,6 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
-    using System;
-    using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Threading.Tasks;
@@ -17,7 +15,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// A command for obtaining the progress of all product queries in
     /// a given product query group.
     /// </summary>
-    public class GetProgressDatabaseCommand : AsyncCommand<GetProgressDatabaseCommandParameters, IQueryable<ProductQueryProgress>>
+    internal class GetProgressDatabaseCommand : AsyncCommand<GetProgressDatabaseCommandParameters, IQueryable<ProductQueryProgress>>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -52,8 +50,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <returns>A collection of progress objects for each product query in the group.</returns>
         public override Task<IQueryable<ProductQueryProgress>> ExecuteAsync(GetProgressDatabaseCommandParameters parameters)
         {
-            Contract.Requires(parameters != null);
-
             return Task.Run(() =>
             {
                 // Get the statistics for all product queries in the group

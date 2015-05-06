@@ -17,7 +17,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// A command that creates an image that represents the progress of
     /// product queries within a given product query group.
     /// </summary>
-    public class CreateProgressImageCommand : AsyncCommand<CreateProgressImageCommandParameters, Stream>
+    internal class CreateProgressImageCommand : AsyncCommand<CreateProgressImageCommandParameters, Stream>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -42,8 +42,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <returns>A task that creates an image representing the progress of a given query group.</returns>
         public override async Task<Stream> ExecuteAsync(CreateProgressImageCommandParameters parameters)
         {
-            Contract.Requires(parameters != null);
-
             return await Task.Run(() =>
             {
                 // Construct an image for the progress map

@@ -240,13 +240,14 @@
     <Compile Include="CommandParameters\ProductQueryGroup\GetProgressCommandParameters.cs" />
     <Compile Include="CommandParameters\ProductQueryGroup\GetProgressDatabaseCommandParameters.cs" />
     <Compile Include="CommandParameters\ProductQueryGroup\CreateProgressImageCommandParameters.cs" />
+    <Compile Include="CommandParameters\ProductQuery\ProductQueryCommandParameters.cs" />
     <Compile Include="CommandParameters\ProductQuery\UpdateStatusDatabaseCommandParameters.cs" />
     <Compile Include="CommandParameters\ProductQuery\ReadyForProcessingCommandParameters.cs" />
     <Compile Include="CommandParameters\ProductQuery\UpdateUriDatabaseCommandParameters.cs" />
     <Compile Include="Commands\AsyncCommandAction.cs" />
     <Compile Include="Commands\ProductQuery\CreateDatabaseCommand.cs" />
-    <Compile Include="Commands\Azure\CreateStorageBlobCommand.cs" />
-    <Compile Include="Commands\Azure\DispatchMessageCommand.cs" />
+    <Compile Include="Commands\Azure\CreateAzureBlobCommand.cs" />
+    <Compile Include="Commands\Azure\DispatchAzureMessageCommand.cs" />
     <Compile Include="Commands\ProductQuery\GetCommand.cs" />
     <Compile Include="Commands\ProductQuery\GetDatabaseCommand.cs" />
     <Compile Include="Commands\ProductQuery\CreateCommand.cs" />
@@ -285,13 +286,17 @@
     <Compile Include="EntityModels\rmsgProductQueryStatu.cs">
       <DependentUpon>ProductQuery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Exceptions\BadRequestException.cs" />
-    <Compile Include="Exceptions\ConstraintViolationException.cs" />
-    <Compile Include="Exceptions\InternalServerException.cs" />
+    <Compile Include="Exceptions\Core\BadRequestException.cs" />
+    <Compile Include="Exceptions\Core\ConstraintViolationException.cs" />
+    <Compile Include="Exceptions\Core\InternalServerException.cs" />
+    <Compile Include="Exceptions\InvalidCultureException.cs" />
+    <Compile Include="Exceptions\InvalidDateException.cs" />
+    <Compile Include="Exceptions\InvalidGuidException.cs" />
     <Compile Include="Exceptions\InvalidStatusException.cs" />
-    <Compile Include="Exceptions\ObjectNotFoundException.cs" />
+    <Compile Include="Exceptions\Core\ObjectNotFoundException.cs" />
+    <Compile Include="Exceptions\ProductQueryCultureNotFoundException.cs" />
     <Compile Include="Exceptions\ProductQueryNotFoundException.cs" />
-    <Compile Include="Exceptions\ValidationFailedException.cs" />
+    <Compile Include="Exceptions\Core\ValidationFailedException.cs" />
     <Compile Include="Links\AzureBlobLink.cs" />
     <Compile Include="Links\ProductQueryLink.cs" />
     <Compile Include="Links\ProductQueryMonitorLink.cs" />
@@ -313,6 +318,7 @@
     <Compile Include="Web\Http\ExceptionHandling\IApiExceptionMetadataProvider.cs" />
     <Compile Include="Web\Http\ExceptionHandling\ProblemActivator.cs" />
     <Compile Include="Web\Http\HttpStatusCodeMapper.cs" />
+    <Compile Include="Web\Http\Results\AcceptedNegotiatedContentResult.cs" />
     <Compile Include="Web\Http\Results\ImageResult.cs" />
     <Compile Include="Web\Http\Results\NegotiatedContentResultFactory.cs" />
     <Compile Include="Web\Http\Results\SeeOtherResult.cs" />
@@ -322,6 +328,7 @@
   <ItemGroup>
     <Content Include="packages.config" />
     <Content Include="Settings.StyleCop" />
+    <Content Include="Performance\Microsoft.ServiceBus.MessagingPerformanceCounters.man" />
     <EntityDeploy Include="EntityModels\ProductQuery.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ProductQuery.Designer.cs</LastGenOutput>
@@ -339,7 +346,6 @@
       <DependentUpon>ProductQuery.edmx</DependentUpon>
       <LastGenOutput>ProductQuery.cs</LastGenOutput>
     </Content>
-    <Content Include="Performance\Microsoft.ServiceBus.MessagingPerformanceCounters.man" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

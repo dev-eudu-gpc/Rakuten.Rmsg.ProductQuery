@@ -58,7 +58,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         int ProgressMapIntervalInSeconds { get; }
 
         /// <summary>
-        /// Gets the estimated proportion of product query processing that is used by the finalisation process.
+        /// Gets the estimated proportion of product query processing that is used by the finalization process.
         /// </summary>
         decimal ProportionOfTimeAllocatedForFinalization { get; }
 

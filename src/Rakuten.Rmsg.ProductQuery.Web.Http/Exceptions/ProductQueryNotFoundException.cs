@@ -5,8 +5,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http
 {
+    using System;
     using System.Xml.Serialization;
-
     using Newtonsoft.Json;
     using Rakuten.Gpc;
 
@@ -14,7 +14,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     /// Represents the error raised when a specified product query cannot be found.
     /// </summary>
     [ApiException("http://problems.rakuten.co.uk/product-query-not-found", "The product query could not be found.")]
-    public class ProductQueryNotFoundException : ApiException
+    internal class ProductQueryNotFoundException : ApiException
     {
         /// <summary>
         /// The message that describes this error.
@@ -32,18 +32,18 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductQueryNotFoundException"/> class.
         /// </summary>
-        /// <param name="value">The value for the identifier that was invalid.</param>
-        public ProductQueryNotFoundException(string value)
-            : base(string.Format(Detail, value))
+        /// <param name="id">The value for the identifier that was invalid.</param>
+        public ProductQueryNotFoundException(Guid id)
+            : base(string.Format(Detail, id.ToString()))
         {
-            this.Value = value;
+            this.Id = id;
         }
 
         /// <summary>
         /// Gets or sets the invalid value.
         /// </summary>
-        [JsonProperty("value", NullValueHandling = NullValueHandling.Ignore)]
-        [XmlElement("value")]
-        public string Value { get; set; }
+        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
+        [XmlElement("id")]
+        public Guid Id { get; set; }
     }
 }

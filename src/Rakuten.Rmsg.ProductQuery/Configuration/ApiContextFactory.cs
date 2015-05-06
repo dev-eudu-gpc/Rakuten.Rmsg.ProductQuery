@@ -248,11 +248,13 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             const string ConnectionStringTemplate = "Endpoint=sb://{0}.servicebus.windows.net/;SharedSecretIssuer=owner;SharedSecretValue={1}";
 
             // Create the connection string to the storage account.
-            string accountName = string.Format("{0}-gpc-{1}-bus",
+            string accountName = string.Format(
+                "{0}-gpc-{1}-bus",
                 environmentName,
                 region.Replace(" ", "-"));
 
-            return string.Format(ConnectionStringTemplate,
+            return string.Format(
+                ConnectionStringTemplate,
                 accountName,
                 accountKey);
         }
@@ -261,48 +263,49 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// Gets a decimal value from a config source.
         /// </summary>
         /// <param name="source">The config source.</param>
-        /// <param name="KeyName">The name of the setting in the config source.</param>
+        /// <param name="keyName">The name of the setting in the config source.</param>
         /// <returns>A value of the config setting as a decimal</returns>
-        private static decimal GetSettingDecimal(ConfigurationSource source, string KeyName)
+        private static decimal GetSettingDecimal(ConfigurationSource source, string keyName)
         {
-            string valueString = source.GetConfigurationSettingValue(KeyName);
+            string valueString = source.GetConfigurationSettingValue(keyName);
 
             if (valueString == null)
             {
-                throw new InvalidOperationException(string.Format("{0} is not configured", KeyName));
+                throw new InvalidOperationException(string.Format("{0} is not configured", keyName));
             }
 
             decimal value;
 
             if (!decimal.TryParse(valueString, out value))
             {
-                throw new InvalidOperationException(string.Format("{0} setting must be a double.", KeyName));
+                throw new InvalidOperationException(string.Format("{0} setting must be a double.", keyName));
             }
+
             return value;
         }
-
 
         /// <summary>
         /// Gets an integer value from a config source.
         /// </summary>
         /// <param name="source">The config source.</param>
-        /// <param name="KeyName">The name of the setting in the config source.</param>
+        /// <param name="keyName">The name of the setting in the config source.</param>
         /// <returns>A value of the config setting as an integer</returns>
-        private static int GetSettingInt(ConfigurationSource source, string KeyName)
+        private static int GetSettingInt(ConfigurationSource source, string keyName)
         {
-            string valueString = source.GetConfigurationSettingValue(KeyName);
+            string valueString = source.GetConfigurationSettingValue(keyName);
 
             if (valueString == null)
             {
-                throw new InvalidOperationException(string.Format("{0} is not configured", KeyName));
+                throw new InvalidOperationException(string.Format("{0} is not configured", keyName));
             }
 
             int valueInt;
 
             if (!int.TryParse(valueString, out valueInt))
             {
-                throw new InvalidOperationException(string.Format("{0} setting must be an integer.", KeyName));
+                throw new InvalidOperationException(string.Format("{0} setting must be an integer.", keyName));
             }
+
             return valueInt;
         }
 

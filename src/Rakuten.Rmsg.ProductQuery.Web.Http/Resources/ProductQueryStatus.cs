@@ -5,12 +5,6 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
-    using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
-
     /// <summary>
     /// Product query status.
     /// </summary>

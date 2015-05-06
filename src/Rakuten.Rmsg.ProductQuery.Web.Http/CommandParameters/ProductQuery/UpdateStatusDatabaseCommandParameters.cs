@@ -11,7 +11,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// The parameters required for updating the status of a product query in the database
     /// </summary>
-    public class UpdateStatusDatabaseCommandParameters
+    internal class UpdateStatusDatabaseCommandParameters
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateStatusDatabaseCommandParameters"/> class.
@@ -22,7 +22,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             Guid id,
             string newStatus)
         {
-            Contract.Requires(id != null);
             Contract.Requires(newStatus != null);
 
             this.Id = id;

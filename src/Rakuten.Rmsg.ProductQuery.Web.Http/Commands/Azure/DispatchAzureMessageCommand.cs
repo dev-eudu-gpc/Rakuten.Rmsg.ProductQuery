@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="DispatchMessageCommand.cs" company="Rakuten">
+// <copyright file="DispatchAzureMessageCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// Represents a command that dispatches a product query message to the queue.
     /// </summary>
-    public class DispatchMessageCommand : AsyncCommandAction<DispatchMessageCommandParameters>
+    internal class DispatchAzureMessageCommand : AsyncCommandAction<DispatchMessageCommandParameters>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -24,10 +24,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly IApiContext context;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DispatchMessageCommand"/> class
+        /// Initializes a new instance of the <see cref="DispatchAzureMessageCommand"/> class
         /// </summary>
         /// <param name="context">The context in which this instance is running.</param>
-        public DispatchMessageCommand(IApiContext context)
+        public DispatchAzureMessageCommand(IApiContext context)
         {
             Contract.Requires(context != null);
 
@@ -41,8 +41,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <returns>A task that does the work.</returns>
         public override Task ExecuteAsync(DispatchMessageCommandParameters parameters)
         {
-            Contract.Requires(parameters != null);
-
             // Create the message
             // TODO: [MM, 22-APR-15] Populate the culture correctly.
             var message = new Message(Guid.NewGuid(), "en-GB", parameters.BlobLink);
@@ -56,9 +54,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
                 // Dispatch the message
                 client.Send(new BrokeredMessage(message));
-
-                var x = 2;
-                x++;
             });
         }
     }

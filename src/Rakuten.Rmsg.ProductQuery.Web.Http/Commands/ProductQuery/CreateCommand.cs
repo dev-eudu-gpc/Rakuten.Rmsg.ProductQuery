@@ -16,7 +16,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// Represents a command for creating a new product query.
     /// </summary>
-    public class CreateCommand : AsyncCommand<CreateCommandParameters, ProductQuery>
+    internal class CreateCommand : AsyncCommand<CreateCommandParameters, ProductQuery>
     {
         /// <summary>
         /// A link representing the canonical location of the blob in Azure storage.
@@ -87,16 +87,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <returns>A task that does the work.</returns>
         public override async Task<ProductQuery> ExecuteAsync(CreateCommandParameters parameters)
         {
-            Contract.Requires(parameters != null);
-
             // Initialize
             var dateCreated = DateTime.Now;
 
             // Create an entry for the query in the database
             await this.createProductQueryDatabaseCommand.Execute(
-                new CreateDatabaseCommandParameters(parameters.Id, dateCreated));
+                new CreateDatabaseCommandParameters(parameters.Id, parameters.Culture, dateCreated));
 
-            // TODO: [WB 15-Apr-2015] Catch azure exceptions and update database accordingly
+            //// TODO: [WB 15-Apr-2015] Catch azure exceptions and update database accordingly
 
             // Create blob in storage
             Uri blobUri = await this.createStorageBlobCommand.Execute(

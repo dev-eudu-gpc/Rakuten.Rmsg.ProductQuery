@@ -12,7 +12,7 @@ namespace Rakuten.WindowsAzure.Storage
     /// <summary>
     /// Defines an object that interacts with storage.
     /// </summary>
-    public interface IStorage
+    internal interface IStorage
     {
         /// <summary>
         /// Asynchronously downloads the content as a string of the specified Blob within a 

@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="CreateStorageBlobCommand.cs" company="Rakuten">
+// <copyright file="CreateAzureBlobCommand.cs" company="Rakuten">
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// Represents a command for preparing a product query
     /// </summary>
-    public class CreateStorageBlobCommand : AsyncCommand<CreateStorageBlobCommandParameters, Uri>
+    internal class CreateAzureBlobCommand : AsyncCommand<CreateStorageBlobCommandParameters, Uri>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -28,11 +28,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly IStorage storage;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateStorageBlobCommand"/> class
+        /// Initializes a new instance of the <see cref="CreateAzureBlobCommand"/> class
         /// </summary>
         /// <param name="context">The context in which this instance is running.</param>
         /// <param name="storage">A means to interact with storage for the product query</param>
-        public CreateStorageBlobCommand(
+        public CreateAzureBlobCommand(
             IApiContext context,
             IStorage storage)
         {
@@ -50,8 +50,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <returns>A task that does the work.</returns>
         public override Task<Uri> ExecuteAsync(CreateStorageBlobCommandParameters parameters)
         {
-            Contract.Requires(parameters != null);
-
             return Task.Run(() =>
             {
                 // Construct the blob's file name

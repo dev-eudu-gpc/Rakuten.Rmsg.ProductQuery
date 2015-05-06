@@ -6,16 +6,16 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
     using System.Diagnostics.Contracts;
+    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
-
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
 
     /// <summary>
     /// Represents a command for obtaining a product query from the database.
     /// </summary>
-    public class GetDatabaseCommand : AsyncCommand<GetDatabaseCommandParameters, ProductQuery>
+    internal class GetDatabaseCommand : AsyncCommand<GetDatabaseCommandParameters, ProductQuery>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -50,8 +50,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <returns>A task that does the work.</returns>
         public override Task<ProductQuery> ExecuteAsync(GetDatabaseCommandParameters parameters)
         {
-            Contract.Requires(parameters != null);
-
             return Task.Run(() =>
             {
                 // Determine if the product query already exists
@@ -62,6 +60,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                 return query != null ?
                     new ProductQuery
                     {
+                        CultureName = query.culture,
                         DateCreated = query.dateCreated,
                         Index = query.index,
                         GroupId = query.rmsgProductQueryGroupID,

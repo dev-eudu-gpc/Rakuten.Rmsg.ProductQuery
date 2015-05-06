@@ -13,6 +13,7 @@ namespace Rakuten.Rmsg.ProductQuery
     /// <summary>
     /// Defines the content of the message placed on the Microsoft Azure Service Bus queue.
     /// </summary>
+    [Serializable]
     public class Message
     {
         /// <summary>
