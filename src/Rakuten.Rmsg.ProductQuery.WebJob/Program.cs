@@ -144,7 +144,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                     }
                 }
 
-                //// Write out the list of items collected from the dataflow to the blob.
+                // Write out the list of items collected from the dataflow to the blob.
                 var stream = ParseItemsCommand.Execute(items, new MemoryStream(), serializer).Result;
 
                 WriteBlobCommand.Execute(blobContainer, message, stream).Wait();
