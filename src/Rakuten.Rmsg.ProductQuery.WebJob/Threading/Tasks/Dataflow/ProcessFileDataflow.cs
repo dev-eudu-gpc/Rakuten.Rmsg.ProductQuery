@@ -7,6 +7,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System.Diagnostics.Contracts;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Threading.Tasks.Dataflow;
 
@@ -42,16 +43,20 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <param name="aggregateBlock">
         /// A <see cref="IDataflowBlock"/> that will aggregate item and product data.
         /// </param>
+        /// <param name="outputBlock">
+        /// A <see cref="IDataflowBlock"/> that will extract and return an <see cref="Item"/> from the message.
+        /// </param>
         public ProcessFileDataflow(
             IPropagatorBlock<Message, Stream> downloadFileBlock,
             IPropagatorBlock<Stream, ItemMessageState> parseFileBlock,
-            IPropagatorBlock<ItemMessageState, QueryMessageState> getEntityBlock,
-            IPropagatorBlock<QueryMessageState, QueryMessageState> createEntityBlock,
-            IPropagatorBlock<QueryMessageState, ProductsMessageState> searchBlock,
-            IPropagatorBlock<ProductsMessageState, QueryMessageState> filterBlock,
-            IPropagatorBlock<QueryMessageState, QueryMessageState> updateEntityBlock,
-            IPropagatorBlock<QueryMessageState, ProductMessageState> getProductBlock,
-            TransformBlock<ProductMessageState, Item> aggregateBlock)
+            IPropagatorBlock<ItemMessageState, ItemMessageState> getEntityBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> createEntityBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> searchBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> filterBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> updateEntityBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> getProductBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> aggregateBlock,
+            TransformBlock<ItemMessageState, Item> outputBlock)
         {
             Contract.Requires(downloadFileBlock != null);
             Contract.Requires(parseFileBlock != null);
@@ -62,6 +67,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             Contract.Requires(updateEntityBlock != null);
             Contract.Requires(getProductBlock != null);
             Contract.Requires(aggregateBlock != null);
+            Contract.Requires(outputBlock != null);
 
             // Set the start block for the pipeline.
             this.StartBlock = downloadFileBlock;
@@ -71,51 +77,61 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             downloadFileBlock.OnFaultOrCompletion(parseFileBlock);
 
             // Once the file has been downloaded, check to see if we have a matching database record for each row.
-            parseFileBlock.LinkTo(getEntityBlock);
+            parseFileBlock.LinkTo(
+                getEntityBlock, 
+                state => !string.IsNullOrWhiteSpace(state.Item.GtinValue), 
+                outputBlock);
+
             parseFileBlock.OnFaultOrCompletion(getEntityBlock);
 
             // If we do not have a database record, create one.
-            getEntityBlock.LinkTo(createEntityBlock, state => state.Query == null);
+            getEntityBlock.LinkTo(createEntityBlock, state => state.Query == null, outputBlock);
             getEntityBlock.OnFaultOrCompletion(createEntityBlock);
 
             // Once we have recorded the request, search for the product.
-            createEntityBlock.LinkTo(searchBlock);
+            createEntityBlock.LinkTo(searchBlock, outputBlock);
 
             // If we have a database record but it has not GRAN search for a product.
             getEntityBlock.LinkTo(
                 searchBlock,
-                state => state.Query != null && string.IsNullOrWhiteSpace(state.Query.Gran));
+                state => state.Query != null && string.IsNullOrWhiteSpace(state.Query.Gran),
+                outputBlock);
 
             // Only complete the search block once the create entity and get entity blocks have completed.
             Task.WhenAll(getEntityBlock.Completion, createEntityBlock.Completion)
                 .ContinueWith(_ => searchBlock.Complete());
 
             // Once we have received the product data, get the most appropriate product.
-            searchBlock.LinkTo(filterBlock);
+            searchBlock.LinkTo(filterBlock, state => state.Products != null && state.Products.Any(), outputBlock);
             searchBlock.OnFaultOrCompletion(filterBlock);
 
             // Now we have filtered the results, record the GRAN in the database.
-            filterBlock.LinkTo(updateEntityBlock);
+            filterBlock.LinkTo(updateEntityBlock, outputBlock);
             filterBlock.OnFaultOrCompletion(updateEntityBlock);
 
             // Get all available details for the GRAN.
-            updateEntityBlock.LinkTo(getProductBlock);
+            updateEntityBlock.LinkTo(getProductBlock, outputBlock);
 
             // If we have a database record that has a registered GRAN then get that product.
             getEntityBlock.LinkTo(
                 getProductBlock,
-                state => state.Query != null && !string.IsNullOrWhiteSpace(state.Query.Gran));
+                state => state.Query != null && !string.IsNullOrWhiteSpace(state.Query.Gran),
+                outputBlock);
 
             // Only complete the get product block once the update entity and get entity blocks have completed.
             Task.WhenAll(getEntityBlock.Completion, updateEntityBlock.Completion)
                 .ContinueWith(_ => getProductBlock.Complete());
 
             // Merge the data with the original.
-            getProductBlock.LinkTo(aggregateBlock);
+            getProductBlock.LinkTo(aggregateBlock, outputBlock);
             getProductBlock.OnFaultOrCompletion(aggregateBlock);
 
-            this.Completion = aggregateBlock.Completion;
-            this.ReceivableBlock = aggregateBlock;
+            // Output the item regardless of any issues encountered.
+            aggregateBlock.LinkTo(outputBlock);
+            aggregateBlock.OnFaultOrCompletion(outputBlock);
+
+            this.Completion = outputBlock.Completion;
+            this.ReceivableBlock = outputBlock;
         }
     }
 }

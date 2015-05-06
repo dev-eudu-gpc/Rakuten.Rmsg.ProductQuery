@@ -64,14 +64,30 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             CloudBlobContainer blobContainer = blobClient.GetContainerReference(apiContext.BlobContainerName);
 
             // Create a product search template.
-            var productSearchLink = new ProductSearchLink(new UriTemplate(
-                "/v1/product?filter=(ISBN eq '{gtin}' or EAN eq '{gtin}' or JAN eq '{gtin}' or UPC eq '{gtin}')&culture={culture}&skip={skip}&top={top}"));
+            var isbnSearchLink = new ProductSearchLink(new UriTemplate(
+                "/v1/product?filter=ISBN eq '{gtin}'&culture={culture}&skip={skip}&top={top}"));
+
+            var eanSearchLink = new ProductSearchLink(new UriTemplate(
+                "/v1/product?filter=EAN eq '{gtin}'&culture={culture}&skip={skip}&top={top}"));
+
+            var janSearchLink = new ProductSearchLink(new UriTemplate(
+                "/v1/product?filter=JAN eq '{gtin}'&culture={culture}&skip={skip}&top={top}"));
+
+            var upcSearchLink = new ProductSearchLink(new UriTemplate(
+                "/v1/product?filter=UPC eq '{gtin}'&culture={culture}&skip={skip}&top={top}"));
 
             var productLink = new ProductLink(new UriTemplate("/v1/product/{gran}?culture={culture}"));
 
             // Create a cache for a collection of products.
             var searchCache = new ConcurrentDictionaryCache<IEnumerable<Product>>(
-                parameters => ExecuteSearchCommand.GetProducts(createApiClient, productSearchLink, parameters).Result);
+                parameters => ExecuteSearchCommand.GetProducts(
+                    createApiClient, 
+                    isbnSearchLink, 
+                    eanSearchLink, 
+                    janSearchLink, 
+                    upcSearchLink, 
+                    parameters)
+                .Result);
 
             // Create a cache for a single product.
             var productCache = new ConcurrentDictionaryCache<Product>(
@@ -96,13 +112,14 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                     TransformBlockFactory.Create<Message, Stream>(msg =>
                         DownloadFileCommand.Execute(blobContainer, msg, new MemoryStream())),
                     TransformManyBlockFactory.Create<Stream, ItemMessageState>(file => transform1(file, writer)),
-                    TransformBlockFactory.Create<ItemMessageState, QueryMessageState>(state => transform2(state, writer)),
-                    TransformBlockFactory.Create<QueryMessageState, QueryMessageState>(state => transform3(state, writer)),
-                    TransformBlockFactory.Create<QueryMessageState, ProductsMessageState>(state => transform4(state, writer)),
-                    TransformBlockFactory.Create<ProductsMessageState, QueryMessageState>(state => transform5(state, writer)),
-                    TransformBlockFactory.Create<QueryMessageState, QueryMessageState>(state => transform6(state, writer)),
-                    TransformBlockFactory.Create<QueryMessageState, ProductMessageState>(state => transform7(state, writer)),
-                    TransformBlockFactory.Create<ProductMessageState, Item>(state => transform8(state, writer)));
+                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform2(state, writer)),
+                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform3(state, writer)),
+                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform4(state, writer)),
+                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform5(state, writer)),
+                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform6(state, writer)),
+                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform7(state, writer)),
+                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform8(state, writer)),
+                    TransformBlockFactory.Create<ItemMessageState, Item>(state => Task.FromResult(state.Item)));
 
                 dataflow.Post(message);
                 dataflow.Complete();
@@ -169,7 +186,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// </summary>
         /// <param name="context">The instance through which the persistent storage can be queried.</param>
         /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<QueryMessageState, TextWriter, Task<QueryMessageState>> CreateCreateQueryItemTransform(
+        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateCreateQueryItemTransform(
             ProductQueryContext context)
         {
             return async (state, writer) =>
@@ -178,13 +195,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 {
                     var query = await CreateProductQueryItemCommand.Execute(context, state.Id, state.Item.GtinValue);
 
-                    return new QueryMessageState(state.Id, state.Culture, state.Item, query);
+                    return new ItemMessageState(state.Id, state.Culture, state.Item, query);
                 }
                 catch (Exception ex)
                 {
                     writer.WriteLine("An issue was encountered creating a query record: " + ex.ToString());
 
-                    return null;
+                    return state.AddException(ex);
                 }
             };
         }
@@ -195,7 +212,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// </summary>
         /// <param name="dataSources">The collection of data sources to be used when filtering the products.</param>
         /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<ProductsMessageState, TextWriter, Task<QueryMessageState>> CreateFilterProductsTransform(
+        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateFilterProductsTransform(
             IEnumerable<DataSource> dataSources)
         {
             return async (state, writer) =>
@@ -205,13 +222,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                     var product = await FilterProductsCommand.Execute(dataSources, state.Products);
                     state.Query.Gran = product.Id;
 
-                    return new QueryMessageState(state.Id, state.Culture, state.Item, state.Query);
+                    return new ItemMessageState(state.Id, state.Culture, state.Item, state.Query);
                 }
                 catch (Exception ex)
                 {
                     writer.WriteLine("An issue was encountered filtering the collection of products: " + ex.ToString());
 
-                    return null;
+                    return state.AddException(ex);
                 }
             };
         }
@@ -221,7 +238,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// </summary>
         /// <param name="cache">An instance that provides a method of caching product details.</param>
         /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<QueryMessageState, TextWriter, Task<ProductMessageState>> CreateGetProductTransform(
+        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateGetProductTransform(
             ICache<Product> cache)
         {
             Contract.Requires(cache != null);
@@ -235,13 +252,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                         state.Query.Gran,
                         state.Culture);
 
-                    return new ProductMessageState(state.Id, state.Culture, state.Item, product);
+                    return new ItemMessageState(state.Id, state.Culture, state.Item, product);
                 }
                 catch (Exception ex)
                 {
                     writer.WriteLine("An issue was encountered fetching the identified product: " + ex.ToString());
 
-                    return null;
+                    return state.AddException(ex);
                 }
             };
         }
@@ -252,7 +269,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// </summary>
         /// <param name="context">The instance through which the persistent storage can be queried.</param>
         /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<ItemMessageState, TextWriter, Task<QueryMessageState>> CreateGetQueryItemTransform(
+        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateGetQueryItemTransform(
             ProductQueryContext context)
         {
             return async (state, writer) =>
@@ -261,13 +278,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 {
                     var queryItem = await GetProductQueryItemCommand.Execute(context, state.Id, state.Item.GtinValue);
 
-                    return new QueryMessageState(state.Id, state.Culture, state.Item, queryItem);
+                    return new ItemMessageState(state.Id, state.Culture, state.Item, queryItem);
                 }
                 catch (Exception ex)
                 {
                     writer.WriteLine("An issue was encountered parsing the uploaded file: " + ex.ToString());
 
-                    return null;
+                    return state.AddException(ex);
                 }
             };
         }
@@ -276,19 +293,21 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// Returns a delegate that when executed merges the product data with the original source item data.
         /// </summary>
         /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<ProductMessageState, TextWriter, Task<Item>> CreateMergeProductTransform()
+        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateMergeProductTransform()
         {
             return async (state, writer) =>
             {
                 try
                 {
-                    return await MergeProductCommand.Execute(state.Item, state.Product);
+                    var item = await MergeProductCommand.Execute(state.Item, state.Product);
+
+                    return new ItemMessageState(state.Id, state.Culture, item);
                 }
                 catch (Exception ex)
                 {
                     writer.WriteLine("An issue was encountered merging the product details: " + ex.ToString());
 
-                    return null;
+                    return state.AddException(ex);
                 }
             };
         }
@@ -329,7 +348,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// </summary>
         /// <param name="cache">An instance that provides a method of caching collections of product.</param>
         /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<QueryMessageState, TextWriter, Task<ProductsMessageState>> CreateProductSearchTransform(
+        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateProductSearchTransform(
             ICache<IEnumerable<Product>> cache)
         {
             Contract.Requires(cache != null);
@@ -339,17 +358,18 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 try
                 {
                     var products = await ExecuteSearchCommand.Execute(
-                        cache, 
+                        cache,
+                        state.Item.GtinType,
                         state.Item.GtinValue, 
                         state.Culture);
 
-                    return new ProductsMessageState(state.Id, state.Culture, state.Item, state.Query, products);
+                    return new ItemMessageState(state.Id, state.Culture, state.Item, state.Query, products);
                 }
                 catch (Exception ex)
                 {
                     writer.WriteLine("An issue was encountered retrieving a collection of products: " + ex.ToString());
 
-                    return null;
+                    return state.AddException(ex);
                 }
             };
         }
@@ -360,7 +380,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// </summary>
         /// <param name="context">The instance through which the persistent storage can be updated.</param>
         /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<QueryMessageState, TextWriter, Task<QueryMessageState>> CreateUpdateEntityTransform(
+        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateUpdateEntityTransform(
             ProductQueryContext context)
         {
             Contract.Requires(context != null);
@@ -377,7 +397,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 {
                     writer.WriteLine("An issue was encountered updating the query item record: " + ex.ToString());
 
-                    return null;
+                    return state.AddException(ex);
                 }
             };
         }

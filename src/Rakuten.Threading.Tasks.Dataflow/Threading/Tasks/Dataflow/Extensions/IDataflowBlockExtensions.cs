@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 namespace Rakuten.Threading.Tasks.Dataflow
 {
+    using System.Diagnostics.Contracts;
     using System.Threading.Tasks.Dataflow;
 
     /// <summary>
@@ -22,6 +23,9 @@ namespace Rakuten.Threading.Tasks.Dataflow
         /// <param name="target">The instance that is dependant on the current.</param>
         public static void OnFaultOrCompletion(this IDataflowBlock source, IDataflowBlock target)
         {
+            Contract.Requires(source != null);
+            Contract.Requires(target != null);
+
             source.Completion.ContinueWith(task =>
             {
                 if (task.IsFaulted)
