@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
 {
+    using System;
     using System.Diagnostics.Contracts;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Rakuten.Rmsg.ProductQuery.Configuration;
@@ -74,7 +75,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         [Then(@"the status of the product query from the database is (.*)")]
         public void ThenTheStatusOfTheProductQueryFromTheDatabaseIs(string expectedStatus)
         {
-            Assert.AreEqual(expectedStatus, ScenarioStorage.ProductQueryFromDatabase.rmsgProductQueryStatu.name, true);
+            Assert.AreEqual(
+                (int)Enum.Parse(typeof(ProductQueryStatus), expectedStatus),
+                ScenarioStorage.ProductQueryFromDatabase.rmsgProductQueryStatusID);
         }
 
         /// <summary>

@@ -141,6 +141,7 @@
     <Compile Include="Resources\ProductQueryLink.cs" />
     <Compile Include="Resources\ProductQueryLinks.cs" />
     <Compile Include="Resources\ProductQuery.cs" />
+    <Compile Include="Resources\ProductQueryStatus.cs" />
     <Compile Include="rmsgProductQuery.cs">
       <DependentUpon>ProductQuery.tt</DependentUpon>
     </Compile>
