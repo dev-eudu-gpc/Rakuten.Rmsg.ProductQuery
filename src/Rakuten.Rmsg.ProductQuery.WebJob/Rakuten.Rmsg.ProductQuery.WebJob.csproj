@@ -173,13 +173,13 @@
     <Compile Include="Entities\ProductQueryItem.cs" />
     <Compile Include="Entities\ProductQueryStatus.cs" />
     <Compile Include="Extensions\GenericExtensions.cs" />
-    <Compile Include="Infrastructure\ICache{T}.cs" />
-    <Compile Include="Infrastructure\ConcurrentDictionaryCache{T}.cs" />
+    <Compile Include="Caching\ICache{T}.cs" />
+    <Compile Include="Caching\ConcurrentDictionaryCache{T}.cs" />
     <Compile Include="Models\Api\DataSource.cs" />
     <Compile Include="Models\Api\Error.cs" />
     <Compile Include="Models\Api\Product.cs" />
     <Compile Include="Models\Api\ProductAttributeSet.cs" />
-    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\Delimited\Item.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Functions\ProcessProductQueryFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
