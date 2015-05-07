@@ -7,13 +7,12 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
     using System.Globalization;
     using System.IO;
-    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
+    using System.Threading.Tasks.Dataflow;
 
     using Microsoft.Azure.WebJobs;
     using Microsoft.WindowsAzure.Storage;
@@ -27,7 +26,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using Rakuten.Rmsg.ProductQuery.WebJob.Api;
     using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
     using Rakuten.Rmsg.ProductQuery.WebJob.Linking;
-    using Rakuten.Threading.Tasks.Dataflow;
 
     using UriTemplate = Rakuten.UriTemplate;
 
@@ -64,35 +62,11 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
             CloudBlobContainer blobContainer = blobClient.GetContainerReference(apiContext.BlobContainerName);
 
-            // Create a product search template.
-            var isbnSearchLink = new ProductSearchLink(new UriTemplate(
-                "/v1/product?filter=ISBN eq '{gtin}'&culture={culture}&skip={skip}&top={top}"));
-
-            var eanSearchLink = new ProductSearchLink(new UriTemplate(
-                "/v1/product?filter=EAN eq '{gtin}'&culture={culture}&skip={skip}&top={top}"));
-
-            var janSearchLink = new ProductSearchLink(new UriTemplate(
-                "/v1/product?filter=JAN eq '{gtin}'&culture={culture}&skip={skip}&top={top}"));
-
-            var upcSearchLink = new ProductSearchLink(new UriTemplate(
-                "/v1/product?filter=UPC eq '{gtin}'&culture={culture}&skip={skip}&top={top}"));
-
-            var productLink = new ProductLink(new UriTemplate("/v1/product/{gran}?culture={culture}"));
-
             // Create a cache for a collection of products.
-            var searchCache = new ConcurrentDictionaryCache<IEnumerable<Product>>(
-                parameters => ExecuteSearchCommand.GetProducts(
-                    createApiClient, 
-                    isbnSearchLink, 
-                    eanSearchLink, 
-                    janSearchLink, 
-                    upcSearchLink, 
-                    parameters)
-                .Result);
+            var searchCache = CreateProductsCache(createApiClient);
 
             // Create a cache for a single product.
-            var productCache = new ConcurrentDictionaryCache<Product>(
-                parameters => GetProductCommand.GetProductAsync(createApiClient, productLink, parameters).Result);
+            var productCache = CreateProductCache(createApiClient);
 
             var serializer = new LumenWorksSerializer<Item>();
 
@@ -102,27 +76,46 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             // Create the delegate that the bound function will invoke.
             ProcessProductQueryFile.Process = (message, writer) =>
             {
-                var transform1 = CreateParseFileTransform(serializer, message.Id, new CultureInfo(message.Culture));
-                var transform2 = CreateGetQueryItemTransform(databaseContext);
-                var transform3 = CreateCreateQueryItemTransform(databaseContext);
-                var transform4 = CreateProductSearchTransform(searchCache);
-                var transform5 = CreateFilterProductsTransform(dataSources);
-                var transform6 = CreateUpdateEntityTransform(databaseContext);
-                var transform7 = CreateGetProductTransform(productCache);
-                var transform8 = CreateMergeProductTransform();
+                var parseFileTransform = ParseFileTransformFactory.Create(
+                    () => ParseFileCommand.Execute(
+                        serializer, 
+                        new MemoryStream()), 
+                        message.Id, 
+                        new CultureInfo(message.Culture));
+
+                var getQueryItemTransform = GetQueryItemTransformFactory.Create(
+                    (id, gtin) => GetProductQueryItemCommand.Execute(databaseContext, id, gtin));
+                var createQueryItemTransform = CreateQueryItemTransformFactory.Create(
+                    (guid, s) => CreateProductQueryItemCommand.Execute(databaseContext, guid, s));
+                var productSearchTransform = ProductSearchTransformFactory.Create(
+                    (type, gtin, culture) => ExecuteSearchCommand.Execute(searchCache, type, gtin, culture));
+                var filterProductsTransform = FilterProductsTransformFactory.Create(
+                    products => FilterProductsCommand.Execute(dataSources, products));
+                var updateEntityTransform = UpdateEntityTransformFactory.Create(
+                    query => UpdateEntityBlockCommand.Execute(databaseContext, query));
+                var getProductTransform = GetProductTransformFactory.Create(
+                    (gran, culture) => GetProductCommand.Execute(productCache, gran, culture));
+                var mergeProductTransform = MergeProductTransformFactory.Create(MergeProductCommand.Execute);
 
                 var dataflow = new ProcessFileDataflow(
-                    TransformBlockFactory.Create<Message, Stream>(msg =>
-                        DownloadFileCommand.Execute(blobContainer, msg, new MemoryStream())),
-                    TransformManyBlockFactory.Create<Stream, ItemMessageState>(file => transform1(file, writer)),
-                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform2(state, writer)),
-                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform3(state, writer)),
-                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform4(state, writer)),
-                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform5(state, writer)),
-                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform6(state, writer)),
-                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform7(state, writer)),
-                    TransformBlockFactory.Create<ItemMessageState, ItemMessageState>(state => transform8(state, writer)),
-                    TransformBlockFactory.Create<ItemMessageState, Item>(state => Task.FromResult(state.Item)));
+                    new TransformBlock<Message, Stream>(
+                        msg => DownloadFileCommand.Execute(blobContainer, msg, new MemoryStream())),
+                    new TransformManyBlock<Stream, ItemMessageState>(file => parseFileTransform(file, writer)),
+                    new TransformBlock<ItemMessageState, ItemMessageState>(
+                        state => getQueryItemTransform(state, writer)),
+                    new TransformBlock<ItemMessageState, ItemMessageState>(
+                        state => createQueryItemTransform(state, writer)),
+                    new TransformBlock<ItemMessageState, ItemMessageState>(
+                        state => productSearchTransform(state, writer)),
+                    new TransformBlock<ItemMessageState, ItemMessageState>(
+                        state => filterProductsTransform(state, writer)),
+                    new TransformBlock<ItemMessageState, ItemMessageState>(
+                        state => updateEntityTransform(state, writer)),
+                    new TransformBlock<ItemMessageState, ItemMessageState>(
+                        state => getProductTransform(state, writer)),
+                    new TransformBlock<ItemMessageState, ItemMessageState>(
+                        state => mergeProductTransform(state, writer)),
+                    new TransformBlock<ItemMessageState, Item>(state => Task.FromResult(state.Item)));
 
                 dataflow.Post(message);
                 dataflow.Complete();
@@ -191,226 +184,40 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         }
 
         /// <summary>
-        /// Returns a delegate that when executed will attempt to write a record to persistent storage for this query.
+        /// Creates a new <see cref="ConcurrentDictionaryCache{T}"/> instance that will <see cref="Product"/>s.
         /// </summary>
-        /// <param name="context">The instance through which the persistent storage can be queried.</param>
-        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateCreateQueryItemTransform(
-            ProductQueryContext context)
+        /// <param name="createApiClient">A delegate that will create a new <see cref="ApiClient"/> instance.</param>
+        /// <returns>An instance that will cache instances of <see cref="Product"/>.</returns>
+        private static ConcurrentDictionaryCache<Product> CreateProductCache(Func<ApiClient> createApiClient)
         {
-            return async (state, writer) =>
-            {
-                try
-                {
-                    var query = await CreateProductQueryItemCommand.Execute(context, state.Id, state.Item.GtinValue);
-
-                    return new ItemMessageState(state.Id, state.Culture, state.Item, query);
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine("An issue was encountered creating a query record: " + ex.ToString());
-
-                    return state.AddException(ex);
-                }
-            };
+            return new ConcurrentDictionaryCache<Product>(
+                parameters => GetProductCommand.GetProductAsync(
+                    createApiClient, 
+                    new ProductLink(new UriTemplate("/v1/product/{gran}?culture={culture}")), 
+                    parameters).Result);
         }
 
         /// <summary>
-        /// Returns a delegate that when executed will filter a collection of products down to a single product using
-        /// the specified collection of data sources.
+        /// Creates a new <see cref="ConcurrentDictionaryCache{T}"/> instance that will cache a collection of 
+        /// <see cref="Product"/>s.
         /// </summary>
-        /// <param name="dataSources">The collection of data sources to be used when filtering the products.</param>
-        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateFilterProductsTransform(
-            IEnumerable<DataSource> dataSources)
+        /// <param name="createApiClient">A delegate that will create a new <see cref="ApiClient"/> instance.</param>
+        /// <returns>An instance that will cache collections of <see cref="Product"/>.</returns>
+        private static ConcurrentDictionaryCache<IEnumerable<Product>> CreateProductsCache(
+            Func<ApiClient> createApiClient)
         {
-            return async (state, writer) =>
-            {
-                try
-                {
-                    var product = await FilterProductsCommand.Execute(dataSources, state.Products);
-                    state.Query.Gran = product.Id;
-
-                    return new ItemMessageState(state.Id, state.Culture, state.Item, state.Query);
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine("An issue was encountered filtering the collection of products: " + ex.ToString());
-
-                    return state.AddException(ex);
-                }
-            };
-        }
-
-        /// <summary>
-        /// Returns a delegate that when executed retrieves the details of the specific product in a given culture.
-        /// </summary>
-        /// <param name="cache">An instance that provides a method of caching product details.</param>
-        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateGetProductTransform(
-            ICache<Product> cache)
-        {
-            Contract.Requires(cache != null);
-
-            return async (state, writer) =>
-            {
-                try
-                {
-                    var product = await GetProductCommand.Execute(
-                        cache,
-                        state.Query.Gran,
-                        state.Culture);
-
-                    return new ItemMessageState(state.Id, state.Culture, state.Item, product);
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine("An issue was encountered fetching the identified product: " + ex.ToString());
-
-                    return state.AddException(ex);
-                }
-            };
-        }
-
-        /// <summary>
-        /// Returns a delegate that when executed will attempt to retrieve the corresponding record from persistent 
-        /// storage of a <see cref="Item"/>.
-        /// </summary>
-        /// <param name="context">The instance through which the persistent storage can be queried.</param>
-        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateGetQueryItemTransform(
-            ProductQueryContext context)
-        {
-            return async (state, writer) =>
-            {
-                try
-                {
-                    var queryItem = await GetProductQueryItemCommand.Execute(context, state.Id, state.Item.GtinValue);
-
-                    return new ItemMessageState(state.Id, state.Culture, state.Item, queryItem);
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine("An issue was encountered parsing the uploaded file: " + ex.ToString());
-
-                    return state.AddException(ex);
-                }
-            };
-        }
-
-        /// <summary>
-        /// Returns a delegate that when executed merges the product data with the original source item data.
-        /// </summary>
-        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateMergeProductTransform()
-        {
-            return async (state, writer) =>
-            {
-                try
-                {
-                    var item = await MergeProductCommand.Execute(state.Item, state.Product);
-
-                    return new ItemMessageState(state.Id, state.Culture, item);
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine("An issue was encountered merging the product details: " + ex.ToString());
-
-                    return state.AddException(ex);
-                }
-            };
-        }
-
-        /// <summary>
-        /// Returns a delegate that when executed will take the stream and attempt to convert it into a collection of 
-        /// <see cref="MessageState"/> instances.
-        /// </summary>
-        /// <param name="serializer">The serializer to be used.</param>
-        /// <param name="id">The unique identifier for the current query.</param>
-        /// <param name="culture">The culture in which the product data should be expressed.</param>
-        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<Stream, TextWriter, Task<IEnumerable<ItemMessageState>>> CreateParseFileTransform(
-            LumenWorksSerializer<Item> serializer,
-            Guid id, 
-            CultureInfo culture)
-        {
-            Contract.Requires(id != Guid.Empty);
-
-            return async (stream, writer) =>
-            {
-                try
-                {
-                    IEnumerable<Item> items = await ParseFileCommand.Execute(serializer, stream);
-
-                    return from item in items select new ItemMessageState(id, culture, item);
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine("An issue was encountered parsing the uploaded file: " + ex.ToString());
-
-                    return null;
-                }
-            };
-        }
-
-        /// <summary>
-        /// Returns a delegate that when executed will search for products with a specific GTIN and are expressed in a
-        /// specific culture.
-        /// </summary>
-        /// <param name="cache">An instance that provides a method of caching collections of product.</param>
-        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateProductSearchTransform(
-            ICache<IEnumerable<Product>> cache)
-        {
-            Contract.Requires(cache != null);
-
-            return async (state, writer) =>
-            {
-                try
-                {
-                    var products = await ExecuteSearchCommand.Execute(
-                        cache,
-                        state.Item.GtinType,
-                        state.Item.GtinValue, 
-                        state.Culture);
-
-                    return new ItemMessageState(state.Id, state.Culture, state.Item, state.Query, products);
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine("An issue was encountered retrieving a collection of products: " + ex.ToString());
-
-                    return state.AddException(ex);
-                }
-            };
-        }
-
-        /// <summary>
-        /// Returns a delegate that when executed will update the record of a product query in the persistent storage
-        /// with the identified GRAN.
-        /// </summary>
-        /// <param name="context">The instance through which the persistent storage can be updated.</param>
-        /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
-        private static Func<ItemMessageState, TextWriter, Task<ItemMessageState>> CreateUpdateEntityTransform(
-            ProductQueryContext context)
-        {
-            Contract.Requires(context != null);
-
-            return async (state, writer) =>
-            {
-                try
-                {
-                    await UpdateEntityBlockCommand.Execute(context, state.Query);
-
-                    return state;
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine("An issue was encountered updating the query item record: " + ex.ToString());
-
-                    return state.AddException(ex);
-                }
-            };
+            return new ConcurrentDictionaryCache<IEnumerable<Product>>(
+                parameters => ExecuteSearchCommand.GetProducts(
+                    createApiClient,
+                    new ProductSearchLink(new UriTemplate(
+                        "/v1/product?filter=ISBN eq '{gtin}'&culture={culture}&skip={skip}&top={top}")),
+                    new ProductSearchLink(new UriTemplate(
+                        "/v1/product?filter=EAN eq '{gtin}'&culture={culture}&skip={skip}&top={top}")),
+                    new ProductSearchLink(new UriTemplate(
+                        "/v1/product?filter=JAN eq '{gtin}'&culture={culture}&skip={skip}&top={top}")),
+                    new ProductSearchLink(new UriTemplate(
+                        "/v1/product?filter=UPC eq '{gtin}'&culture={culture}&skip={skip}&top={top}")),
+                    parameters).Result);
         }
     }
 }

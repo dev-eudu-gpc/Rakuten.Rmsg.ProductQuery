@@ -96,8 +96,6 @@
     <Compile Include="Threading\Tasks\Dataflow\Dataflow{TInput}.cs" />
     <Compile Include="Threading\Tasks\Dataflow\Extensions\IDataflowBlockExtensions.cs" />
     <Compile Include="Threading\Tasks\Dataflow\Extensions\ISourceBlock{TOutput}Extensions.cs" />
-    <Compile Include="Threading\Tasks\Dataflow\Factories\TransformBlockFactory.cs" />
-    <Compile Include="Threading\Tasks\Dataflow\Factories\TransformManyBlockFactory.cs" />
     <Compile Include="Threading\Tasks\Dataflow\ITargetDataflow{TInput}.cs" />
     <Compile Include="Threading\Tasks\Dataflow\IMessageState.cs" />
     <Compile Include="Threading\Tasks\Dataflow\IReceivableDataflow{TOutput}.cs" />

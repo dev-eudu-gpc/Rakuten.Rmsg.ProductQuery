@@ -183,6 +183,14 @@
     <Compile Include="Program.cs" />
     <Compile Include="Functions\ProcessProductQueryFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\CreateQueryItemTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\FilterProductsTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\GetProductTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\GetQueryItemTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\MergeProductTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\ParseFileTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\ProductSearchTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\UpdateEntityTransformFactory.cs" />
     <Compile Include="Threading\Tasks\Dataflow\ItemMessageState.cs" />
     <Compile Include="Threading\Tasks\Dataflow\ProcessFileDataflow.cs" />
   </ItemGroup>
