@@ -109,10 +109,15 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Factories\ProductQueryFactory.cs" />
-    <Compile Include="Features\ProductQuery.feature.cs">
+    <Compile Include="Features\NewProductQuery.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ProductQuery.feature</DependentUpon>
+      <DependentUpon>NewProductQuery.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Features\ProductQueryGroup.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ProductQueryGroup.feature</DependentUpon>
     </Compile>
     <Compile Include="Hooks\BeforeScenarioHooks.cs" />
     <Compile Include="Hooks\TestRunHooks.cs" />
@@ -148,6 +153,7 @@
     <Compile Include="rmsgProductQueryStatu.cs">
       <DependentUpon>ProductQuery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Steps\ProductQueryGroupSteps.cs" />
     <Compile Include="Storage\ScenarioStorage.cs" />
     <Compile Include="Steps\DatabaseSteps.cs" />
     <Compile Include="Steps\HttpProblemSteps.cs" />
@@ -162,9 +168,13 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Features\ProductQuery.feature">
+    <None Include="Features\NewProductQuery.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ProductQuery.feature.cs</LastGenOutput>
+      <LastGenOutput>NewProductQuery.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\ProductQueryGroup.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ProductQueryGroup.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
     <EntityDeploy Include="ProductQuery.edmx">

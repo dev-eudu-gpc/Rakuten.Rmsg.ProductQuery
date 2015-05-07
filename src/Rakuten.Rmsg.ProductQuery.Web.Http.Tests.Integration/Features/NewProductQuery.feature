@@ -1,4 +1,6 @@
-﻿Feature: ProductQuery
+﻿Feature: NewProductQuery
+	Ensures that when using the API endpoint for submitting new product queries
+	that the API operates according to the specification.
 
 Scenario: Submitting a valid new product query persists the correct information to the database
 	Given a valid new product query has been prepared

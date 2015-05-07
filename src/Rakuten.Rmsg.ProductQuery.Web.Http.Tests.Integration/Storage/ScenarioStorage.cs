@@ -77,5 +77,37 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 ScenarioContext.Current.Set<rmsgProductQuery>(value, "productQueryFromDatabase");
             }
         }
+
+        /// <summary>
+        /// Gets or sets the sparse product query group.
+        /// </summary>
+        public static rmsgProductQueryGroup SparseProductQueryGroup
+        {
+            get
+            {
+                return ScenarioContext.Current.Get<rmsgProductQueryGroup>("sparseProductQueryGroup");
+            }
+
+            set
+            {
+                ScenarioContext.Current.Set<rmsgProductQueryGroup>(value, "sparseProductQueryGroup");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a product query group that has been retrieved from the database.
+        /// </summary>
+        public static rmsgProductQueryGroup ProductQueryGroupFromDatabase
+        {
+            get
+            {
+                return ScenarioContext.Current.Get<rmsgProductQueryGroup>("productQueryGroupFromDatabase");
+            }
+
+            set
+            {
+                ScenarioContext.Current.Set<rmsgProductQueryGroup>(value, "productQueryGroupFromDatabase");
+            }
+        }
     }
 }

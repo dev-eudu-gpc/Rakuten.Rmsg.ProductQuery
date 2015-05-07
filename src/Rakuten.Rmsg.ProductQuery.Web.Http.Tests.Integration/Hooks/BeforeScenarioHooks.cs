@@ -33,13 +33,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 throw new ArgumentNullException("container");
             }
 
-            // TODO: Connection string from config
             IApiContext apiContext = new ApiContextFactory(new AppSettingsConfigurationSource()).Create();
             IStorage azureStorage = new AzureStorage();
-            var databaseContext = new ProductQueryDbContext();
 
             container.RegisterInstanceAs(apiContext);
-            container.RegisterInstanceAs(databaseContext);
             container.RegisterInstanceAs(azureStorage);
 
             this.container = container;
