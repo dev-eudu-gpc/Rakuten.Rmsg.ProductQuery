@@ -7,6 +7,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System.Diagnostics.Contracts;
     using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
     using System.Threading.Tasks.Dataflow;
 
     using Rakuten.Threading.Tasks.Dataflow;
@@ -14,7 +16,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     /// <summary>
     /// Represents a Dataflow pipeline that will process a product query request.
     /// </summary>
-    internal class ProcessFileDataflow : Dataflow<Message, MessageState>
+    internal class ProcessFileDataflow : PropagatorDataflow<Message, Item>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcessFileDataflow"/> class using the specified 
@@ -29,49 +31,107 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// The <see cref="IDataflowBlock"/> that will create a record in the persistent storage for a request.
         /// </param>
         /// <param name="searchBlock">A <see cref="IDataflowBlock"/> that will search for a product by GTIN.</param>
+        /// <param name="filterBlock">
+        /// A <see cref="IDataflowBlock"/> that will filter a collection of products to a single selected product.
+        /// </param>
+        /// <param name="updateEntityBlock">
+        /// A <see cref="IDataflowBlock"/> that will update the persistent data store with the specified product.
+        /// </param>
+        /// <param name="getProductBlock">
+        /// A <see cref="IDataflowBlock"/> that will retrieve a specific products details.
+        /// </param>
+        /// <param name="aggregateBlock">
+        /// A <see cref="IDataflowBlock"/> that will aggregate item and product data.
+        /// </param>
+        /// <param name="outputBlock">
+        /// A <see cref="IDataflowBlock"/> that will extract and return an <see cref="Item"/> from the message.
+        /// </param>
         public ProcessFileDataflow(
             IPropagatorBlock<Message, Stream> downloadFileBlock,
-            IPropagatorBlock<Stream, MessageState> parseFileBlock,
-            IPropagatorBlock<MessageState, MessageState> getEntityBlock,
-            IPropagatorBlock<MessageState, MessageState> createEntityBlock,
-            IPropagatorBlock<MessageState, MessageState> searchBlock)
+            IPropagatorBlock<Stream, ItemMessageState> parseFileBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> getEntityBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> createEntityBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> searchBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> filterBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> updateEntityBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> getProductBlock,
+            IPropagatorBlock<ItemMessageState, ItemMessageState> aggregateBlock,
+            TransformBlock<ItemMessageState, Item> outputBlock)
         {
             Contract.Requires(downloadFileBlock != null);
             Contract.Requires(parseFileBlock != null);
             Contract.Requires(getEntityBlock != null);
             Contract.Requires(createEntityBlock != null);
             Contract.Requires(searchBlock != null);
+            Contract.Requires(filterBlock != null);
+            Contract.Requires(updateEntityBlock != null);
+            Contract.Requires(getProductBlock != null);
+            Contract.Requires(aggregateBlock != null);
+            Contract.Requires(outputBlock != null);
 
             // Set the start block for the pipeline.
             this.StartBlock = downloadFileBlock;
 
             // Once the file has been downloaded, parse it.
             downloadFileBlock.LinkTo(parseFileBlock);
+            downloadFileBlock.OnFaultOrCompletion(parseFileBlock);
 
             // Once the file has been downloaded, check to see if we have a matching database record for each row.
-            parseFileBlock.LinkTo(getEntityBlock);
+            parseFileBlock.LinkTo(
+                getEntityBlock, 
+                state => !string.IsNullOrWhiteSpace(state.Item.GtinValue), 
+                outputBlock);
+
+            parseFileBlock.OnFaultOrCompletion(getEntityBlock);
 
             // If we do not have a database record, create one.
-            getEntityBlock.LinkTo(createEntityBlock, state => state.Query == null);
+            getEntityBlock.LinkTo(createEntityBlock, state => state.Query == null, outputBlock);
+            getEntityBlock.OnFaultOrCompletion(createEntityBlock);
+
+            // Once we have recorded the request, search for the product.
+            createEntityBlock.LinkTo(searchBlock, outputBlock);
 
             // If we have a database record but it has not GRAN search for a product.
             getEntityBlock.LinkTo(
-                searchBlock, 
-                state => state.Query != null && string.IsNullOrWhiteSpace(state.Query.Gran));
-        }
+                searchBlock,
+                state => state.Query != null && string.IsNullOrWhiteSpace(state.Query.Gran),
+                outputBlock);
 
-        /// <summary>
-        /// Posts an item to the process.
-        /// </summary>
-        /// <param name="item">The item being offered to the process.</param>
-        /// <returns>
-        /// <see langword="true"/> if the item was accepted by the target block; otherwise, <see langword="false"/>.
-        /// </returns>
-        public override bool Post(Message item)
-        {
-            Contract.Requires(item != null);
+            // Only complete the search block once the create entity and get entity blocks have completed.
+            Task.WhenAll(getEntityBlock.Completion, createEntityBlock.Completion)
+                .ContinueWith(_ => searchBlock.Complete());
 
-            return this.StartBlock.Post(item);
+            // Once we have received the product data, get the most appropriate product.
+            searchBlock.LinkTo(filterBlock, state => state.Products != null && state.Products.Any(), outputBlock);
+            searchBlock.OnFaultOrCompletion(filterBlock);
+
+            // Now we have filtered the results, record the GRAN in the database.
+            filterBlock.LinkTo(updateEntityBlock, outputBlock);
+            filterBlock.OnFaultOrCompletion(updateEntityBlock);
+
+            // Get all available details for the GRAN.
+            updateEntityBlock.LinkTo(getProductBlock, outputBlock);
+
+            // If we have a database record that has a registered GRAN then get that product.
+            getEntityBlock.LinkTo(
+                getProductBlock,
+                state => state.Query != null && !string.IsNullOrWhiteSpace(state.Query.Gran),
+                outputBlock);
+
+            // Only complete the get product block once the update entity and get entity blocks have completed.
+            Task.WhenAll(getEntityBlock.Completion, updateEntityBlock.Completion)
+                .ContinueWith(_ => getProductBlock.Complete());
+
+            // Merge the data with the original.
+            getProductBlock.LinkTo(aggregateBlock, outputBlock);
+            getProductBlock.OnFaultOrCompletion(aggregateBlock);
+
+            // Output the item regardless of any issues encountered.
+            aggregateBlock.LinkTo(outputBlock);
+            aggregateBlock.OnFaultOrCompletion(outputBlock);
+
+            this.Completion = outputBlock.Completion;
+            this.ReceivableBlock = outputBlock;
         }
     }
 }

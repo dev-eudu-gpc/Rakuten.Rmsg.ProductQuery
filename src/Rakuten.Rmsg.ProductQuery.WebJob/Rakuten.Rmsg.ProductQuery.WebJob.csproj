@@ -99,6 +99,10 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Collections.Immutable.1.1.33-beta\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
@@ -147,17 +151,30 @@
   <ItemGroup>
     <Compile Include="Client\ApiClientContext.cs" />
     <Compile Include="Client\ExceptionRegister.cs" />
+    <Compile Include="Client\Linking\DataSourcesLink.cs" />
+    <Compile Include="Client\Linking\ProductLink.cs" />
     <Compile Include="Client\Linking\ProductSearchLink.cs" />
-    <Compile Include="Commands\CreateProductQueryItemCommand.cs" />
-    <Compile Include="Commands\DownloadFileCommand.cs" />
-    <Compile Include="Commands\ExecuteSearchCommand.cs" />
-    <Compile Include="Commands\GetProductQueryItemCommand.cs" />
-    <Compile Include="Commands\ParseFileCommand.cs" />
+    <Compile Include="Commands\MergeProductCommand.cs" />
+    <Compile Include="Commands\EntityFramework\CreateProductQueryItemCommand.cs" />
+    <Compile Include="Commands\Azure\DownloadFileCommand.cs" />
+    <Compile Include="Commands\Http\ExecuteSearchCommand.cs" />
+    <Compile Include="Commands\FilterProductsCommand.cs" />
+    <Compile Include="Commands\Http\GetDataSourcesCommand.cs" />
+    <Compile Include="Commands\Http\GetProductCommand.cs" />
+    <Compile Include="Commands\EntityFramework\GetProductQueryItemCommand.cs" />
+    <Compile Include="Commands\IO\ParseFileCommand.cs" />
+    <Compile Include="Commands\IO\ParseItemsCommand.cs" />
+    <Compile Include="Commands\EntityFramework\UpdateEntityBlockCommand.cs" />
+    <Compile Include="Commands\EntityFramework\UpdateProductQueryCommand.cs" />
+    <Compile Include="Commands\Azure\WriteBlobCommand.cs" />
     <Compile Include="Entities\ProductQuery.cs" />
     <Compile Include="Entities\ProductQueryContext.cs" />
     <Compile Include="Entities\ProductQueryGroup.cs" />
     <Compile Include="Entities\ProductQueryItem.cs" />
     <Compile Include="Entities\ProductQueryStatus.cs" />
+    <Compile Include="Extensions\GenericExtensions.cs" />
+    <Compile Include="Infrastructure\ICache{T}.cs" />
+    <Compile Include="Infrastructure\ConcurrentDictionaryCache{T}.cs" />
     <Compile Include="Models\Api\DataSource.cs" />
     <Compile Include="Models\Api\Error.cs" />
     <Compile Include="Models\Api\Product.cs" />
@@ -166,7 +183,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Functions\ProcessProductQueryFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Threading\Tasks\Dataflow\MessageState.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\CreateQueryItemTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\FilterProductsTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\GetProductTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\GetQueryItemTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\MergeProductTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\ParseFileTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\ProductSearchTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\Factories\UpdateEntityTransformFactory.cs" />
+    <Compile Include="Threading\Tasks\Dataflow\ItemMessageState.cs" />
     <Compile Include="Threading\Tasks\Dataflow\ProcessFileDataflow.cs" />
   </ItemGroup>
   <ItemGroup>

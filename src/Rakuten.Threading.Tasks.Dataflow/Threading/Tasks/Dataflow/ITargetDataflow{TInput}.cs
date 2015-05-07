@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="IDataFlow{TInput,TState}.cs" company="Rakuten">
+// <copyright file="ITargetDataflow{TInput}.cs" company="Rakuten">
 //   Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
@@ -12,8 +12,7 @@ namespace Rakuten.Threading.Tasks.Dataflow
     /// Defines a process that consists of one or more linked <see cref="IDataflowBlock"/>s.
     /// </summary>
     /// <typeparam name="TInput">The type accepted by the process.</typeparam>
-    /// <typeparam name="TState">The type that defines a messages state.</typeparam>
-    public interface IDataflow<in TInput, in TState> where TState : IMessageState
+    public interface ITargetDataflow<in TInput>
     {
         /// <summary>
         /// Gets the completion task that represents the completion status of process.
@@ -26,7 +25,7 @@ namespace Rakuten.Threading.Tasks.Dataflow
         ITargetBlock<TInput> StartBlock { get; }
 
         /// <summary>
-        /// Signals to the <see cref="IDataflow{TInput,TState}"/> that it should not accept nor produce any more 
+        /// Signals to the <see cref="ITargetDataflow{TInput}"/> that it should not accept nor produce any more 
         /// messages nor consume any more postponed messages.
         /// </summary>
         void Complete();

@@ -44,5 +44,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Entities
         /// Gets or sets the collection of received product queries.
         /// </summary>
         public DbSet<ProductQuery> ProductQueries { get; set; }
+
+        /// <summary>
+        /// Gets or sets the collection of status that define a queries progress.
+        /// </summary>
+        public DbSet<ProductQueryStatus> ProductQueryStatus { get; set; }
     }
 }
