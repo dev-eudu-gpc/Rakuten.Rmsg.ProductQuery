@@ -107,9 +107,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             // Construct and return a new product query object
             return new ProductQuery
             {
+                DateCreated = dateCreated,
                 Links = new Collection<Link> 
                 {
-                    this.selfLink.ForId(parameters.Id.ToString()).ToLink(true),
+                    this.selfLink
+                        .ForId(parameters.Id.ToString())
+                        .ForCulture(parameters.Culture.Name)
+                        .ToLink(true),
                     this.azureBlobLink.ForId(blobUri.ToString()).ToLink(true)
                 },
                 Status = ProductQueryStatus.New

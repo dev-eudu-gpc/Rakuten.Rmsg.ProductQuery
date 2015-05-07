@@ -14,7 +14,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     /// Represents the error raised when a parameter contains what is expected to be date
     /// but was unable to be parsed as one
     /// </summary>
-    [ApiException("http://problems.rakuten.co.uk/invalid-request-parameter", "An invalid request parameter was supplied.")]
+    [ApiException("http://problems.rakuten.com/invalid-request-parameter", "An invalid request parameter was supplied.")]
     internal class InvalidDateException : ApiException
     {
         /// <summary>
