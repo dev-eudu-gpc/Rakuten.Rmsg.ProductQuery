@@ -9,8 +9,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
     using System.Threading.Tasks;
-
     using Rakuten.Rmsg.ProductQuery.Configuration;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.EntityModels;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
     /// <summary>
@@ -36,7 +36,12 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// A command that can create an entry in a database for the product query.
         /// </summary>
-        private readonly ICommand<CreateDatabaseCommandParameters, Task> createProductQueryDatabaseCommand;
+        private readonly ICommand<CreateDatabaseCommandParameters, Task<rmsgProductQuery>> createProductQueryDatabaseCommand;
+
+        /// <summary>
+        /// A link representing the canonical location of the monitor for the resource.
+        /// </summary>
+        private readonly ProductQueryMonitorLink monitorLink;
 
         /// <summary>
         /// A link representing the canonical location of the resource.
@@ -54,6 +59,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <param name="context">The context in which this instance is running.</param>
         /// <param name="productQueryUriTemplate">A link template representing the canonical location of the resource.</param>
         /// <param name="azureBlobUriTemplate">A link template representing the canonical location of the blob in Azure storage.</param>
+        /// <param name="monitorUriTemplate">A link template representing the canonical location of the monitor for the resource.</param>
         /// <param name="createProductQueryDatabaseCommand">A command for creating an entry in a database for the product query.</param>
         /// <param name="createStorageBlobCommand">A command for creating a blob in storage for the product query file</param>
         /// <param name="updateProductQueryUriCommand">A command for updating a product query's uri</param>
@@ -61,7 +67,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             IApiContext context,
             IUriTemplate productQueryUriTemplate,
             IUriTemplate azureBlobUriTemplate,
-            ICommand<CreateDatabaseCommandParameters, Task> createProductQueryDatabaseCommand,
+            IUriTemplate monitorUriTemplate,
+            ICommand<CreateDatabaseCommandParameters, Task<rmsgProductQuery>> createProductQueryDatabaseCommand,
             ICommand<CreateStorageBlobCommandParameters, Task<Uri>> createStorageBlobCommand,
             ICommand<UpdateUriDatabaseCommandParameters, Task> updateProductQueryUriCommand)
         {
@@ -76,6 +83,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             this.context = context;
             this.createStorageBlobCommand = createStorageBlobCommand;
             this.createProductQueryDatabaseCommand = createProductQueryDatabaseCommand;
+            this.monitorLink = new ProductQueryMonitorLink("monitor", monitorUriTemplate, new TargetAttributes(null, "image/png", null));
             this.selfLink = new ProductQueryLink(productQueryUriTemplate);
             this.updateProductQueryUriCommand = updateProductQueryUriCommand;
         }
@@ -91,7 +99,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             var dateCreated = DateTime.Now;
 
             // Create an entry for the query in the database
-            await this.createProductQueryDatabaseCommand.Execute(
+            rmsgProductQuery newProductQuery = await this.createProductQueryDatabaseCommand.Execute(
                 new CreateDatabaseCommandParameters(parameters.Id, parameters.Culture, dateCreated));
 
             //// TODO: [WB 15-Apr-2015] Catch azure exceptions and update database accordingly
@@ -114,7 +122,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                         .ForId(parameters.Id.ToString())
                         .ForCulture(parameters.Culture.Name)
                         .ToLink(true),
-                    this.azureBlobLink.ForId(blobUri.ToString()).ToLink(true)
+                    this.azureBlobLink.ForId(blobUri.ToString()).ToLink(true),
+                    this.monitorLink.ForId(newProductQuery.rmsgProductQueryGroupID.ToString()).ToLink(true)
                 },
                 Status = ProductQueryStatus.New
             };

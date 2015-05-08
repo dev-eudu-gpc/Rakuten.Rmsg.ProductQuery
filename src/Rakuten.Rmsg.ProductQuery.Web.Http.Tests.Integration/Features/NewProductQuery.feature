@@ -16,9 +16,11 @@ Scenario: Submitting a valid new product query returns the correct response
 	When a request is made to submit the new product query
 	And the product query is retrieved from the database
 	Then the HTTP status code is 201
-	And the product query status is New
-	And the product query has the correct self link
-	And the product query has the correct enclosure link
+	And the product query in the response body has a status of New
+	And the product query in the response body has the same created date as that in the database
+	And the product query in the response body has the correct self link
+	And the product query in the response body has the correct enclosure link
+	And the product query in the response body has the correct monitor link
 
 Scenario: Submitting a new product query with an identifier and culture that exists returns the correct response
 	Given a valid new product query has been prepared
@@ -26,9 +28,11 @@ Scenario: Submitting a new product query with an identifier and culture that exi
 	When a request is made to submit the new product query again
 	And the product query is retrieved from the database
 	Then the HTTP status code is 200
-	And the product query status is New
-	And the product query has the correct self link
-	And the product query has the correct enclosure link
+	And the product query in the response body has the same status as that in the database
+	And the product query in the response body has the same created date as that in the database
+	And the product query in the response body has the correct self link
+	And the product query in the response body has the correct enclosure link
+	And the product query in the response body has the correct monitor link
 
 Scenario: Submitting a new product query with an identifier that exists but in a different culture returns the correct response
 	Given a valid new product query with a culture of en-US has been prepared

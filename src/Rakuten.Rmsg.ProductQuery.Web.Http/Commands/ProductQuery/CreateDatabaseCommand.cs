@@ -16,7 +16,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     /// <summary>
     /// Represents a command for inserting a new product query into the database.
     /// </summary>
-    internal class CreateDatabaseCommand : AsyncCommandAction<CreateDatabaseCommandParameters>
+    internal class CreateDatabaseCommand : AsyncCommand<CreateDatabaseCommandParameters, rmsgProductQuery>
     {
         /// <summary>
         /// The context under which this instance is operating.
@@ -49,42 +49,40 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// </summary>
         /// <param name="parameters">The necessary parameters to enter the product query into the database</param>
         /// <returns>A task that does the work.</returns>
-        public override Task ExecuteAsync(CreateDatabaseCommandParameters parameters)
+        public override async Task<rmsgProductQuery> ExecuteAsync(CreateDatabaseCommandParameters parameters)
         {
-            return Task.Run(() =>
+            // Get a query group that is not yet full
+            var queryGroup = this.databaseContext.rmsgProductQueryGroups
+                .Where(g => g.count < this.apiContext.MaximumQueriesPerGroup)
+                .OrderBy(g => g.count)
+                .FirstOrDefault();
+
+            // If there are no empty query groups then create a new one
+            if (queryGroup == null)
             {
-                // Get a query group that is not yet full
-                var queryGroup = this.databaseContext.rmsgProductQueryGroups
-                    .Where(g => g.count < this.apiContext.MaximumQueriesPerGroup)
-                    .OrderBy(g => g.count)
-                    .FirstOrDefault();
-
-                // If there are no empty query groups then create a new one
-                if (queryGroup == null)
-                {
-                    queryGroup = this.databaseContext.rmsgProductQueryGroups.Add(
-                        new rmsgProductQueryGroup
-                        { 
-                            rmsgProductQueryGroupID = Guid.NewGuid()
-                        });
-                }
-
-                // Create the query
-                // TODO: Take a different approach to the status id
-                this.databaseContext.rmsgProductQueries.Add(
-                    new rmsgProductQuery
-                    {
-                        culture = parameters.Culture.Name,
-                        dateCreated = parameters.DateCreated,
-                        rmsgProductQueryID = parameters.Id,
-                        rmsgProductQueryGroupID = queryGroup.rmsgProductQueryGroupID,
-                        index = ++queryGroup.count,
-                        rmsgProductQueryStatusID = this.databaseContext.rmsgProductQueryStatus.First(s => s.name == "new").rmsgProductQueryStatusID
+                queryGroup = this.databaseContext.rmsgProductQueryGroups.Add(
+                    new rmsgProductQueryGroup
+                    { 
+                        rmsgProductQueryGroupID = Guid.NewGuid()
                     });
+            }
 
-                // Submit the changes to the database
-                this.databaseContext.SaveChanges();
-            });
+            // Create the query
+            var newProductQuery = this.databaseContext.rmsgProductQueries.Add(
+                new rmsgProductQuery
+                {
+                    culture = parameters.Culture.Name,
+                    dateCreated = parameters.DateCreated,
+                    rmsgProductQueryID = parameters.Id,
+                    rmsgProductQueryGroupID = queryGroup.rmsgProductQueryGroupID,
+                    index = ++queryGroup.count,
+                    rmsgProductQueryStatusID = (int)ProductQueryStatus.New
+                });
+
+            // Submit the changes to the database
+            await this.databaseContext.SaveChangesAsync();
+
+            return newProductQuery;
         }
     }
 }

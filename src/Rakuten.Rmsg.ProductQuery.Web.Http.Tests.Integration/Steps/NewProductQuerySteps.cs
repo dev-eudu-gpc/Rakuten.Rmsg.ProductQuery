@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
+    using System;
     using System.Net.Http;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
@@ -68,17 +69,37 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Verifies that the product query in the response body
-        /// has the same enclosure link as that found in the database.
+        /// Ensures that the product query in the response body has the
+        /// same date created as that found in the database.
         /// </summary>
-        [Then(@"the product query has the correct enclosure link")]
-        public void ThenTheProductQueryHasTheCorrectEnclosureLink()
+        [Then(@"the product query in the response body has the same created date as that in the database")]
+        public void ThenTheProductQueryInTheResponseBodyHasTheSameCreatedDateAsThatInTheDatabase()
         {
             // Arrange
             var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsStringAsync().Result;
             var productQuery = JsonConvert.DeserializeObject<ProductQuery>(content);
 
             // Assert
+            Assert.AreEqual(ScenarioStorage.ProductQueryFromDatabase.dateCreated.Year, productQuery.Year);
+            Assert.AreEqual(ScenarioStorage.ProductQueryFromDatabase.dateCreated.Month, productQuery.Month);
+            Assert.AreEqual(ScenarioStorage.ProductQueryFromDatabase.dateCreated.Day, productQuery.Day);
+            Assert.AreEqual(ScenarioStorage.ProductQueryFromDatabase.dateCreated.Hour, productQuery.Hour);
+            Assert.AreEqual(ScenarioStorage.ProductQueryFromDatabase.dateCreated.Minute, productQuery.Minute);
+        }
+
+        /// <summary>
+        /// Verifies that the product query in the response body
+        /// has the same enclosure link as that found in the database.
+        /// </summary>
+        [Then(@"the product query in the response body has the correct enclosure link")]
+        public void ThenTheProductQueryInTheResponseBodyHasTheCorrectEnclosureLink()
+        {
+            // Arrange
+            var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsStringAsync().Result;
+            var productQuery = JsonConvert.DeserializeObject<ProductQuery>(content);
+
+            // Assert
+            Assert.IsNotNull(productQuery.Links.Enclosure);
             Assert.AreEqual(
                 ScenarioStorage.ProductQueryFromDatabase.uri,
                 productQuery.Links.Enclosure.Href,
@@ -89,14 +110,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Verifies that the product query in the response body
         /// has the correct self link.
         /// </summary>
-        [Then(@"the product query has the correct self link")]
-        public void ThenTheProductQueryHasTheCorrectSelfLink()
+        [Then(@"the product query in the response body has the correct self link")]
+        public void ThenTheProductQueryInTheResponseBodyHasTheCorrectSelfLink()
         {
             // Arrange
             var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsStringAsync().Result;
             var productQuery = JsonConvert.DeserializeObject<ProductQuery>(content);
 
             // Assert
+            Assert.IsNotNull(productQuery.Links.Self);
             Assert.AreEqual(
                 ScenarioStorage.HttpResponseMessage.RequestMessage.RequestUri.PathAndQuery,
                 productQuery.Links.Self.Href);
@@ -107,14 +129,47 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// has the specified status.
         /// </summary>
         /// <param name="expectedStatus">The expected status of the product query.</param>
-        [Then(@"the product query status is (.*)")]
-        public void ThenTheProductQueryStatusIs(string expectedStatus)
+        [Then(@"the product query in the response body has a status of (.*)")]
+        public void ThenTheProductQueryInTheResponseBodyHasAStatusOf(string expectedStatus)
         {
             // Arrange
-            var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsAsync<ProductQuery>().Result;
+            var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsStringAsync().Result;
+            var productQuery = JsonConvert.DeserializeObject<ProductQuery>(content);
 
             // Assert
-            Assert.AreEqual(expectedStatus, content.Status, true);
+            Assert.AreEqual(expectedStatus, productQuery.Status, true);
+        }
+
+        /// <summary>
+        /// Verifies that the status of the product query in the response is the
+        /// same as the status of the product query in the database
+        /// </summary>
+        [Then(@"the product query in the response body has the same status as that in the database")]
+        public void ThenTheProductQueryInTheResponseBodyHasTheSameStatusAsThatInTheDatabase()
+        {
+            // Arrange
+            var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsStringAsync().Result;
+            var productQuery = JsonConvert.DeserializeObject<ProductQuery>(content);
+
+            Assert.AreEqual(
+                (ProductQueryStatus)ScenarioStorage.ProductQueryFromDatabase.rmsgProductQueryStatusID,
+                Enum.Parse(typeof(ProductQueryStatus), productQuery.Status));
+        }
+
+        /// <summary>
+        /// Verifies that the product query in the response has the correct monitor link.
+        /// </summary>
+        [Then(@"the product query in the response body has the correct monitor link")]
+        public void ThenTheProductQueryInTheResponseBodyHasTheCorrectMonitorLink()
+        {
+            // Arrange
+            var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsStringAsync().Result;
+            var productQuery = JsonConvert.DeserializeObject<ProductQuery>(content);
+            var expectedUri = "/product-query-group/" + ScenarioStorage.NewProductQuery.Id + "/status/{year}/{month}/{day}/{hour}/{minute}";
+
+            // Assert
+            Assert.IsNotNull(productQuery.Links.Monitor);
+            Assert.AreEqual(expectedUri, productQuery.Links.Monitor.Href);
         }
     }
 }
