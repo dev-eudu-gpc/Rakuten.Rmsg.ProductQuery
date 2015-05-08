@@ -5,11 +5,6 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using TechTalk.SpecFlow;
 
@@ -20,41 +15,27 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
     public class ProductQueryGroupSteps
     {
         /// <summary>
-        /// Verifies that the identifier of the product query group that was retrieved
-        /// from the database matches the identifier of the sparse product query group
-        /// in scenario context.
+        /// Verifies that the count property of the product query group that was
+        /// retrieved from the database matches the expected count.
         /// </summary>
-        [Then(@"the product query group identifier of the product query from the database matches the identifier of the sparse product query group")]
-        public void ThenTheProductQueryGroupIdentifierOfTheProductQueryFromTheDatabaseMatchesTheIdentifierOfTheSparseProductQueryGroup()
+        /// <param name="expectedCount">The expected value for the count property.</param>
+        [Then(@"the count of product queries in the new product query group is (.*)")]
+        public void ThenTheCountOfProductQueriesInTheNewProductQueryGroupIs(int expectedCount)
         {
-            Assert.AreEqual(
-                ScenarioStorage.SparseProductQueryGroup.rmsgProductQueryGroupID,
-                ScenarioStorage.ProductQueryGroupFromDatabase.rmsgProductQueryGroupID);
+            Assert.AreEqual(expectedCount, ScenarioStorage.ProductQueryGroupActual.count);
         }
 
         /// <summary>
         /// Verifies that the count property of the product query group that was
         /// retrieved from the database is 1 greater than the count property of the
-        /// sparse product query group in scenario context.
+        /// product query group in scenario context.
         /// </summary>
-        [Then(@"the count of product queries in the sparse product query group has been incremented by 1")]
-        public void ThenTheCountOfProductQueriesInTheSparseProductQueryGroupHasBeenIncrementedBy1()
+        [Then(@"the count of product queries in the product query group has been incremented by 1")]
+        public void ThenTheCountOfProductQueriesInTheProductQueryGroupHasBeenIncrementedBy1()
         {
             Assert.AreEqual(
-                ScenarioStorage.SparseProductQueryGroup.count + 1,
-                ScenarioStorage.ProductQueryGroupFromDatabase.count);
-        }
-
-        /// <summary>
-        /// Verifies that the index of the new product query matches the count of the
-        /// product query group retrieved from the database.
-        /// </summary>
-        [Then(@"the index of the product query from the database matches the incremented count of the sparse product query group")]
-        public void ThenTheIndexOfTheProductQueryFromTheDatabaseMatchesTheIncrementedCountOfTheSparseProductQueryGroup()
-        {
-            Assert.AreEqual(
-                ScenarioStorage.ProductQueryGroupFromDatabase.count,
-                ScenarioStorage.ProductQueryFromDatabase.index);
+                ScenarioStorage.ProductQueryGroupExpected.count + 1,
+                ScenarioStorage.ProductQueryGroupActual.count);
         }
 
         /// <summary>
@@ -69,14 +50,28 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         }
 
         /// <summary>
-        /// Verifies that the count property of the product query group that was
-        /// retrieved from the database matches the expected count.
+        /// Verifies that the index of the new product query matches the count of the
+        /// product query group retrieved from the database.
         /// </summary>
-        /// <param name="expectedCount">The expected value for the count property.</param>
-        [Then(@"the count of product queries in the new product query group is (.*)")]
-        public void ThenTheCountOfProductQueriesInTheNewProductQueryGroupIs(int expectedCount)
+        [Then(@"the index of the product query from the database matches the incremented count of the product query group")]
+        public void ThenTheIndexOfTheProductQueryFromTheDatabaseMatchesTheIncrementedCountOfTheProductQueryGroup()
         {
-            Assert.AreEqual(expectedCount, ScenarioStorage.ProductQueryGroupFromDatabase.count);
+            Assert.AreEqual(
+                ScenarioStorage.ProductQueryGroupActual.count,
+                ScenarioStorage.ProductQueryFromDatabase.index);
+        }
+
+        /// <summary>
+        /// Verifies that the product query group assigned to the product query in 
+        /// scenario storage is the expected group.
+        /// </summary>
+        [Then(@"the product query group assigned to the new product query is the correct one")]
+        public void ThenTheProductQueryGroupAssignedToTheNewProductQueryIsTheCorrectOne()
+        {
+            // Assert
+            Assert.AreEqual(
+                ScenarioStorage.ProductQueryGroupExpected.rmsgProductQueryGroupID,
+                ScenarioStorage.ProductQueryFromDatabase.rmsgProductQueryGroupID);
         }
     }
 }

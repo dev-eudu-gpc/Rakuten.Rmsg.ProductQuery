@@ -55,7 +55,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             {
                 // Get a query group that is not yet full
                 var queryGroup = this.databaseContext.rmsgProductQueryGroups
-                    .Where(q => q.count < this.apiContext.MaximumQueriesPerGroup)
+                    .Where(g => g.count < this.apiContext.MaximumQueriesPerGroup)
+                    .OrderBy(g => g.count)
                     .FirstOrDefault();
 
                 // If there are no empty query groups then create a new one

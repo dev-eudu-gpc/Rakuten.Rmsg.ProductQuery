@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
+    using System.Collections.Generic;
     using System.Net.Http;
     using TechTalk.SpecFlow;
 
@@ -79,25 +80,25 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Gets or sets the sparse product query group.
+        /// Gets or sets the expected product query group.
         /// </summary>
-        public static rmsgProductQueryGroup SparseProductQueryGroup
+        public static rmsgProductQueryGroup ProductQueryGroupExpected
         {
             get
             {
-                return ScenarioContext.Current.Get<rmsgProductQueryGroup>("sparseProductQueryGroup");
+                return ScenarioContext.Current.Get<rmsgProductQueryGroup>("productQueryGroup");
             }
 
             set
             {
-                ScenarioContext.Current.Set<rmsgProductQueryGroup>(value, "sparseProductQueryGroup");
+                ScenarioContext.Current.Set<rmsgProductQueryGroup>(value, "productQueryGroup");
             }
         }
 
         /// <summary>
-        /// Gets or sets a product query group that has been retrieved from the database.
+        /// Gets or sets the actual product query group.
         /// </summary>
-        public static rmsgProductQueryGroup ProductQueryGroupFromDatabase
+        public static rmsgProductQueryGroup ProductQueryGroupActual
         {
             get
             {
