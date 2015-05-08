@@ -33,3 +33,7 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+// Open up the internal components of this assembly for testing.
+[assembly: InternalsVisibleTo("Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit")]
+[assembly: InternalsVisibleTo("Rakuten.Rmsg.ProductQuery.WebJob.Fakes")]

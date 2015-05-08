@@ -27,7 +27,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         public static async Task Execute(CloudBlobContainer container, Message message, Stream stream)
         {
             Contract.Requires(container != null);
-            Contract.Requires(container.Exists());
             Contract.Requires(message != null);
             Contract.Requires(stream != null);
 

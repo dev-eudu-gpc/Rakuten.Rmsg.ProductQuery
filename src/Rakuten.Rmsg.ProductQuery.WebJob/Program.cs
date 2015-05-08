@@ -82,7 +82,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                         new MemoryStream()), 
                         message.Id, 
                         new CultureInfo(message.Culture));
-
                 var getQueryItemTransform = GetQueryItemTransformFactory.Create(
                     (id, gtin) => GetProductQueryItemCommand.Execute(databaseContext, id, gtin));
                 var createQueryItemTransform = CreateQueryItemTransformFactory.Create(
@@ -98,8 +97,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 var mergeProductTransform = MergeProductTransformFactory.Create(MergeProductCommand.Execute);
 
                 var dataflow = new ProcessFileDataflow(
-                    new TransformBlock<Message, Stream>(
-                        msg => DownloadFileCommand.Execute(blobContainer, msg, new MemoryStream())),
+                    new TransformBlock<Message, Stream>(msg => DownloadFileCommand.Execute(
+                        (blobName, content) => DownloadCloudBlob(blobContainer, blobName, content), 
+                        msg, 
+                        new MemoryStream())),
                     new TransformManyBlock<Stream, ItemMessageState>(file => parseFileTransform(file, writer)),
                     new TransformBlock<ItemMessageState, ItemMessageState>(
                         state => getQueryItemTransform(state, writer)),
@@ -218,6 +219,35 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                     new ProductSearchLink(new UriTemplate(
                         "/v1/product?filter=UPC eq '{gtin}'&culture={culture}&skip={skip}&top={top}")),
                     parameters).Result);
+        }
+
+        /// <summary>
+        /// Downloads the specified file from the given container to the given <see cref="Stream"/>.
+        /// </summary>
+        /// <param name="container">The container in which the specified blob is located.</param>
+        /// <param name="filename">A string containing the name of the blob.</param>
+        /// <param name="stream">The <see cref="Stream"/> to which the file will be downloaded.</param>
+        /// <returns>
+        /// A <see cref="Task"/> the represents the asynchronous operation where the task result will be the stream 
+        /// containing the blob contents.
+        /// </returns>
+        private static async Task<Stream> DownloadCloudBlob(
+            CloudBlobContainer container, 
+            string filename, 
+            Stream stream)
+        {
+            // Get a reference to the blob in the container.
+            CloudBlockBlob blob = container.GetBlockBlobReference(filename);
+
+            // Ensure the blob exists.
+            if (!blob.Exists())
+            {
+                throw new InvalidOperationException("The specified blob was not found within the given container.");
+            }
+
+            await blob.DownloadToStreamAsync(stream);
+
+            return stream;
         }
     }
 }
