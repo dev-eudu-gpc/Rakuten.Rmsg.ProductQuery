@@ -38,9 +38,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             }
 
             // Parse the blob name from the URI.
+            // TODO: [MM, 08-MAY-15] Find a better alternative to TrinEnd.
             var filename = string.Format(
                 "{0}/{1}", 
-                enclosure.Segments[enclosure.Segments.Length - 2],
+                enclosure.Segments[enclosure.Segments.Length - 2].TrimEnd('/'),
                 enclosure.Segments[enclosure.Segments.Length - 1]);
 
             return await downloadBlob(filename, stream);

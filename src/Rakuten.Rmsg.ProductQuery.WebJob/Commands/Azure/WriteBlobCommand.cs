@@ -20,13 +20,14 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <summary>
         /// Writes the contents of the <see cref="Stream"/> into a <see cref="CloudBlockBlob"/>.
         /// </summary>
-        /// <param name="container">The container to which the blob should be written.</param>
+        /// <param name="writeBlob">
+        /// A delegate that will asynchronously write the stream contents to the specified blob.
+        /// </param>
         /// <param name="message">An instance representing the queue message to be processed.</param>
         /// <param name="stream">The <see cref="Stream"/> containing the contents to be written.</param>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        public static async Task Execute(CloudBlobContainer container, Message message, Stream stream)
+        public static async Task Execute(Func<Stream, string, Task> writeBlob, Message message, Stream stream)
         {
-            Contract.Requires(container != null);
             Contract.Requires(message != null);
             Contract.Requires(stream != null);
 
@@ -38,15 +39,14 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             }
 
             // Parse the blob name from the URI.
+            // TODO: [MM, 08-MAY-15] Find a better alternative to TrimEnd.
             var filename = string.Format(
                 "{0}/{1}",
-                enclosure.Segments[enclosure.Segments.Length - 2],
+                enclosure.Segments[enclosure.Segments.Length - 2].TrimEnd('/'),
                 enclosure.Segments[enclosure.Segments.Length - 1]);
 
             // Get a reference to the blob in the container.
-            CloudBlockBlob blob = container.GetBlockBlobReference(filename);
-
-            await blob.UploadFromStreamAsync(stream);
+            await writeBlob(stream, filename);
         }
     }
 }
