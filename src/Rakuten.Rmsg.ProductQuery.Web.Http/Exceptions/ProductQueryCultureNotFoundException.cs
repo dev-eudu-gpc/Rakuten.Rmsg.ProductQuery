@@ -15,7 +15,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     /// <summary>
     /// Represents the error raised when a specified product query cannot be found.
     /// </summary>
-    [ApiException("http://problems.rakuten.co.uk/product-query-not-found", "The product query could not be found.")]
+    [ApiException("http://problems.rakuten.com/product-query-not-found", "The product query could not be found.")]
     internal class ProductQueryCultureNotFoundException : ApiException
     {
         /// <summary>

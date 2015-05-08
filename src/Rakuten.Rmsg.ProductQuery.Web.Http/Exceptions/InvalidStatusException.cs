@@ -14,7 +14,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     /// Represents the error raised when trying to set the status of a product query
     /// to an invalid status.
     /// </summary>
-    [ApiException("http://problems.rakuten.co.uk/invalid-product-query-status", "The status supplied was invalid.")]
+    [ApiException("http://problems.rakuten.com/invalid-product-query-status", "The status supplied was invalid.")]
     internal class InvalidStatusException : ApiException
     {
         /// <summary>

@@ -14,7 +14,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     /// Represents the error raised when a parameters contains what is expected to be
     /// a specific culture but was unable to be parsed as one.
     /// </summary>
-    [ApiException("http://problems.rakuten.co.uk/invalid-request-parameter", "An invalid request parameter was supplied.")]
+    [ApiException("http://problems.rakuten.com/invalid-request-parameter", "An invalid request parameter was supplied.")]
     internal class InvalidCultureException : ApiException
     {
         /// <summary>

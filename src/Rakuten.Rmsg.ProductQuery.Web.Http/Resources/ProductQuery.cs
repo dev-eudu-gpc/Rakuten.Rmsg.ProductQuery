@@ -9,6 +9,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using System.Globalization;
     using System.Xml.Serialization;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
 
     /// <summary>
     /// Represents a product query
@@ -70,6 +71,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// Gets or sets the status of the product query
         /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
         public ProductQueryStatus Status { get; set; }
 
         /// <summary>
