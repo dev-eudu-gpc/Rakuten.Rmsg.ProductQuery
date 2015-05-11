@@ -7,6 +7,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
     using System.Globalization;
     using System.IO;
     using System.Net.Http;
@@ -85,7 +86,11 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 var getQueryItemTransform = GetQueryItemTransformFactory.Create(
                     (id, gtin) => GetProductQueryItemCommand.Execute(databaseContext, id, gtin));
                 var createQueryItemTransform = CreateQueryItemTransformFactory.Create(
-                    (guid, s) => CreateProductQueryItemCommand.Execute(databaseContext, guid, s));
+                    (guid, s) => 
+                        CreateProductQueryItemCommand.Execute(
+                            entity => SaveProductQueryItemAsync(databaseContext, entity), 
+                            guid, 
+                            s));
                 var productSearchTransform = ProductSearchTransformFactory.Create(
                     (type, gtin, culture) => 
                         searchCache.GetOrAddAsync(string.Concat(type, gtin, culture.Name), type, gtin, culture.Name));
@@ -248,6 +253,18 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             await blob.DownloadToStreamAsync(stream);
 
             return stream;
+        }
+
+        /// <summary>
+        /// Asynchronously persists a <see cref="ProductQueryItem"/> to storage.
+        /// </summary>
+        /// <param name="context">The <see cref="DbContext"/> to be used when persisting data.</param>
+        /// <param name="entity">The details of the record to be persisted.</param>
+        /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
+        private static Task SaveProductQueryItemAsync(ProductQueryContext context, ProductQueryItem entity)
+        {
+            context.ProductQueryItems.Attach(entity);
+            return context.SaveChangesAsync();
         }
 
         /// <summary>
