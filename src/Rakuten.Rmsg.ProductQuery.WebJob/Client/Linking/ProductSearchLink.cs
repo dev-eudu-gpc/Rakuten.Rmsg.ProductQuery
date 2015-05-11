@@ -38,19 +38,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Linking
         }
 
         /// <summary>
-        /// Constructs a product search link to search for a product with a specified GTIN.
-        /// </summary>
-        /// <param name="gtin">The GTIN.</param>
-        /// <returns>A link to perform a product search for products with the specified GTIN.</returns>
-        public ProductSearchLink ForGtin(string gtin)
-        {
-            var resolvedTemplate = this.Target.Bind("gtin", gtin);
-            Contract.Assume(resolvedTemplate != null);
-
-            return new ProductSearchLink(resolvedTemplate);
-        }
-
-        /// <summary>
         /// Constructs a product search link to search for a product skipping the defined number of records.
         /// </summary>
         /// <param name="count">The number of records to skip from the top of the results.</param>
@@ -75,6 +62,66 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Linking
         public ProductSearchLink Taking(int count)
         {
             var resolvedTemplate = this.Target.Bind("top", count.ToString());
+            Contract.Assume(resolvedTemplate != null);
+
+            return new ProductSearchLink(resolvedTemplate);
+        }
+
+        /// <summary>
+        /// Constructs a product search link to search for products with a matching EAN.
+        /// </summary>
+        /// <param name="value">The value to match upon.</param>
+        /// <returns>A link to perform a product search matching upon an EAN.</returns>
+        public ProductSearchLink WithEanFilter(string value)
+        {
+            var filter = string.Format("EAN eq '{0}'", value);
+
+            var resolvedTemplate = this.Target.Bind("filter", filter);
+            Contract.Assume(resolvedTemplate != null);
+
+            return new ProductSearchLink(resolvedTemplate);
+        }
+
+        /// <summary>
+        /// Constructs a product search link to search for products with a matching ISBN.
+        /// </summary>
+        /// <param name="value">The value to match upon.</param>
+        /// <returns>A link to perform a product search matching upon an ISBN.</returns>
+        public ProductSearchLink WithIsbnFilter(string value)
+        {
+            var filter = string.Format("ISBN eq '{0}'", value);
+
+            var resolvedTemplate = this.Target.Bind("filter", filter);
+            Contract.Assume(resolvedTemplate != null);
+
+            return new ProductSearchLink(resolvedTemplate);
+        }
+
+        /// <summary>
+        /// Constructs a product search link to search for products with a matching JAN.
+        /// </summary>
+        /// <param name="value">The value to match upon.</param>
+        /// <returns>A link to perform a product search matching upon an JAN.</returns>
+        public ProductSearchLink WithJanFilter(string value)
+        {
+            var filter = string.Format("JAN eq '{0}'", value);
+
+            var resolvedTemplate = this.Target.Bind("filter", filter);
+            Contract.Assume(resolvedTemplate != null);
+
+            return new ProductSearchLink(resolvedTemplate);
+        }
+
+        /// <summary>
+        /// Constructs a product search link to search for products with a matching UPC.
+        /// </summary>
+        /// <param name="value">The value to match upon.</param>
+        /// <returns>A link to perform a product search matching upon an UPC.</returns>
+        public ProductSearchLink WithUpcFilter(string value)
+        {
+            var filter = string.Format("UPC eq '{0}'", value);
+
+            var resolvedTemplate = this.Target.Bind("filter", filter);
             Contract.Assume(resolvedTemplate != null);
 
             return new ProductSearchLink(resolvedTemplate);

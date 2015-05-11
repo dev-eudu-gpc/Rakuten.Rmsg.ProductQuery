@@ -6,7 +6,6 @@
 namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System;
-    using System.Data.Entity;
     using System.Threading.Tasks;
 
     using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
@@ -19,18 +18,17 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <summary>
         /// Create the record of a product query by GTIN in the persistent storage.
         /// </summary>
-        /// <param name="context">The <see cref="DbContext"/> instance using which the database can be queried.</param>
+        /// <param name="saveAsync">A delegate that will asynchronously attempt to persist the record..</param>
         /// <param name="id">The unique identifier of the query.</param>
         /// <param name="gtin">The Global Trade Identification Number (GTIN).</param>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        public static async Task<ProductQueryItem> Execute(ProductQueryContext context, Guid id, string gtin)
+        public static async Task<ProductQueryItem> Execute(Func<ProductQueryItem, Task> saveAsync, Guid id, string gtin)
         {
-            var query = new ProductQueryItem { Gtin = gtin, ProductQueryId = id };
+            var item = new ProductQueryItem { Gtin = gtin, ProductQueryId = id };
 
-            context.ProductQueryItems.Add(query);
-            await context.SaveChangesAsync();
+            await saveAsync(item);
 
-            return query;
+            return item;
         }
     }
 }

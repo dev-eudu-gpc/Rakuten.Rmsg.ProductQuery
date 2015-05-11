@@ -6,6 +6,7 @@
 namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
@@ -21,16 +22,16 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// Attempts to retrieve the record from the database for the specified GTIN within the context of the the given
         /// query.
         /// </summary>
-        /// <param name="context">The <see cref="DbContext"/> instance using which the database can be queried.</param>
+        /// <param name="queryAsync">A delegate that will asynchronously find records with matching criteria.</param>
         /// <param name="id">The unique identifier of the query.</param>
         /// <param name="gtin">The Global Trade Identification Number (GTIN).</param>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        public static async Task<ProductQueryItem> Execute(ProductQueryContext context, Guid id, string gtin)
+        public static async Task<ProductQueryItem> Execute(
+            Func<Guid, string, Task<List<ProductQueryItem>>> queryAsync, 
+            Guid id, 
+            string gtin)
         {
-            var query = await(
-                from item in context.ProductQueryItems
-                where item.ProductQueryId == id && item.Gtin == gtin
-                select item).ToListAsync();
+            var query = await queryAsync(id, gtin);
 
             if (query.Count > 1)
             {
@@ -38,7 +39,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                     "More than one query item was found for GTIN " + gtin + " and query " + id);
             }
 
-            return !query.Any() ? null : query.First();
+            return !query.Any() ? null : query[0];
         }
     }
 }
