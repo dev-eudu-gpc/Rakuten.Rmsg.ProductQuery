@@ -65,14 +65,14 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 
             var message = new Message(Guid.NewGuid(), "en-GB", new Link() { Target = UriString });
 
-            InvalidOperationException exception = null;
+            Exception exception = null;
 
             // Act
             try
             {
                 await DownloadFileCommand.Execute(downloadBlob, message, new MemoryStream());
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
                 exception = ex;
             }

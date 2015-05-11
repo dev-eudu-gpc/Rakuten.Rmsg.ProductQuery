@@ -97,6 +97,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\Commands\Azure\DownloadFileCommandTests.cs" />
     <Compile Include="Tests\Commands\Azure\WriteBlobCommandTests.cs" />
+    <Compile Include="Tests\Commands\EntityFramework\CreateProductQueryItemCommandTests.cs" />
+    <Compile Include="Tests\Commands\EntityFramework\GetProductQueryItemCommandTests.cs" />
     <Compile Include="Tests\Commands\Http\ExecuteSearchCommandTests.cs" />
   </ItemGroup>
   <ItemGroup />

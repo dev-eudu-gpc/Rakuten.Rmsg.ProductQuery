@@ -31,16 +31,16 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
             Func<Stream, string, Task<Stream>> uploadBlob =
                 (s, stream) => Task.FromResult<Stream>(new MemoryStream());
 
-            var message = new Message(Guid.NewGuid(), "en-GB", new Link() { Target = UriString });
+            var message = new Message(Guid.NewGuid(), "en-GB", new Link { Target = UriString });
 
-            UriFormatException exception = null;
+            Exception exception = null;
 
             // Act
             try
             {
                 await WriteBlobCommand.Execute(uploadBlob, message, new MemoryStream());
             }
-            catch (UriFormatException ex)
+            catch (Exception ex)
             {
                 exception = ex;
             }
@@ -62,16 +62,16 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
             Func<Stream, string, Task<Stream>> uploadBlob =
                 (s, stream) => Task.FromResult<Stream>(new MemoryStream());
 
-            var message = new Message(Guid.NewGuid(), "en-GB", new Link() { Target = UriString });
+            var message = new Message(Guid.NewGuid(), "en-GB", new Link { Target = UriString });
 
-            InvalidOperationException exception = null;
+            Exception exception = null;
 
             // Act
             try
             {
                 await WriteBlobCommand.Execute(uploadBlob, message, new MemoryStream());
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
                 exception = ex;
             }
@@ -98,7 +98,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
                 return Task.FromResult(stream);
             };
 
-            var message = new Message(Guid.NewGuid(), "en-GB", new Link() { Target = UriString });
+            var message = new Message(Guid.NewGuid(), "en-GB", new Link { Target = UriString });
 
             // Act
             await DownloadFileCommand.Execute(uploadBlob, message, new MemoryStream());

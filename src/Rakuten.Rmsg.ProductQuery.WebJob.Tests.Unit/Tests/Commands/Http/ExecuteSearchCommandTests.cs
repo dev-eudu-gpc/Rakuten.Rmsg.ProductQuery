@@ -7,6 +7,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
@@ -52,7 +53,101 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
         /// </summary>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
         [TestMethod]
-        public async Task ExecuteSearchCommandHandlesAPagedCollectionOfProduct()
+        public async Task ExecuteSearchCommandHandlesAPageWithNoSearchResults()
+        {
+            // Arrange
+            var searchLink = new StubProductSearchLink(new StubUriTemplate(
+                "/v1/product?filter={filter}&culture={culture}&skip={skip}&top={top}"));
+
+            // Act
+            var products = await ExecuteSearchCommand.Execute(
+                () => CreateApiClient(message => Task.FromResult(Enumerable.Empty<Product>())),
+                searchLink,
+                new[] { "ISBN", "111111111116", "en-GB" });
+
+            // Assert
+            Assert.AreEqual(0, products.Count());
+        }
+
+        /// <summary>
+        /// Ensures that multiple pages of a product search are handled.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
+        [TestMethod]
+        public async Task ExecuteSearchCommandHandlesASinglePageOfProduct()
+        {
+            // Arrange
+            var searchLink = new StubProductSearchLink(new StubUriTemplate(
+                "/v1/product?filter={filter}&culture={culture}&skip={skip}&top={top}"));
+
+            int requestNumber = 0;
+
+            Func<HttpResponseMessage, Task<IEnumerable<Product>>> handleResponse = message =>
+            {
+                var searchResults = new List<Product>();
+
+                if (requestNumber == 0)
+                {
+                    for (int i = 0; i < 20; i++)
+                    {
+                        searchResults.Add(new Product());
+                    }
+                }
+
+                requestNumber++;
+
+                return Task.FromResult(searchResults.AsEnumerable());
+            };
+
+            // Act
+            var products = await ExecuteSearchCommand.Execute(
+                () => CreateApiClient(handleResponse),
+                searchLink,
+                new[] { "ISBN", "111111111116", "en-GB" });
+
+            // Assert
+            Assert.AreEqual(20, products.Count());
+        }
+
+        /// <summary>
+        /// Ensures that multiple pages of a product search are handled.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
+        [TestMethod]
+        public async Task ExecuteSearchCommandHandlesLessThanASinglePageOfProduct()
+        {
+            // Arrange
+            var searchLink = new StubProductSearchLink(new StubUriTemplate(
+                "/v1/product?filter={filter}&culture={culture}&skip={skip}&top={top}"));
+
+            Func<HttpResponseMessage, Task<IEnumerable<Product>>> handleResponse = message =>
+            {
+                var searchResults = new List<Product>();
+
+                for (int i = 0; i < 2; i++)
+                {
+                    searchResults.Add(new Product());
+                }
+
+                return Task.FromResult(searchResults.AsEnumerable());
+            };
+
+            // Act
+            var products = await ExecuteSearchCommand.Execute(
+                () => CreateApiClient(handleResponse),
+                searchLink,
+                new[] { "ISBN", "111111111116", "en-GB" });
+
+            // Assert
+            Assert.AreEqual(2, products.Count());
+        }
+
+        /// <summary>
+        /// Ensures that multiple pages of a product search are handled.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
+        [TestMethod]
+        public async Task ExecuteSearchCommandHandlesMultiplePagesOfProduct()
         {
             // Arrange
             var searchLink = new StubProductSearchLink(new StubUriTemplate(
@@ -131,6 +226,35 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 
             // Assert
             Assert.IsNotNull(products);
+        }
+
+        /// <summary>
+        /// Ensures that a <see cref="CultureNotFoundException"/> is thrown when an invalid culture is passed.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
+        public async Task ExecuteSearchCommandThrowsACultureNotFoundException()
+        {
+            // Arrange
+            var searchLink = new StubProductSearchLink(new StubUriTemplate(
+                "/v1/product?filter={filter}&culture={culture}&skip={skip}&top={top}"));
+
+            Exception exception = null;
+
+            // Act
+            try
+            {
+                await ExecuteSearchCommand.Execute(
+                    () => CreateApiClient(message => Task.FromResult(Enumerable.Empty<Product>())),
+                    searchLink,
+                    new[] { "ISBN", "111111111116", "xx-XX" });
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
+            // Assert
+            Assert.IsInstanceOfType(exception, typeof(CultureNotFoundException));
         }
 
         /// <summary>
