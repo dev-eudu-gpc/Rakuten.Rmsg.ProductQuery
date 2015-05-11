@@ -24,7 +24,7 @@ Scenario: Submitting a valid new product query returns the correct response
 
 Scenario: Submitting a new product query with an identifier and culture that exists returns the correct response
 	Given a valid new product query has been prepared
-	And a request is made to submit the new product query
+	And a request has been made to submit the new product query
 	When a request is made to submit the new product query again
 	And the product query is retrieved from the database
 	Then the HTTP status code is 200
@@ -36,11 +36,11 @@ Scenario: Submitting a new product query with an identifier and culture that exi
 
 Scenario: Submitting a new product query with an identifier that exists but in a different culture returns the correct response
 	Given a valid new product query with a culture of en-US has been prepared
-	And a request is made to submit the new product query
+	And a request has been made to submit the new product query
 	And the culture of the new product query is updated to en-GB
 	When a request is made to submit the new product query
 	Then the HTTP status code is 303
-	And the HTTP location header is /product-query/{id}/culture/en-GB
+	And the HTTP location header is /product-query/{id}/culture/en-US
 
 Scenario: Submitting a new product query with an invalid GUID returns the correct response
 	Given a new product query with an invalid guid has been prepared

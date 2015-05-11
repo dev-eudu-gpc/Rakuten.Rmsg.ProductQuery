@@ -306,6 +306,7 @@
     <Compile Include="Resources\ProductQuery.cs" />
     <Compile Include="Resources\ProductQueryProgress.cs" />
     <Compile Include="Resources\ProductQueryStatus.cs" />
+    <Compile Include="Resources\ReadyForProcessingRequest.cs" />
     <Compile Include="Web\Http\Common\TaskHelpers.cs" />
     <Compile Include="Web\Http\ExceptionHandling\ApiExceptionMetadata.cs" />
     <Compile Include="Web\Http\ExceptionHandling\AttributeApiExceptionMetadataProvider.cs" />

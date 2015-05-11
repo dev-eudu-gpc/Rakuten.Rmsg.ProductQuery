@@ -116,7 +116,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
                     " the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-            testRunner.And("a request is made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to submit the new product query again", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.And("the product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the HTTP status code is 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -140,11 +140,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
                     "culture returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("a valid new product query with a culture of en-US has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-            testRunner.And("a request is made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the culture of the new product query is updated to en-GB", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 303", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("the HTTP location header is /product-query/{id}/culture/en-GB", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP location header is /product-query/{id}/culture/en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
         

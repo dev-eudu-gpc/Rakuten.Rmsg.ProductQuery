@@ -38,7 +38,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
         {
             // Arrange
             var id = Guid.NewGuid();
-            var productQuery = ProductQueryFactory.CreateProduct(id);
+            var productQuery = ProductQueryFactory.Create(id);
             var createCommand = new StubICommand<CreateCommandParameters, Task<ProductQuery>>
             {
                 ExecuteT0 = parameters => Task.Run(() => productQuery)
@@ -91,7 +91,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
                 var expectedLocationHeader = string.Format("product-query/{0}/culture/{1}", id, actualCulture);
                 var getCommand = new StubICommand<GetCommandParameters, Task<ProductQuery>>
                 {
-                    ExecuteT0 = parameters => Task.Run(() => ProductQueryFactory.CreateProduct(id, actualCulture))
+                    ExecuteT0 = parameters => Task.Run(() => ProductQueryFactory.Create(id, actualCulture))
                 };
 
                 ProductQueryController controller = this.CreateController(getCommand: getCommand);
@@ -120,7 +120,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             var culture = "en-US";
             var getCommand = new StubICommand<GetCommandParameters, Task<ProductQuery>>
             {
-                ExecuteT0 = parameters => Task.Run(() => ProductQueryFactory.CreateProduct(id, culture))
+                ExecuteT0 = parameters => Task.Run(() => ProductQueryFactory.Create(id, culture))
             };
 
             ProductQueryController controller = this.CreateController(getCommand: getCommand);
@@ -243,7 +243,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             // Arrange
             var id = Guid.NewGuid();
             var culture = "en-US";
-            var productQuery = ProductQueryFactory.CreateProduct(id, culture, ProductQueryStatus.Submitted);
+            var productQuery = ProductQueryFactory.Create(id, culture, ProductQueryStatus.Submitted);
+            var requestBody = ReadyForProcessingRequestFactory.Create();
 
             var readyForProcessingCommand = new StubICommand<ReadyForProcessingCommandParameters, Task<ProductQuery>>
             {
@@ -253,7 +254,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             ProductQueryController controller = this.CreateController(readyForProcessingCommand: readyForProcessingCommand);
 
             // Act
-            IHttpActionResult result = await controller.PutAsync(id.ToString(), culture, productQuery);
+            IHttpActionResult result = await controller.PutAsync(id.ToString(), culture, requestBody);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(AcceptedNegotiatedContentResult<ProductQuery>));
@@ -271,8 +272,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             var id = Guid.NewGuid();
             var requestedCulture = "en-US";
             var actualCulture = "ja-JP";
-            var submittedProductQuery = ProductQueryFactory.CreateProduct(id, requestedCulture, ProductQueryStatus.Submitted);
-            var actualProductQuery = ProductQueryFactory.CreateProduct(id, actualCulture);
+            var submittedProductQuery = ProductQueryFactory.Create(id, requestedCulture);
+            var requestBody = ReadyForProcessingRequestFactory.Create();
+            var actualProductQuery = ProductQueryFactory.Create(id, actualCulture);
             var readyForProcessingCommand = new StubICommand<ReadyForProcessingCommandParameters, Task<ProductQuery>>
             {
                 ExecuteT0 = parameters =>
@@ -287,7 +289,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             ProductQueryController controller = this.CreateController(readyForProcessingCommand: readyForProcessingCommand);
 
             // Act
-            IHttpActionResult result = await controller.PutAsync(id.ToString(), requestedCulture, submittedProductQuery);
+            IHttpActionResult result = await controller.PutAsync(id.ToString(), requestedCulture, requestBody);
             HttpResponseMessage response = await result.ExecuteAsync(new CancellationToken());
 
             // Assert
@@ -306,7 +308,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
         {
             // Arrange
             var id = Guid.NewGuid();
-            var productQuery = ProductQueryFactory.CreateProduct(id: id, status: ProductQueryStatus.Submitted);
+            var productQuery = ProductQueryFactory.Create(id: id, status: ProductQueryStatus.Submitted);
+            var requestBody = ReadyForProcessingRequestFactory.Create();
             var readyForProcessingCommand = new StubICommand<ReadyForProcessingCommandParameters, Task<ProductQuery>>
             {
                 ExecuteT0 = parameters => { throw new ProductQueryNotFoundException(); }
@@ -318,7 +321,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             Exception caughtException = null;
             try
             {
-                var result = await controller.PutAsync(id.ToString(), "en-US", productQuery);
+                var result = await controller.PutAsync(id.ToString(), "en-US", requestBody);
             }
             catch (Exception ex)
             {
@@ -342,7 +345,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
         {
             // Arrange
             var id = Guid.NewGuid();
-            var productQuery = ProductQueryFactory.CreateProduct(id: id, status: ProductQueryStatus.New);
+            var productQuery = ProductQueryFactory.Create(id);
+            var requestBody = ReadyForProcessingRequestFactory.Create("i-am-not-valid");
 
             ProductQueryController controller = this.CreateController();
 
@@ -350,7 +354,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             Exception caughtException = null;
             try
             {
-                var result = await controller.PutAsync(id.ToString(), "en-US", productQuery);
+                var result = await controller.PutAsync(id.ToString(), "en-US", requestBody);
             }
             catch (Exception ex)
             {
@@ -433,11 +437,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
         /// <param name="getCommand">A command that gets a specified product query.</param>
         /// <param name="createCommand">A command that creates a new product query.</param>
         /// <param name="readyForProcessingCommand">A command that can make a product query ready for processing.</param>
+        /// <param name="productQueryUriTemplate">A link template representing the canonical location of the resource.</param>
         /// <returns>Returns a new instance of <see cref="ProductQueryController"/>.</returns>
         private ProductQueryController CreateController(
             StubICommand<GetCommandParameters, Task<ProductQuery>> getCommand = null,
             StubICommand<CreateCommandParameters, Task<ProductQuery>> createCommand = null,
-            StubICommand<ReadyForProcessingCommandParameters, Task<ProductQuery>> readyForProcessingCommand = null)
+            StubICommand<ReadyForProcessingCommandParameters, Task<ProductQuery>> readyForProcessingCommand = null,
+            StubIUriTemplate productQueryUriTemplate = null)
         {
             // Arrange stub dependencies
             var get = getCommand ??
@@ -458,8 +464,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
                     ExecuteT0 = parameters => Task.Run(() => new ProductQuery())
                 };
 
+            var uriTemplate = productQueryUriTemplate ?? StubIUriTemplateFactory.Create();
+
             // Arrange controller
-            return new ProductQueryController(get, create, ready)
+            return new ProductQueryController(get, create, ready, uriTemplate)
             {
                 Configuration = new HttpConfiguration(),
                 Request = new StubHttpRequestMessage()

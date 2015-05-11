@@ -89,7 +89,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                 {
                     this.selfLink
                         .ForId(parameters.Id.ToString())
-                        .ForCulture(parameters.Culture.Name)
+                        .ForCulture(productQuery.CultureName)
                         .ToLink(true),
                     this.monitorLink
                         .ForId(productQuery.GroupId.ToString())

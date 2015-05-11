@@ -128,6 +128,7 @@
     <Compile Include="Common\ProgressMapAssert.cs" />
     <Compile Include="Factories\ProductQueryFactory.cs" />
     <Compile Include="Factories\ProgressMapImageFactory.cs" />
+    <Compile Include="Factories\ReadyForProcessingRequestFactory.cs" />
     <Compile Include="Factories\Stubs\StubIUriTemplateFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\TestProductQuery.cs" />

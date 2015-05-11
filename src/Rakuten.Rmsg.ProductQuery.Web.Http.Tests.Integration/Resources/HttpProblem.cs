@@ -5,6 +5,8 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
+    using System.Collections.ObjectModel;
+
     /// <summary>
     /// Represents an HTTP problem.
     /// </summary>
@@ -14,6 +16,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Gets or sets the detail.
         /// </summary>
         public string Detail { get; set; }
+
+        /// <summary>
+        /// Gets or sets a collection of links.
+        /// </summary>
+        public Collection<Link> Links { get; set; }
 
         /// <summary>
         /// Gets or sets the title.

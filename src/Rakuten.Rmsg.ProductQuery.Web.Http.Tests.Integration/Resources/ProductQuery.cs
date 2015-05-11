@@ -6,6 +6,7 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Represents a product query.
@@ -22,11 +23,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// <summary>
         /// Gets or sets the culture for the product query.
         /// </summary>
+        [JsonIgnore]
         public string Culture { get; set; }
 
         /// <summary>
         /// Gets or sets the date on which the product query was created.
         /// </summary>
+        [JsonIgnore]
         public DateTime? DateCreated
         {
             get
@@ -57,11 +60,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// <summary>
         /// Gets or sets the identifier for the product query.
         /// </summary>
+        [JsonIgnore]
         public string Id { get; set; }
 
         /// <summary>
         /// Gets the identifier of the product query as a GUID.
         /// </summary>
+        [JsonIgnore]
         public Guid IdAsGuid
         {
             get

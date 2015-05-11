@@ -115,7 +115,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     controller = new ProductQueryController(
                         getCommand,
                         createCommand,
-                        readyForProcessingCommand);
+                        readyForProcessingCommand,
+                        uriTemplates.ProductQuery);
 
                     break;
                 case "ProductQueryGroup":

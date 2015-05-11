@@ -20,7 +20,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// The message that describes this error.
         /// </summary>
         private const string Detail =
-            @"A product query with ID '{0}' cannot be found.";
+            @"Failed to find a product query with identifier '{0}'.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductQueryNotFoundException"/> class.

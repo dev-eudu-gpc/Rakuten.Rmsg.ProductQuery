@@ -43,7 +43,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         {
             // Create the message
             // TODO: [MM, 22-APR-15] Populate the culture correctly.
-            var message = new Message(Guid.NewGuid(), "en-GB", parameters.BlobLink);
+            var message = new Message(parameters.Id, parameters.CultureName, parameters.BlobLink);
 
             return Task.Run(() =>
             {

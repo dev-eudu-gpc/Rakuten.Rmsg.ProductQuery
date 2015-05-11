@@ -58,8 +58,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Data.Services.Client.5.6.2\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Configuration">
-      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.1.8.0.0\lib\net35-full\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    <Reference Include="Microsoft.ServiceBus">
+      <HintPath>..\packages\WindowsAzure.ServiceBus.2.3.1.0\lib\net40-full\Microsoft.ServiceBus.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Storage">
       <HintPath>..\packages\WindowsAzure.Storage.4.3.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
@@ -78,6 +82,7 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Spatial, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Spatial.5.6.2\lib\net40\System.Spatial.dll</HintPath>
@@ -119,6 +124,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ProductQueryGroup.feature</DependentUpon>
     </Compile>
+    <Compile Include="Features\ReadyForProcessing.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReadyForProcessing.feature</DependentUpon>
+    </Compile>
     <Compile Include="Hooks\BeforeScenarioHooks.cs" />
     <Compile Include="Hooks\TestRunHooks.cs" />
     <Compile Include="ProductQuery.Context.cs">
@@ -138,6 +148,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\HttpProblem.cs" />
+    <Compile Include="Resources\Message.cs" />
     <Compile Include="Resources\ProductQueryLink.cs" />
     <Compile Include="Resources\ProductQueryLinks.cs" />
     <Compile Include="Resources\ProductQuery.cs" />
@@ -154,7 +165,9 @@
     <Compile Include="rmsgProductQueryStatu.cs">
       <DependentUpon>ProductQuery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Steps\MessageQueueSteps.cs" />
     <Compile Include="Steps\ProductQueryGroupSteps.cs" />
+    <Compile Include="Steps\ServiceBusSteps.cs" />
     <Compile Include="Storage\ScenarioStorage.cs" />
     <Compile Include="Steps\DatabaseSteps.cs" />
     <Compile Include="Steps\HttpProblemSteps.cs" />
@@ -164,6 +177,7 @@
     <Compile Include="Steps\ProductQueryResponseSteps.cs" />
     <Compile Include="Storage\AzureStorage.cs" />
     <Compile Include="Storage\IStorage.cs" />
+    <Compile Include="Web\Http\ProductQueryApiClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -177,11 +191,16 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ProductQueryGroup.feature.cs</LastGenOutput>
     </None>
+    <None Include="Features\ReadyForProcessing.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ReadyForProcessing.feature.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
     <EntityDeploy Include="ProductQuery.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ProductQuery.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="Performance\Microsoft.ServiceBus.MessagingPerformanceCounters.man" />
     <None Include="ProductQuery.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ProductQuery.edmx</DependentUpon>
@@ -198,6 +217,10 @@
     <None Include="Settings.StyleCop" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rakuten.Core\Rakuten.Core.csproj">
+      <Project>{b1f93214-9eef-409c-8520-a0906288f557}</Project>
+      <Name>Rakuten.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rakuten.Rmsg.ProductQuery\Rakuten.Rmsg.ProductQuery.csproj">
       <Project>{9ad4ec9a-333a-4779-9f7d-4245710f19a2}</Project>
       <Name>Rakuten.Rmsg.ProductQuery</Name>
