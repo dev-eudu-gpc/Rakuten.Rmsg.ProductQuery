@@ -6,7 +6,6 @@
 namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 {
     using System;
-    using System.Data.Services.Client;
     using System.IO;
     using System.Text;
     using System.Threading.Tasks;
