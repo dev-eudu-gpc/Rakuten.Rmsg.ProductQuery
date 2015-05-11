@@ -20,28 +20,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     internal class GetProductCommand
     {
         /// <summary>
-        /// Retrieves a product with the specified GRAN in the given culture.
-        /// </summary>
-        /// <param name="cache">An instance that provides a method of caching product instances.</param>
-        /// <param name="gran">The GRAN.</param>
-        /// <param name="culture">The culture in which the product information should be retrieved.</param>
-        /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        public static async Task<Product> Execute(ICache<Product> cache, string gran, CultureInfo culture)
-        {
-            Contract.Requires(cache != null);
-            Contract.Requires(culture != null);
-
-            return await cache.GetOrAddAsync(string.Concat(gran, culture.Name), gran, culture.Name);
-        }
-
-        /// <summary>
         /// Gets the product with the specified GRAN expressed in the given culture.
         /// </summary>
         /// <param name="createClient">A delegate that will create a new <see cref="ApiClient"/> instance.</param>
         /// <param name="link">A <see cref="LinkTemplate"/> to build the URI to get a product.</param>
         /// <param name="parameters">The parameters required to fetch a new collection of products.</param>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        public static async Task<Product> GetProductAsync(
+        public static async Task<Product> Execute(
             Func<ApiClient> createClient, 
             ProductLink link, 
             string[] parameters)

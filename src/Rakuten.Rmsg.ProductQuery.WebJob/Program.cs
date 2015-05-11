@@ -87,13 +87,15 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 var createQueryItemTransform = CreateQueryItemTransformFactory.Create(
                     (guid, s) => CreateProductQueryItemCommand.Execute(databaseContext, guid, s));
                 var productSearchTransform = ProductSearchTransformFactory.Create(
-                    (type, gtin, culture) => ExecuteSearchCommand.Execute(searchCache, type, gtin, culture));
+                    (type, gtin, culture) => 
+                        searchCache.GetOrAddAsync(string.Concat(type, gtin, culture.Name), type, gtin, culture.Name));
                 var filterProductsTransform = FilterProductsTransformFactory.Create(
                     products => FilterProductsCommand.Execute(dataSources, products));
                 var updateEntityTransform = UpdateEntityTransformFactory.Create(
                     query => UpdateEntityBlockCommand.Execute(databaseContext, query));
                 var getProductTransform = GetProductTransformFactory.Create(
-                    (gran, culture) => GetProductCommand.Execute(productCache, gran, culture));
+                    (gran, culture) =>
+                        productCache.GetOrAddAsync(string.Concat(gran, culture.Name), gran, culture.Name));
                 var mergeProductTransform = MergeProductTransformFactory.Create(MergeProductCommand.Execute);
 
                 var dataflow = new ProcessFileDataflow(
@@ -196,7 +198,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         private static ConcurrentDictionaryCache<Product> CreateProductCache(Func<ApiClient> createApiClient)
         {
             return new ConcurrentDictionaryCache<Product>(
-                parameters => GetProductCommand.GetProductAsync(
+                parameters => GetProductCommand.Execute(
                     createApiClient, 
                     new ProductLink(new UriTemplate("/v1/product/{gran}?culture={culture}")), 
                     parameters).Result);
@@ -212,16 +214,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             Func<ApiClient> createApiClient)
         {
             return new ConcurrentDictionaryCache<IEnumerable<Product>>(
-                parameters => ExecuteSearchCommand.GetProducts(
+                parameters => ExecuteSearchCommand.Execute(
                     createApiClient,
                     new ProductSearchLink(new UriTemplate(
-                        "/v1/product?filter=ISBN eq '{gtin}'&culture={culture}&skip={skip}&top={top}")),
-                    new ProductSearchLink(new UriTemplate(
-                        "/v1/product?filter=EAN eq '{gtin}'&culture={culture}&skip={skip}&top={top}")),
-                    new ProductSearchLink(new UriTemplate(
-                        "/v1/product?filter=JAN eq '{gtin}'&culture={culture}&skip={skip}&top={top}")),
-                    new ProductSearchLink(new UriTemplate(
-                        "/v1/product?filter=UPC eq '{gtin}'&culture={culture}&skip={skip}&top={top}")),
+                        "/v1/product?filter={filter}&culture={culture}&skip={skip}&top={top}")),
                     parameters).Result);
         }
 
