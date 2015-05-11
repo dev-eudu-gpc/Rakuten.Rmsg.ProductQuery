@@ -10,6 +10,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using System.Data.Entity;
     using System.Globalization;
     using System.IO;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
@@ -84,7 +85,14 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                         message.Id, 
                         new CultureInfo(message.Culture));
                 var getQueryItemTransform = GetQueryItemTransformFactory.Create(
-                    (id, gtin) => GetProductQueryItemCommand.Execute(databaseContext, id, gtin));
+                    (id, gtin) => GetProductQueryItemCommand.Execute(
+                        (guid, s) => (
+                            from item in databaseContext.ProductQueryItems
+                            where item.ProductQueryId == id && item.Gtin == gtin
+                            select item)
+                            .ToListAsync(), 
+                        id, 
+                        gtin));
                 var createQueryItemTransform = CreateQueryItemTransformFactory.Create(
                     (guid, s) => 
                         CreateProductQueryItemCommand.Execute(
