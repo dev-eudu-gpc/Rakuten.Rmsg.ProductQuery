@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
+    using System;
     using System.Diagnostics.Contracts;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -72,6 +73,43 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 
             // Make the call
             return await client.PutAsJsonAsync<ProductQuery>(uri, source);
+        }
+
+        /// <summary>
+        /// Makes a call to the Product Query API to get the status of a given
+        /// product query group.
+        /// </summary>
+        /// <param name="productQueryGroupId">The identifier of the product query group.</param>
+        /// <param name="year">The year of the point in time.</param>
+        /// <param name="month">The month of the point in time.</param>
+        /// <param name="day">The day of the point in time.</param>
+        /// <param name="hour">The hour of the point in time.</param>
+        /// <param name="minute">The minute of the point in time.</param>
+        /// <returns>The <see cref="HttpResponseMessage"/> from the API call.</returns>
+        public async Task<HttpResponseMessage> GetProductQueryGroupStatus(
+            string productQueryGroupId,
+            string year,
+            string month,
+            string day,
+            string hour,
+            string minute)
+        {
+            // Create the HTTP client
+            var handler = new HttpClientHandler { AllowAutoRedirect = false };
+            var client = new HttpClient(handler) { BaseAddress = this.context.BaseAddress };
+
+            // Construct the URI
+            var uri = string.Format(
+                "/product-query-group/{0}/status/{1}/{2}/{3}/{4}/{5}",
+                productQueryGroupId,
+                year,
+                month,
+                day,
+                hour,
+                minute);
+
+            // Make the call
+            return await client.GetAsync(uri);
         }
     }
 }

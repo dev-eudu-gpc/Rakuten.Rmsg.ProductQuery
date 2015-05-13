@@ -113,19 +113,30 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Retrieves the product query group from the database for the 
         /// new product query stored in scenario context.
         /// </summary>
-        [When(@"the new product query group for the new product query is retrieved from the database")]
-        public void WhenTheNewProductQueryGroupForTheNewProductQueryIsRetrievedFromTheDatabase()
+        [Given(@"the product query group for the new product query has been retrieved from the database")]
+        [When(@"the product query group for the new product query is retrieved from the database")]
+        public void WhenTheProductQueryGroupForTheNewProductQueryIsRetrievedFromTheDatabase()
         {
             using (var databaseContext = new ProductQueryDbContext())
             {
                 // Get the details of the new product query from the current scenario context
-                var source = ScenarioStorage.ProductQueryFromDatabase;
+                ////var source = ScenarioStorage.ProductQueryFromDatabase;
+                var productQueryId = Guid.Parse(ScenarioStorage.NewProductQuery.Id);
 
                 // Get the product query group from the database and dump it in scenario storage.
                 ScenarioStorage.ProductQueryGroupActual =
                     databaseContext.rmsgProductQueryGroups
-                        .Where(q => q.rmsgProductQueryGroupID == source.rmsgProductQueryGroupID)
+                        .Join(
+                            databaseContext.rmsgProductQueries.Where<rmsgProductQuery>(query => query.rmsgProductQueryID == productQueryId),
+                            group => group.rmsgProductQueryGroupID,
+                            query => query.rmsgProductQueryGroupID,
+                            (group, query) => group)
                         .Single();
+
+                ////ScenarioStorage.ProductQueryGroupActual =
+                ////    databaseContext.rmsgProductQueryGroups
+                ////        .Where(q => q.rmsgProductQueryGroupID == source.rmsgProductQueryGroupID)
+                ////        .Single();
             }
         }
 
@@ -151,6 +162,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Retrieves the product query from the database and stores it in
         /// the current scenario context.
         /// </summary>
+        [Given(@"the product query has been retrieved from the database")]
         [When(@"the product query is retrieved from the database")]
         [Then(@"the product query can be retrieved from the database")]
         public void WhenTheProductQueryIsRetrievedFromTheDatabase()

@@ -295,6 +295,7 @@
     <Compile Include="Exceptions\InvalidStatusException.cs" />
     <Compile Include="Exceptions\Core\ObjectNotFoundException.cs" />
     <Compile Include="Exceptions\ProductQueryCultureNotFoundException.cs" />
+    <Compile Include="Exceptions\ProductQueryGroupNotFoundException.cs" />
     <Compile Include="Exceptions\ProductQueryNotFoundException.cs" />
     <Compile Include="Exceptions\Core\ValidationFailedException.cs" />
     <Compile Include="Links\AzureBlobLink.cs" />

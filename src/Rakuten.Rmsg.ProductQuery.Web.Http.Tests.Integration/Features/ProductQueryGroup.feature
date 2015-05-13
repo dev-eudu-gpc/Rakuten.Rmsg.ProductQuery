@@ -7,7 +7,7 @@ Scenario: Submitting a new product query when there is no empty or sparse produc
 	And there are no empty or sparse product query groups in the database
 	And a request has been made to submit the new product query
 	When the product query is retrieved from the database
-	And the new product query group for the new product query is retrieved from the database
+	And the product query group for the new product query is retrieved from the database
 	Then the count of product queries in the new product query group is 1
 	And the index of the product query from the database is 1
 

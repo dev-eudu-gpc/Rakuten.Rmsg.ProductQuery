@@ -49,7 +49,7 @@ Scenario: Submitting a new product query with an invalid GUID returns the correc
 	And an HTTP problem can be retrieved from the response body
 	And the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter
 	And the HTTP problem title is An invalid request parameter was supplied.
-	And the HTTP problem detail is The product query identifier '{id}' in the request URI is invalid. It must be a GUID.
+	And the HTTP problem detail for the product query request is The product query identifier '{id}' in the request URI is invalid. It must be a GUID.
 
 Scenario: Submitting a new product query with an invalid culture returns the correct response
 	Given a new product query with an invalid culture has been prepared
@@ -58,4 +58,4 @@ Scenario: Submitting a new product query with an invalid culture returns the cor
 	And an HTTP problem can be retrieved from the response body
 	And the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter
 	And the HTTP problem title is An invalid request parameter was supplied.
-	And the HTTP problem detail is The culture '{culture}' in the request URI is invalid. It must be a valid language tag (as per BCP 47).
+	And the HTTP problem detail for the product query request is The culture '{culture}' in the request URI is invalid. It must be a valid language tag (as per BCP 47).

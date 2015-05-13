@@ -28,7 +28,7 @@ Scenario: Flagging a product query as ready for processing with an invalid GUID 
 	And an HTTP problem can be retrieved from the response body
 	And the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter
 	And the HTTP problem title is An invalid request parameter was supplied.
-	And the HTTP problem detail is The product query identifier '{id}' in the request URI is invalid. It must be a GUID.
+	And the HTTP problem detail for the product query request is The product query identifier '{id}' in the request URI is invalid. It must be a GUID.
 
 Scenario: Flagging a product query as ready for processing with an invalid culture returns the correct response
 	Given a new product query with an invalid culture has been prepared
@@ -37,7 +37,7 @@ Scenario: Flagging a product query as ready for processing with an invalid cultu
 	And an HTTP problem can be retrieved from the response body
 	And the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter
 	And the HTTP problem title is An invalid request parameter was supplied.
-	And the HTTP problem detail is The culture '{culture}' in the request URI is invalid. It must be a valid language tag (as per BCP 47).
+	And the HTTP problem detail for the product query request is The culture '{culture}' in the request URI is invalid. It must be a valid language tag (as per BCP 47).
 
 Scenario: Flagging a product query as ready for processing with an identifier that does not exist returns the correct response
 	Given a valid new product query has been prepared
@@ -46,7 +46,7 @@ Scenario: Flagging a product query as ready for processing with an identifier th
 	And an HTTP problem can be retrieved from the response body
 	And the HTTP problem is of type http://problems.rakuten.com/product-query-not-found
 	And the HTTP problem title is The product query could not be found.
-	And the HTTP problem detail is Failed to find a product query with identifier '{id}'.
+	And the HTTP problem detail for the product query request is Failed to find a product query with identifier '{id}'.
 
 Scenario: Flagging a product query as ready for processing with an identifier that exists but in a different culture returns the correct response
 	Given a valid new product query with a culture of en-US has been prepared
@@ -64,12 +64,10 @@ Scenario: Flagging a product query as ready for processing and supplying an inva
 	And an HTTP problem can be retrieved from the response body
 	And the HTTP problem is of type http://problems.rakuten.com/invalid-product-query-status
 	And the HTTP problem title is An invalid product query status was supplied.
-	And the HTTP problem detail is You attempted to update the status of the query at '/product-query/{id}' to '{status}', which is an invalid status.  The only valid status to which this query can be set is 'submitted'.
+	And the HTTP problem detail for the product query request is You attempted to update the status of the query at '/product-query/{id}' to '{status}', which is an invalid status.  The only valid status to which this query can be set is 'submitted'.
 	And the HTTP problem contains a link of relation type http://rels.rakuten.com/product-query
 	And the HTTP problem link of relation type http://rels.rakuten.com/product-query has an href that points to the product query
 
-#TODO: [WB 11-May-2015] Need to add Given the WebJob is not running to ensure that the message does disappear
-#						from the queue before we get chance to assert its creation.
 Scenario: Flagging a product query as ready for processing creates a message on the queue
 	Given the web job is not running
 	And the message queue is empty

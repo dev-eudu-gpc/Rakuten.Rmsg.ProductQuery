@@ -23,7 +23,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         {
             Contract.Requires(blobLink != null);
             Contract.Requires(cultureName != null);
-            Contract.Requires(id != null);
 
             this.BlobLink = blobLink;
             this.CultureName = cultureName;

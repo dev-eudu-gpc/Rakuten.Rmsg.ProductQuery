@@ -162,8 +162,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is An invalid request parameter was supplied.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the HTTP problem detail is The product query identifier \'{id}\' in the request URI" +
-                    " is invalid. It must be a GUID.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem detail for the product query request is The product query identi" +
+                    "fier \'{id}\' in the request URI is invalid. It must be a GUID.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
         
@@ -183,8 +183,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is An invalid request parameter was supplied.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the HTTP problem detail is The culture \'{culture}\' in the request URI is invalid." +
-                    " It must be a valid language tag (as per BCP 47).", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem detail for the product query request is The culture \'{culture}\' " +
+                    "in the request URI is invalid. It must be a valid language tag (as per BCP 47).", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
     }

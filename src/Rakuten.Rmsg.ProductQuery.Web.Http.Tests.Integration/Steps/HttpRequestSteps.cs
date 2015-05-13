@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
+    using System;
     using System.Diagnostics.Contracts;
     using System.Net.Http;
     using Rakuten.Rmsg.ProductQuery.Configuration;
@@ -17,19 +18,29 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     public class HttpRequestSteps
     {
         /// <summary>
-        /// The context under which this instance is operating.
+        /// A client that provides access to the product query API.
         /// </summary>
         private readonly ProductQueryApiClient apiClient;
 
         /// <summary>
+        /// The context under which this instance is operating.
+        /// </summary>
+        private readonly IApiContext apiContext;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="HttpRequestSteps"/> class
         /// </summary>
-        /// <param name="apiClient">A context for the API.</param>
-        public HttpRequestSteps(ProductQueryApiClient apiClient)
+        /// <param name="apiClient">A client that provides access to the product query API.</param>
+        /// <param name="apiContext">A context for the API.</param>
+        public HttpRequestSteps(
+            ProductQueryApiClient apiClient,
+            IApiContext apiContext)
         {
             Contract.Requires(apiClient != null);
+            Contract.Requires(apiContext != null);
 
             this.apiClient = apiClient;
+            this.apiContext = apiContext;
         }
 
         /// <summary>
@@ -39,12 +50,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Given(@"a request has been made to submit the new product query")]
         [When(@"a request is made to submit the new product query")]
         [When(@"a request is made to submit the new product query again")]
-        public void ARequestIsMadeToSubmitTheNewProductQuery()
+        public void WhenARequestIsMadeToSubmitTheNewProductQuery()
         {
-            ScenarioStorage.HttpResponseMessage =
-                this.apiClient
-                    .SubmitNewProductQuery(ScenarioStorage.NewProductQuery)
-                    .Result;
+            ScenarioStorage.HttpResponseMessage = this.apiClient.SubmitNewProductQuery(ScenarioStorage.NewProductQuery).Result;
         }
 
         /// <summary>
@@ -60,9 +68,23 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             ProductQuery productQuery = ScenarioStorage.NewProductQuery;
             productQuery.Status = status;
 
-            ScenarioStorage.HttpResponseMessage =
+            ScenarioStorage.HttpResponseMessage = this.apiClient.FlagAsReadyForProcessing(productQuery).Result;
+        }
+
+        /// <summary>
+        /// Makes an HTTP request to the API to get the status of a product query
+        /// using the prepared parameters from scenario storage.
+        /// </summary>
+        [When(@"a request is made to get the status of a product query group using the prepared request")]
+        public void WhenARequestIsMadeToGetTheStatusOfAProductQueryGroupUsingThePreparedRequest()
+        {
+            // Get the request parameters from scenario storage
+            var p = ScenarioStorage.ProductQueryMonitorRequest;
+
+            // Make the call
+            ScenarioStorage.HttpResponseMessage = 
                 this.apiClient
-                    .FlagAsReadyForProcessing(productQuery)
+                    .GetProductQueryGroupStatus(p.Id, p.Year, p.Month, p.Day, p.Hour, p.Minute)
                     .Result;
         }
     }

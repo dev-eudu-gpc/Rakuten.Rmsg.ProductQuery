@@ -36,17 +36,38 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 
         /// <summary>
         /// Verifies that the detail property of the HTTP problem found in the
-        /// response content is the expected value.
+        /// response content is the expected value when the request was a 
+        /// product query related request.
         /// </summary>
         /// <param name="detailTemplate">The expected value for the detail property.</param>
-        [Then(@"the HTTP problem detail is (.*)")]
-        public void ThenTheHttpProblemDetailIs(string detailTemplate)
+        [Then(@"the HTTP problem detail for the product query request is (.*)")]
+        public void ThenTheHttpProblemDetailForTheProductQueryRequestIs(string detailTemplate)
         {
             // Arrange
             var expectedDetail = detailTemplate
                 .Replace("{id}", ScenarioStorage.NewProductQuery.Id)
                 .Replace("{culture}", ScenarioStorage.NewProductQuery.Culture)
                 .Replace("{status}", ScenarioStorage.NewProductQuery.Status);
+
+            // Assert
+            Assert.AreEqual(expectedDetail, ScenarioStorage.HttpProblem.Detail, true);
+        }
+
+        /// <summary>
+        /// Verifies that the detail property of the HTTP problem found in the
+        /// response content is the expected value when the request was a product
+        /// query monitor request.
+        /// </summary>
+        /// <param name="detailTemplate">The expected value for the detail property.</param>
+        [Then(@"the HTTP problem detail for the product query monitor request is (.*)")]
+        public void ThenTheHttpProblemDetailForTheProductQueryMonitorRequestIs(string detailTemplate)
+        {
+            // Arrange
+            var p = ScenarioStorage.ProductQueryMonitorRequest;
+
+            var expectedDetail = detailTemplate
+                .Replace("{datetime}", string.Format("{0}/{1}/{2}/{3}/{4}", p.Year, p.Month, p.Day, p.Hour, p.Minute))
+                .Replace("{id}", p.Id);
 
             // Assert
             Assert.AreEqual(expectedDetail, ScenarioStorage.HttpProblem.Detail, true);

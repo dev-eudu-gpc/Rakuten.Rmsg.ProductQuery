@@ -71,6 +71,7 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -95,10 +96,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="TechTalk.SpecFlow">
       <HintPath>..\packages\SpecFlow.1.9.0\lib\net35\TechTalk.SpecFlow.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -123,6 +126,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ProductQueryGroup.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Features\ProductQueryMonitor.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ProductQueryMonitor.feature</DependentUpon>
     </Compile>
     <Compile Include="Features\ReadyForProcessing.feature.cs">
       <AutoGen>True</AutoGen>
@@ -149,9 +157,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\HttpProblem.cs" />
     <Compile Include="Resources\Message.cs" />
+    <Compile Include="Resources\ProductQueryGroup.cs" />
     <Compile Include="Resources\ProductQueryLink.cs" />
     <Compile Include="Resources\ProductQueryLinks.cs" />
     <Compile Include="Resources\ProductQuery.cs" />
+    <Compile Include="Resources\ProductQueryMonitorRequest.cs" />
     <Compile Include="Resources\ProductQueryStatus.cs" />
     <Compile Include="rmsgProductQuery.cs">
       <DependentUpon>ProductQuery.tt</DependentUpon>
@@ -167,6 +177,7 @@
     </Compile>
     <Compile Include="Steps\MessageQueueSteps.cs" />
     <Compile Include="Steps\ProductQueryGroupSteps.cs" />
+    <Compile Include="Steps\ProductQueryMonitorSteps.cs" />
     <Compile Include="Steps\ServiceBusSteps.cs" />
     <Compile Include="Storage\ScenarioStorage.cs" />
     <Compile Include="Steps\DatabaseSteps.cs" />
@@ -190,6 +201,10 @@
     <None Include="Features\ProductQueryGroup.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ProductQueryGroup.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\ProductQueryMonitor.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ProductQueryMonitor.feature.cs</LastGenOutput>
     </None>
     <None Include="Features\ReadyForProcessing.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

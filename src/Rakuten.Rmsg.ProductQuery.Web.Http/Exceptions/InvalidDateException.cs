@@ -21,7 +21,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// The message that describes this error.
         /// </summary>
         private const string Detail =
-            @"The {0} '{1}' in the request URI is invalid. It must be a valid ate.";
+            @"The date portions '{0}' in the request URI do not form a valid date.  Please ensure they are in /yyyy/MM/dd/HH/mm format.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidDateException"/> class.
@@ -33,10 +33,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidDateException"/> class.
         /// </summary>
-        /// <param name="parameterName">The name of the parameter that was invalid.</param>
         /// <param name="value">The value for the identifier that was invalid.</param>
-        public InvalidDateException(string parameterName, string value)
-            : base(string.Format(Detail, parameterName, value))
+        public InvalidDateException(string value)
+            : base(string.Format(Detail, value))
         {
             this.Value = value;
         }

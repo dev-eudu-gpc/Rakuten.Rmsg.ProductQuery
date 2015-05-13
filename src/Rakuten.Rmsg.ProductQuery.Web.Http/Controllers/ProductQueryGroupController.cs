@@ -6,14 +6,12 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.IO;
-    using System.Linq;
-    using System.Net;
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.Http.Results;
+    using Rakuten.Gpc.Api;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
@@ -87,7 +85,19 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
 
             // Construct the parameters for getting the progress of the product query group.
             // Validation of those parameters occurs in the constructor.
-            var parameters = new GetProgressCommandParameters(id, year, month, day, hour, minute);
+            GetProgressCommandParameters parameters = null;
+            try
+            {
+                parameters = new GetProgressCommandParameters(id, year, month, day, hour, minute);
+            }
+            catch (InvalidGuidException guidEx)
+            {
+                throw new BadRequestException(guidEx);
+            }
+            catch (InvalidDateException dateEx)
+            {
+                throw new BadRequestException(dateEx);
+            }
 
             if (parameters.DateTime > DateTime.UtcNow.AddSeconds(0 - this.context.ProgressMapIntervalInSeconds))
             {
@@ -106,14 +116,21 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     .ToLink(true);
 
                 return new SeeOtherResult(
-                    new Uri(location.Target, UriKind.Relative),
-                    this.context.ProgressMapIntervalInSeconds,
-                    this.Request);
+                    location: new Uri(location.Target, UriKind.Relative),
+                    retryAfter: this.context.ProgressMapIntervalInSeconds,
+                    message: this.Request);
             }
             else
             {
-                // Get an image representation of the progress map and return it.
-                return new ImageResult(await this.getProgressCommand.Execute(parameters), this.Request);
+                try
+                {
+                    // Get an image representation of the progress map and return it.
+                    return new ImageResult(await this.getProgressCommand.Execute(parameters), this.Request);
+                }
+                catch (ProductQueryGroupNotFoundException notFoundException)
+                {
+                    throw new ObjectNotFoundException(notFoundException);
+                }
             }
         }
    }

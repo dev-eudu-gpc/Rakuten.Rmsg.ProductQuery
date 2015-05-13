@@ -7,13 +7,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
 {
     using System;
     using System.Diagnostics.Contracts;
-    using System.Net;
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.Http.Results;
     using Rakuten.Gpc.Api;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
-    using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
     /// <summary>
     /// Defines endpoints for creating and obtaining information for product queries.

@@ -43,7 +43,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
             if (!Guid.TryParse(id, out parsedId))
             {
-                throw new InvalidGuidException("product query identifier", id);
+                throw new InvalidGuidException("product query group identifier", id);
             }
 
             this.Id = parsedId;
@@ -59,7 +59,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
             if (!DateTime.TryParseExact(dateString, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
             {
-                throw new InvalidDateException("date portion", string.Format("{0}/{1}/{2}/{3}/{4}", year, month, day, hour, minute));
+                throw new InvalidDateException(string.Format("{0}/{1}/{2}/{3}/{4}", year, month, day, hour, minute));
             }
 
             this.DateTime = date;

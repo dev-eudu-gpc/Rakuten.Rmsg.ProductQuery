@@ -123,8 +123,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is An invalid request parameter was supplied.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the HTTP problem detail is The product query identifier \'{id}\' in the request URI" +
-                    " is invalid. It must be a GUID.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem detail for the product query request is The product query identi" +
+                    "fier \'{id}\' in the request URI is invalid. It must be a GUID.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
         
@@ -145,8 +145,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is An invalid request parameter was supplied.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the HTTP problem detail is The culture \'{culture}\' in the request URI is invalid." +
-                    " It must be a valid language tag (as per BCP 47).", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem detail for the product query request is The culture \'{culture}\' " +
+                    "in the request URI is invalid. It must be a valid language tag (as per BCP 47).", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
         
@@ -166,8 +166,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("an HTTP problem can be retrieved from the response body", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/product-query-not-found", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is The product query could not be found.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the HTTP problem detail is Failed to find a product query with identifier \'{id}\'." +
-                    "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem detail for the product query request is Failed to find a product" +
+                    " query with identifier \'{id}\'.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
         
@@ -208,9 +208,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/invalid-product-query-sta" +
                     "tus", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is An invalid product query status was supplied.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the HTTP problem detail is You attempted to update the status of the query at \'/p" +
-                    "roduct-query/{id}\' to \'{status}\', which is an invalid status.  The only valid st" +
-                    "atus to which this query can be set is \'submitted\'.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem detail for the product query request is You attempted to update " +
+                    "the status of the query at \'/product-query/{id}\' to \'{status}\', which is an inva" +
+                    "lid status.  The only valid status to which this query can be set is \'submitted\'" +
+                    ".", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem contains a link of relation type http://rels.rakuten.com/product" +
                     "-query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem link of relation type http://rels.rakuten.com/product-query has " +
