@@ -8,8 +8,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using System;
     using System.Threading.Tasks;
 
-    using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
-
     /// <summary>
     /// Creates a record of a product query within the persistent storage.
     /// </summary>

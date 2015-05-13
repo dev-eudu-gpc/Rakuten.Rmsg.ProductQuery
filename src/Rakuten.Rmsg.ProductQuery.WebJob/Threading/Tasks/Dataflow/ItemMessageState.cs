@@ -13,7 +13,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using System.Linq;
 
     using Rakuten.Rmsg.ProductQuery.WebJob.Api;
-    using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
     using Rakuten.Threading.Tasks.Dataflow;
 
     /// <summary>

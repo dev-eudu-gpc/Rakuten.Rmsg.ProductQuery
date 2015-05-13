@@ -9,8 +9,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using System.IO;
     using System.Threading.Tasks;
 
-    using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
-
     /// <summary>
     /// Represents a factory that will create a delegate to create a <see cref="ProductQueryItem"/>.
     /// </summary>

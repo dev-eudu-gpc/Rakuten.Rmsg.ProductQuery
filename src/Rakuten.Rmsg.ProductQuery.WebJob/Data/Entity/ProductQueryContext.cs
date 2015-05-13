@@ -3,7 +3,7 @@
 //   Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.WebJob.Entities
+namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System.Data.Entity;
 
