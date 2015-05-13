@@ -165,7 +165,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             // Arrange
             var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsStringAsync().Result;
             var productQuery = JsonConvert.DeserializeObject<ProductQuery>(content);
-            var expectedUri = "/product-query-group/" + ScenarioStorage.NewProductQuery.Id + "/status/{year}/{month}/{day}/{hour}/{minute}";
+            var expectedUri = string.Format(
+                "/product-query-group/{0}/status/{{year}}/{{month}}/{{day}}/{{hour}}/{{minute}}",
+                ScenarioStorage.ProductQueryGroupActual.rmsgProductQueryGroupID);
 
             // Assert
             Assert.IsNotNull(productQuery.Links.Monitor);

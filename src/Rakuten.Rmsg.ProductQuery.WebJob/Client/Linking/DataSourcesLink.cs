@@ -31,12 +31,12 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Linking
         /// </summary>
         /// <param name="culture">The culture of the $$datasources$$.</param>
         /// <returns>A link to a collection of <see cref="DataSource"/>s defined in the specified culture.</returns>
-        public ProductLink ForCulture(CultureInfo culture)
+        public DataSourcesLink ForCulture(CultureInfo culture)
         {
             var resolvedTemplate = this.Target.Bind("culture", culture == null ? null : culture.Name);
             Contract.Assume(resolvedTemplate != null);
 
-            return new ProductLink(resolvedTemplate);
+            return new DataSourcesLink(resolvedTemplate);
         }
     }
 }

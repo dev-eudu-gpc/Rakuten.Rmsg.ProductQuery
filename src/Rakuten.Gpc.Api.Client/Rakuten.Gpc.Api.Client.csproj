@@ -95,8 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gpc\Api\Client\ApiClientContextExtensions.cs" />
-    <Compile Include="Gpc\Api\Links\CultureLink.cs" />
-    <Compile Include="Gpc\Api\Links\StatisticsLink.cs" />
     <Compile Include="Exceptions\DuplicateException.cs" />
     <Compile Include="Gpc\Exceptions\InvalidCultureCodeException.cs" />
     <Compile Include="Exceptions\InvalidDateTimeException.cs" />
@@ -124,19 +122,10 @@
     <Compile Include="Gpc\Exceptions\ManufacturerValidationFailedException.cs" />
     <Compile Include="Gpc\Exceptions\ProductValidationFailedException.cs" />
     <Compile Include="Gpc\Api\Client\IApiClientContext.cs" />
-    <Compile Include="Gpc\Api\Links\CategoryLink.cs" />
-    <Compile Include="Gpc\Api\Links\DataSourceLink.cs" />
-    <Compile Include="Gpc\Api\Links\ManufacturerLink.cs" />
-    <Compile Include="Gpc\Api\Links\ProductAttributeLink.cs" />
-    <Compile Include="Gpc\Api\Links\ProductAttributeSetLink.cs" />
-    <Compile Include="Gpc\Api\Links\ProductLink.cs" />
-    <Compile Include="Gpc\Api\Links\TranslatorLink.cs" />
-    <Compile Include="Gpc\Api\Links\UploaderLink.cs" />
     <Compile Include="Linking\ILinkBuilder.cs" />
     <Compile Include="Linking\ITypedLinkBuilder.cs" />
     <Compile Include="Linking\LinkBuilder.cs" />
     <Compile Include="Linking\LinkBuilder{T}.cs" />
-    <Compile Include="Linking\TargetAttributesExtensions.cs" />
     <Compile Include="Net\Http\HttpResponseValidator.cs" />
     <Compile Include="Gpc\Api\Client\IExceptionRegister.cs" />
     <Compile Include="Net\Http\IHttpResponseValidator.cs" />

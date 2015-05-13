@@ -113,7 +113,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     .ForDay(serverTime.Day.ToString("00"))
                     .ForHour(serverTime.Hour.ToString("00"))
                     .ForMinute(serverTime.Minute.ToString("00"))
-                    .ToLink(true);
+                    .Expand();
 
                 return new SeeOtherResult(
                     location: new Uri(location.Target, UriKind.Relative),

@@ -83,7 +83,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             while (((pageCount * PageSize) - products.Count) == PageSize)
             {
                 // Set the number of records to skip.
-                var uri = searchLink.Skipping((PageSize - 1) * pageCount).ToUri();
+                var uri = searchLink.Skipping((PageSize - 1) * pageCount);
 
                 products.AddRange(await client.GetAsync<IEnumerable<Product>>(uri));
 

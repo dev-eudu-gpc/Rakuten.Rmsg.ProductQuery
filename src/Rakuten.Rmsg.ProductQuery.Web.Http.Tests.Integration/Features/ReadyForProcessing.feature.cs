@@ -96,6 +96,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.And("the product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the product query group for the new product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the HTTP status code is 202", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the product query in the response body has the correct self link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the product query in the response body has the correct enclosure link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

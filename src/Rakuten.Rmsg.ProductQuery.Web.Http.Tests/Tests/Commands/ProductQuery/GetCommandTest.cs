@@ -36,7 +36,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
                 var stubIUriTemplate = StubIUriTemplateFactory.Create();
                 ShimProductQueryLink.AllInstances.ForCultureString = (a, b) => new ProductQueryLink(stubIUriTemplate);
                 ShimProductQueryLink.AllInstances.ForIdString = (a, b) => new ProductQueryLink(stubIUriTemplate);
-                ShimLinkTemplate.AllInstances.ToLinkBoolean = (a, b) => new Link();
+                ////ShimLinkTemplate.AllInstances.ToLinkBoolean = (a, b) => new Link();
+                ////ShimLinkTemplate.AllInstances.Expand = a => new Link();
 
                 var parameters = new StubGetCommandParameters(Guid.NewGuid().ToString(), "en-US");
 
@@ -63,7 +64,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
                 var stubIUriTemplate = StubIUriTemplateFactory.Create();
                 ShimProductQueryLink.AllInstances.ForCultureString = (a, b) => new ProductQueryLink(stubIUriTemplate);
                 ShimProductQueryLink.AllInstances.ForIdString = (a, b) => new ProductQueryLink(stubIUriTemplate);
-                ShimLinkTemplate.AllInstances.ToLinkBoolean = (a, b) => new Link();
+                ////ShimLinkTemplate.AllInstances.ToLinkBoolean = (a, b) => new Link();
+                ShimLinkTemplate.AllInstances.Expand = a => new Link();
 
                 var parameters = new StubGetCommandParameters(Guid.NewGuid().ToString(), "en-US");
 

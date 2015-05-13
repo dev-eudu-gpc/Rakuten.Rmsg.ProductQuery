@@ -121,9 +121,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                     this.selfLink
                         .ForId(parameters.Id.ToString())
                         .ForCulture(parameters.Culture.Name)
-                        .ToLink(true),
-                    this.azureBlobLink.ForId(blobUri.ToString()).ToLink(true),
-                    this.monitorLink.ForId(newProductQuery.rmsgProductQueryGroupID.ToString()).ToLink(true)
+                        .Expand(),
+                    this.azureBlobLink.ForId(blobUri.ToString()).Expand(),
+                    this.monitorLink.ForId(newProductQuery.rmsgProductQueryGroupID.ToString())
                 },
                 Status = ProductQueryStatus.New
             };

@@ -90,15 +90,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                     this.selfLink
                         .ForId(parameters.Id.ToString())
                         .ForCulture(productQuery.CultureName)
-                        .ToLink(true),
+                        .Expand(),
                     this.monitorLink
                         .ForId(productQuery.GroupId.ToString())
-                        .ToLink(true)
                 };
 
                 if (!string.IsNullOrEmpty(productQuery.Uri))
                 {
-                    productQuery.Links.Add(this.azureBlobLink.ForId(productQuery.Uri).ToLink(true));
+                    productQuery.Links.Add(this.azureBlobLink.ForId(productQuery.Uri).Expand());
                 }
             }
 

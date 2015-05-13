@@ -14,6 +14,7 @@ Scenario: Flagging a product query as ready for processing returns the correct r
 	And a request has been made to submit the new product query
 	When a request is made to flag the product query as ready for processing with a status of submitted
 	And the product query is retrieved from the database
+	And the product query group for the new product query is retrieved from the database
 	Then the HTTP status code is 202
 	And the product query in the response body has the correct self link
 	And the product query in the response body has the correct enclosure link

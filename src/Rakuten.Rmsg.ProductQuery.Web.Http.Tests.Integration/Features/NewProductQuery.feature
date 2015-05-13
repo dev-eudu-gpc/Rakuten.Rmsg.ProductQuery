@@ -15,6 +15,7 @@ Scenario: Submitting a valid new product query returns the correct response
 	Given a valid new product query has been prepared
 	When a request is made to submit the new product query
 	And the product query is retrieved from the database
+	And the product query group for the new product query is retrieved from the database
 	Then the HTTP status code is 201
 	And the product query in the response body has a status of New
 	And the product query in the response body has the same created date as that in the database
@@ -27,6 +28,7 @@ Scenario: Submitting a new product query with an identifier and culture that exi
 	And a request has been made to submit the new product query
 	When a request is made to submit the new product query again
 	And the product query is retrieved from the database
+	And the product query group for the new product query is retrieved from the database
 	Then the HTTP status code is 200
 	And the product query in the response body has the same status as that in the database
 	And the product query in the response body has the same created date as that in the database

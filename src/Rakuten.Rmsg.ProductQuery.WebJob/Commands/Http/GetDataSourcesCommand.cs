@@ -38,9 +38,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             var client = getClient();
             Contract.Assume(client != null);
 
-            var uri = link.ToUri();
-
-            return await client.GetAsync<IEnumerable<DataSource>>(uri);
+            return await client.GetAsync<IEnumerable<DataSource>>(link);
         }
     }
 }

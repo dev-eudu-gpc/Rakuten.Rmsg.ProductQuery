@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -75,6 +75,49 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>True</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
+    <CodeContractsAssertsToContractsCheckBox>True</CodeContractsAssertsToContractsCheckBox>
+    <CodeContractsRedundantTests>True</CodeContractsRedundantTests>
+    <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
+    <CodeContractsMissingPublicEnsuresAsWarnings>False</CodeContractsMissingPublicEnsuresAsWarnings>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferEnsuresAutoProperties>True</CodeContractsInferEnsuresAutoProperties>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestAssumptionsForCallees>False</CodeContractsSuggestAssumptionsForCallees>
+    <CodeContractsSuggestRequires>False</CodeContractsSuggestRequires>
+    <CodeContractsNecessaryEnsures>True</CodeContractsNecessaryEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsSuggestReadonly>True</CodeContractsSuggestReadonly>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsSQLServerOption />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsSkipAnalysisIfCannotConnectToCache>False</CodeContractsSkipAnalysisIfCannotConnectToCache>
+    <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
+    <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
@@ -93,6 +136,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\EnumeratorExtensions.cs" />
+    <Compile Include="IUriTemplate.cs" />
     <Compile Include="Linking\DefaultLinkActivator.cs" />
     <Compile Include="Linking\ILink.cs" />
     <Compile Include="Linking\ILinkActivator.cs" />
@@ -104,21 +149,35 @@
     <Compile Include="Linking\LinkRelationAttribute.cs" />
     <Compile Include="Linking\LinkTypeInfo.cs" />
     <Compile Include="Linking\TargetAttributes.cs" />
-    <Compile Include="Linking\UriTemplating\IUriTemplate.cs" />
     <Compile Include="Linking\LinkRelationTypes.cs" />
     <Compile Include="Linking\LinkTemplate.cs" />
-    <Compile Include="Linking\UriTemplating\IUriTemplateComponent.cs" />
-    <Compile Include="Linking\UriTemplating\IUriTemplateVariableComponent.cs" />
-    <Compile Include="Linking\UriTemplating\IVarSpec.cs" />
-    <Compile Include="Linking\UriTemplating\Literal.cs" />
-    <Compile Include="Linking\UriTemplating\UriTemplate.cs" />
-    <Compile Include="Linking\UriTemplating\UriTemplateExtensions.cs" />
-    <Compile Include="Linking\UriTemplating\VariablePathSegment.cs" />
-    <Compile Include="Linking\UriTemplating\VarSpec.cs" />
+    <Compile Include="Linking\TargetAttributesExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\UriBuilderErrorMessages.Designer.cs" />
+    <Compile Include="Properties\UriTemplateErrorMessages.Designer.cs" />
+    <Compile Include="UriTemplate.BoundUriTemplate.cs" />
+    <Compile Include="UriTemplate.ComponentContract.cs" />
+    <Compile Include="UriTemplate.cs" />
+    <Compile Include="UriTemplate.Expression.cs" />
+    <Compile Include="UriTemplate.IComponent.cs" />
+    <Compile Include="UriTemplate.Lexer.cs" />
+    <Compile Include="UriTemplate.Literal.cs" />
+    <Compile Include="UriTemplate.Operator.cs" />
+    <Compile Include="UriTemplate.Parser.cs" />
+    <Compile Include="UriTemplate.Token.cs" />
+    <Compile Include="UriTemplate.TokenType.cs" />
+    <Compile Include="UriTemplate.Varspec.cs" />
+    <Compile Include="UriTemplateContract.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Properties\CustomDictionary.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\UriBuilderErrorMessages.resx" />
+    <EmbeddedResource Include="Properties\UriTemplateErrorMessages.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
