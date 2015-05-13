@@ -236,6 +236,10 @@
       <Project>{b1f93214-9eef-409c-8520-a0906288f557}</Project>
       <Name>Rakuten.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rakuten.Gpc.Resources\Rakuten.Gpc.Resources.csproj">
+      <Project>{a9b6848d-391e-42ba-a648-1ad2f71ca014}</Project>
+      <Name>Rakuten.Gpc.Resources</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rakuten.Rmsg.ProductQuery\Rakuten.Rmsg.ProductQuery.csproj">
       <Project>{9ad4ec9a-333a-4779-9f7d-4245710f19a2}</Project>
       <Name>Rakuten.Rmsg.ProductQuery</Name>

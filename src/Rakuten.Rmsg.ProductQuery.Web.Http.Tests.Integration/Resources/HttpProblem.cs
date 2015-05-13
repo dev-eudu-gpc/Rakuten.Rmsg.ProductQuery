@@ -6,6 +6,7 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System.Collections.ObjectModel;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Represents an HTTP problem.
@@ -20,6 +21,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// <summary>
         /// Gets or sets a collection of links.
         /// </summary>
+        [JsonProperty("links")]
+        [JsonConverter(typeof(Json.EnumerableOfLinkConverter))]
         public Collection<Link> Links { get; set; }
 
         /// <summary>

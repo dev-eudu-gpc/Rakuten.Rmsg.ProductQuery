@@ -39,7 +39,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             ProductQueryApiClient apiClient = new ProductQueryApiClient(apiContext);
             QueueClient queueClient = QueueClient.CreateFromConnectionString(
                 apiContext.ServiceBusConnectionString,
-                "rmsg-product-query", // TODO: [WB 11-May-2015] Replace with config setting
+                apiContext.MessageQueueName,
                 ReceiveMode.ReceiveAndDelete);
 
             container.RegisterInstanceAs(apiContext);

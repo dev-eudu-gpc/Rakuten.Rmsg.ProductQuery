@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
+    using System;
     using System.Linq;
     using System.Net.Http;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -102,8 +103,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the HTTP problem contains a link of relation type (.*)")]
         public void ThenTheHTTPProblemContainsALinkOfType(string expectedLinkType)
         {
-            // TODO: Http Problem serialization from the API needs to include relation type for Links. 
-            Assert.IsTrue(ScenarioStorage.HttpProblem.Links.Contains(new Link { RelationType = expectedLinkType }));
+            // Try and find a link with the specified link type
+            var link = ScenarioStorage.HttpProblem.Links.FirstOrDefault(
+                l => l.RelationType.Equals(expectedLinkType, StringComparison.InvariantCultureIgnoreCase));
+
+            Assert.IsNotNull(link, "Could not find a link of relation type " + expectedLinkType);
         }
 
         /// <summary>
@@ -119,7 +123,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 
             // Assert
             Assert.IsNotNull(link);
-            Assert.AreEqual(link.Target, ScenarioStorage.NewProductQuery.Links.Self.Href, true);
+            Assert.AreEqual(ScenarioStorage.NewProductQuery.Links.Self.Href, link.Target, true);
         }
     }
 }

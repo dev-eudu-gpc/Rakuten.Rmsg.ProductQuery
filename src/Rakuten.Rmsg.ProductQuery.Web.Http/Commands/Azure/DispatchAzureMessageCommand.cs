@@ -42,7 +42,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         public override Task ExecuteAsync(DispatchMessageCommandParameters parameters)
         {
             // Create the message
-            // TODO: [MM, 22-APR-15] Populate the culture correctly.
             var message = new Message(parameters.Id, parameters.CultureName, parameters.BlobLink);
 
             return Task.Run(() =>
@@ -50,7 +49,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                 // Create a queue client
                 QueueClient client = QueueClient.CreateFromConnectionString(
                     this.context.ServiceBusConnectionString,
-                    "rmsg-product-query"); // TODO: [WB 16-Apr-2015] Replace with config setting
+                    this.context.MessageQueueName);
 
                 // Dispatch the message
                 client.Send(new BrokeredMessage(message));

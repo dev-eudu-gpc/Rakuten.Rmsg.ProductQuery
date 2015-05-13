@@ -50,7 +50,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             Contract.Requires(productQueryUriTemplate != null);
 
             this.Links = new Collection<Link>();
-            var x = new ProductQueryLink("http://problems.rakuten.com/product-query", productQueryUriTemplate);
+            var x = new ProductQueryLink("http://rels.rakuten.com/product-query", productQueryUriTemplate);
             var z = x.ForId(id).ForCulture(culture).Expand();
             this.Links.Add(z);
         }
@@ -58,6 +58,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         /// <summary>
         /// Gets or sets a collection of links for the exception.
         /// </summary>
+        [JsonProperty("links")]
+        [JsonConverter(typeof(Json.EnumerableOfLinkConverter))]
         public Collection<Link> Links { get; set; }
     }
 }

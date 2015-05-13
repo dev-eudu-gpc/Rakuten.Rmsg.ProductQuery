@@ -53,6 +53,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         int MaximumQueriesPerGroup { get; }
 
         /// <summary>
+        /// Gets the name of the queue.
+        /// </summary>
+        string MessageQueueName { get; }
+
+        /// <summary>
         /// Gets the number of seconds between progress maps
         /// </summary>
         int ProgressMapIntervalInSeconds { get; }

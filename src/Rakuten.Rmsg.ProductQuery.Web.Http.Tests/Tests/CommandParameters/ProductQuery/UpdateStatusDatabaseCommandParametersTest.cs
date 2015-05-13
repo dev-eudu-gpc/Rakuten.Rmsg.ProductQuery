@@ -24,7 +24,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
         {
             // Arrange
             var id = Guid.NewGuid();
-            var status = "status name";
+            var status = ProductQueryStatus.New;
 
             // Act
             var parameters = new UpdateStatusDatabaseCommandParameters(id, status);

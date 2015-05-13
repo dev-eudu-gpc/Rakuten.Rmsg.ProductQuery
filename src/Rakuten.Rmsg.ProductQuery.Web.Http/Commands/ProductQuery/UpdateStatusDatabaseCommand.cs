@@ -53,22 +53,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             return Task.Run(() =>
             {
                 // Update the product query's Uri column
-                var query = this.databaseContext.rmsgProductQueries
+                this.databaseContext.rmsgProductQueries
                     .Where(q => q.rmsgProductQueryID == parameters.Id)
-                    .FirstOrDefault();
-
-                if (query != null)
-                {
-                    // TODO: [WB 15-Apr-2015] Probably a better way of doing this
-                    query.rmsgProductQueryStatusID = this.databaseContext.rmsgProductQueryStatus
-                        .Where(s => s.name.Equals(parameters.NewStatus, StringComparison.InvariantCultureIgnoreCase))
-                        .FirstOrDefault()
-                        .rmsgProductQueryStatusID;
-                }
-                else
-                {
-                    // TODO: [WB 15-Apr-2015] Implement sad path
-                }
+                    .Single()
+                    .rmsgProductQueryStatusID = (byte)parameters.NewStatus;
 
                 // Submit the changes to the database
                 this.databaseContext.SaveChanges();

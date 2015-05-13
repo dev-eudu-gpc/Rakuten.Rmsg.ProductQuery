@@ -99,7 +99,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
                 // Update the status of the product query in the database.
                 await this.updateProductQueryStatusDatabaseCommand.Execute(
-                    new UpdateStatusDatabaseCommandParameters(parameters.Id, "submitted"));
+                    new UpdateStatusDatabaseCommandParameters(parameters.Id, ProductQueryStatus.Submitted));
 
                 await this.dispatchMessageCommand.Execute(new DispatchMessageCommandParameters(
                     parameters.Id, parameters.Culture.Name, blobLink));
