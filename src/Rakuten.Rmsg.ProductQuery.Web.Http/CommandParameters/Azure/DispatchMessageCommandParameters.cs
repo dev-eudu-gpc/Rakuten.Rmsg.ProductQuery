@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 {
+    using System;
     using System.Diagnostics.Contracts;
 
     /// <summary>
@@ -15,17 +16,32 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="DispatchMessageCommandParameters"/> class.
         /// </summary>
+        /// <param name="id">The identifier of the product query.</param>
+        /// <param name="cultureName">The culture of the product query.</param>
         /// <param name="blobLink">The product query to dispatch a message for.</param>
-        public DispatchMessageCommandParameters(Link blobLink)
+        public DispatchMessageCommandParameters(Guid id, string cultureName, Link blobLink)
         {
             Contract.Requires(blobLink != null);
+            Contract.Requires(cultureName != null);
 
             this.BlobLink = blobLink;
+            this.CultureName = cultureName;
+            this.Id = id;
         }
 
         /// <summary>
-        /// Gets the product query to dispatch a message for.
+        /// Gets the blob uri for the product query.
         /// </summary>
         public Link BlobLink { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the culture of the product query.
+        /// </summary>
+        public string CultureName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the identifier of the product query.
+        /// </summary>
+        public Guid Id { get; set; }
     }
 }

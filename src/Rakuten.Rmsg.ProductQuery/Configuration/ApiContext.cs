@@ -49,6 +49,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         private readonly string environmentName;
 
         /// <summary>
+        /// The name of the message queue.
+        /// </summary>
+        private readonly string messageQueueName;
+
+        /// <summary>
         /// The number of seconds between progress maps
         /// </summary>
         private readonly int progressMapIntervalInSeconds;
@@ -91,6 +96,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// </param>
         /// <param name="environmentName">The environment in which the application is running.</param>
         /// <param name="maximumQueriesPerGroup">The maximum number of queries per query group.</param>
+        /// <param name="messageQueueName">The name of the message queue.</param>
         /// <param name="progressMapIntervalInSeconds">The number of seconds between progress maps.</param>
         /// <param name="proportionOfTimeAllocatedForFinalization">
         /// The estimated proportion of product query processing that is used by the finalization process.
@@ -107,6 +113,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             string diagnosticsStorageConnectionString,
             string environmentName,
             int maximumQueriesPerGroup,
+            string messageQueueName,
             int progressMapIntervalInSeconds,
             decimal proportionOfTimeAllocatedForFinalization,
             string region,
@@ -120,6 +127,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             Contract.Requires(databaseConnectionString != null);
             Contract.Requires(diagnosticsStorageConnectionString != null);
             Contract.Requires(environmentName != null);
+            Contract.Requires(messageQueueName != null);
             Contract.Requires(region != null);
             Contract.Requires(serviceBusConnectionString != null);
             Contract.Requires(storageConnectionString != null);
@@ -132,6 +140,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             this.diagnosticsStorageConnectionString = diagnosticsStorageConnectionString;
             this.environmentName = environmentName;
             this.maximumQueriesPerGroup = maximumQueriesPerGroup;
+            this.messageQueueName = messageQueueName;
             this.progressMapIntervalInSeconds = progressMapIntervalInSeconds;
             this.proportionOfTimeAllocatedForFinalization = proportionOfTimeAllocatedForFinalization;
             this.region = region;
@@ -208,6 +217,22 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         }
 
         /// <summary>
+        /// Gets the maximum number of queries per query group
+        /// </summary>
+        public int MaximumQueriesPerGroup
+        {
+            get { return this.maximumQueriesPerGroup; }
+        }
+
+        /// <summary>
+        /// Gets the name of the message queue.
+        /// </summary>
+        public string MessageQueueName
+        {
+            get { return this.messageQueueName; }
+        }
+
+        /// <summary>
         /// Gets the number of seconds between progress maps
         /// </summary>
         public int ProgressMapIntervalInSeconds 
@@ -221,14 +246,6 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         public decimal ProportionOfTimeAllocatedForFinalization 
         {
             get { return this.proportionOfTimeAllocatedForFinalization; }
-        }
-        
-        /// <summary>
-        /// Gets the maximum number of queries per query group
-        /// </summary>
-        public int MaximumQueriesPerGroup
-        {
-            get { return this.maximumQueriesPerGroup; }
         }
 
         /// <summary>

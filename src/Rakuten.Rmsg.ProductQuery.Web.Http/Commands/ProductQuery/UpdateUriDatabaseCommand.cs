@@ -53,18 +53,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
             return Task.Run(() =>
             {
                 // Update the product query's Uri column
-                var query = this.databaseContext.rmsgProductQueries
+                this.databaseContext.rmsgProductQueries
                     .Where(q => q.rmsgProductQueryID == parameters.Id)
-                    .FirstOrDefault();
-
-                if (query != null)
-                {
-                    query.uri = parameters.Uri.ToString();
-                }
-                else
-                {
-                    // TODO: [WB 15-Apr-2015] Implement sad path
-                }
+                    .Single()
+                    .uri = parameters.Uri.ToString();
 
                 // Submit the changes to the database
                 this.databaseContext.SaveChanges();

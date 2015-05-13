@@ -7,13 +7,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
 {
     using System;
     using System.Diagnostics.Contracts;
-    using System.Net;
     using System.Threading.Tasks;
     using System.Web.Http;
     using System.Web.Http.Results;
     using Rakuten.Gpc.Api;
     using Rakuten.Rmsg.ProductQuery.Web.Http.Commands;
-    using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
     /// <summary>
     /// Defines endpoints for creating and obtaining information for product queries.
@@ -36,22 +34,31 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         private readonly ICommand<ReadyForProcessingCommandParameters, Task<ProductQuery>> readyForProcessingCommand;
 
         /// <summary>
+        /// A link template representing the canonical link of a product query.
+        /// </summary>
+        private readonly IUriTemplate productQueryUriTemplate;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ProductQueryController"/> class.
         /// </summary>
         /// <param name="getProductQueryCommand">A command that gets a specified product query.</param>
         /// <param name="createProductQueryCommand">A command that creates a new product query.</param>
         /// <param name="readyForProcessingCommand">A command that can make a product query ready for processing.</param>
+        /// <param name="productQueryUriTemplate">A link template representing the canonical location of the resource.</param>
         internal ProductQueryController(
             ICommand<GetCommandParameters, Task<ProductQuery>> getProductQueryCommand,
             ICommand<CreateCommandParameters, Task<ProductQuery>> createProductQueryCommand,
-            ICommand<ReadyForProcessingCommandParameters, Task<ProductQuery>> readyForProcessingCommand)
+            ICommand<ReadyForProcessingCommandParameters, Task<ProductQuery>> readyForProcessingCommand,
+            IUriTemplate productQueryUriTemplate)
         {
             Contract.Requires(createProductQueryCommand != null);
             Contract.Requires(getProductQueryCommand != null);
+            Contract.Requires(productQueryUriTemplate != null);
             Contract.Requires(readyForProcessingCommand != null);
 
             this.createProductQueryCommand = createProductQueryCommand;
             this.getProductQueryCommand = getProductQueryCommand;
+            this.productQueryUriTemplate = productQueryUriTemplate;
             this.readyForProcessingCommand = readyForProcessingCommand;
         }
 
@@ -67,7 +74,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         public async Task<IHttpActionResult> PutAsync(
             string id,
             string culture,
-            ProductQuery source)
+            ReadyForProcessingRequest source)
         {
             if (source == null)
             {
@@ -160,12 +167,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
         private async Task<IHttpActionResult> ReadyForProcessingAsync(
             string id,
             string culture,
-            ProductQuery source)
+            ReadyForProcessingRequest source)
         {
             // Ensure that the requested status is "submitted"
-            if (source.Status != ProductQueryStatus.Submitted)
+            if (!source.Status.Equals("submitted", StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new ValidationFailedException(new InvalidStatusException());
+                throw new ValidationFailedException(new InvalidStatusException(
+                    id, culture, source.Status, this.productQueryUriTemplate));
             }
 
             IHttpActionResult result = null;
@@ -177,10 +185,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
 
                 // Construct and return the response
                 result = new AcceptedNegotiatedContentResult<ProductQuery>(productQuery, this);
-                ////result = new NegotiatedContentResult<ProductQuery>(
-                ////    HttpStatusCode.Accepted,
-                ////    productQuery,
-                ////    this);
             }
             catch (ProductQueryCultureNotFoundException cultureException)
             {
@@ -189,6 +193,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             catch (ProductQueryNotFoundException notFoundException)
             {
                 throw new ObjectNotFoundException(notFoundException);
+            }
+            catch (InvalidGuidException guidEx)
+            {
+                throw new BadRequestException(guidEx);
+            }
+            catch (InvalidCultureException cultureEx)
+            {
+                throw new BadRequestException(cultureEx);
             }
 
             return result;

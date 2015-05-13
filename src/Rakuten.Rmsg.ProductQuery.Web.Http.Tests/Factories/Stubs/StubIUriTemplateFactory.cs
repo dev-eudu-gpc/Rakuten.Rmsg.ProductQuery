@@ -5,6 +5,9 @@
 //----------------------------------------------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Rakuten.Fakes;
 
     /// <summary>
@@ -19,7 +22,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             return new StubIUriTemplate
             {
                 BindStringString = (name, value) => Create(),
-                ToStringBoolean = resolveTemplate => "/"
+                CreateTemplate = () => Create(),
+                Expand = () => new Uri("/", UriKind.RelativeOrAbsolute),
+                TextGet = () => "/"
             };
         }
 
@@ -31,7 +36,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             return new StubIUriTemplate
             {
                 BindStringString = (name, value) => Create(template),
-                ToStringBoolean = resolveTemplate => template
+                Expand = () => new Uri(template, UriKind.RelativeOrAbsolute),
+                TextGet = () => "/"
             };
         }
     }

@@ -20,15 +20,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
     public static class ProductQueryFactory
     {
         /// <summary>
-        /// Converts a progress map image into an array of bytes containing the
-        /// percentage complete for each product query.
+        /// Creates a new <see cref="ProductQuery"/>.
         /// </summary>
         /// <param name="id">The identifier of the product query.</param>
         /// <param name="cultureName">The culture of the product query.</param>
         /// <param name="status">The status of the product query</param>
         /// <param name="blobUri">The URI for the blob of the product query.</param>
         /// <returns>A new <see cref="ProductQuery"/> object.</returns>
-        public static ProductQuery CreateProduct(
+        public static ProductQuery Create(
             Guid id,
             string cultureName = "en-US",
             ProductQueryStatus status = ProductQueryStatus.New,

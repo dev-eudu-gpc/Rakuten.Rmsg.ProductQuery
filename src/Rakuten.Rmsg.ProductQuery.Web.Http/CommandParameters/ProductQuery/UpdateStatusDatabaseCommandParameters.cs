@@ -20,10 +20,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <param name="newStatus">The new status for the product query.</param>
         public UpdateStatusDatabaseCommandParameters(
             Guid id,
-            string newStatus)
+            ProductQueryStatus newStatus)
         {
-            Contract.Requires(newStatus != null);
-
             this.Id = id;
             this.NewStatus = newStatus;
         }
@@ -36,6 +34,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <summary>
         /// Gets the new status for the product query.
         /// </summary>
-        public string NewStatus { get; private set; }
+        public ProductQueryStatus NewStatus { get; private set; }
     }
 }

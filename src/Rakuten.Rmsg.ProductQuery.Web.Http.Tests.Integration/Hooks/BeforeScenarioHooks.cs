@@ -7,6 +7,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
     using BoDi;
+    using Microsoft.ServiceBus.Messaging;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using TechTalk.SpecFlow;
 
@@ -35,9 +36,16 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 
             IApiContext apiContext = new ApiContextFactory(new AppSettingsConfigurationSource()).Create();
             IStorage azureStorage = new AzureStorage();
+            ProductQueryApiClient apiClient = new ProductQueryApiClient(apiContext);
+            QueueClient queueClient = QueueClient.CreateFromConnectionString(
+                apiContext.ServiceBusConnectionString,
+                apiContext.MessageQueueName,
+                ReceiveMode.ReceiveAndDelete);
 
             container.RegisterInstanceAs(apiContext);
             container.RegisterInstanceAs(azureStorage);
+            container.RegisterInstanceAs(apiClient);
+            container.RegisterInstanceAs(queueClient);
 
             this.container = container;
         }

@@ -36,7 +36,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
                 var stubIUriTemplate = StubIUriTemplateFactory.Create();
                 ShimProductQueryLink.AllInstances.ForCultureString = (a, b) => new ProductQueryLink(stubIUriTemplate);
                 ShimProductQueryLink.AllInstances.ForIdString = (a, b) => new ProductQueryLink(stubIUriTemplate);
-                ShimLinkTemplate.AllInstances.ToLinkBoolean = (a, b) => new Link();
+                ////ShimLinkTemplate.AllInstances.ToLinkBoolean = (a, b) => new Link();
+                ////ShimLinkTemplate.AllInstances.Expand = a => new Link();
 
                 var parameters = new StubGetCommandParameters(Guid.NewGuid().ToString(), "en-US");
 
@@ -63,7 +64,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
                 var stubIUriTemplate = StubIUriTemplateFactory.Create();
                 ShimProductQueryLink.AllInstances.ForCultureString = (a, b) => new ProductQueryLink(stubIUriTemplate);
                 ShimProductQueryLink.AllInstances.ForIdString = (a, b) => new ProductQueryLink(stubIUriTemplate);
-                ShimLinkTemplate.AllInstances.ToLinkBoolean = (a, b) => new Link();
+                ////ShimLinkTemplate.AllInstances.ToLinkBoolean = (a, b) => new Link();
+                ShimLinkTemplate.AllInstances.Expand = a => new Link();
 
                 var parameters = new StubGetCommandParameters(Guid.NewGuid().ToString(), "en-US");
 
@@ -137,7 +139,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             var command = this.CreateCommand(
                 getDatabaseCommand: new StubICommand<GetDatabaseCommandParameters, Task<ProductQuery>>
                     {
-                        ExecuteT0 = p => Task.Run(() => ProductQueryFactory.CreateProduct(
+                        ExecuteT0 = p => Task.Run(() => ProductQueryFactory.Create(
                             id: Guid.NewGuid(),
                             cultureName: "en-US",
                             blobUri: "bloburi"))
@@ -194,7 +196,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests
             var monitorUriTemplateParameter = monitorUriTemplate ?? StubIUriTemplateFactory.Create();
             var getDatabaseCommandParameter = getDatabaseCommand ?? new StubICommand<GetDatabaseCommandParameters, Task<ProductQuery>>
             {
-                ExecuteT0 = p => Task.Run(() => ProductQueryFactory.CreateProduct(Guid.NewGuid(), "en-US"))
+                ExecuteT0 = p => Task.Run(() => ProductQueryFactory.Create(Guid.NewGuid(), "en-US"))
             };
 
             return new GetCommand(

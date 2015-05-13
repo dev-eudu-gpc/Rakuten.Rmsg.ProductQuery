@@ -169,6 +169,13 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
                 throw new InvalidOperationException("Blob container name is not configured");
             }
 
+            // Get the message queue name
+            string messageQueueName = source.GetConfigurationSettingValue(SettingKey.MessageQueueName);
+            if (messageQueueName == null)
+            {
+                throw new InvalidOperationException("Message queue name is not configured");
+            }
+
             // Get the address to which requests should be made.
             string baseAddressString = source.GetConfigurationSettingValue(SettingKey.BaseAddressName);
             if (baseAddressString == null)
@@ -194,6 +201,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
                 diagnosticSorageConnectionString,
                 environmentName,
                 maxQueriesPerGroup,
+                messageQueueName,
                 progressMapInterval,
                 proportionOfTimeAllocatedForFinalization,
                 region,
@@ -363,6 +371,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             /// Indicates the setting for the maximum number of queries per query group
             /// </summary>
             public const string MaximumQueriesPerGroup = "Rakuten.Rmsg.ProductQuery.MaximumQueriesPerGroup";
+
+            /// <summary>
+            /// Indicates the setting for the message queue name
+            /// </summary>
+            public const string MessageQueueName = "Rakuten.Rmsg.ProductQuery.MessageQueueName";
 
             /// <summary>
             /// Indicates the setting for the number of seconds between progress maps

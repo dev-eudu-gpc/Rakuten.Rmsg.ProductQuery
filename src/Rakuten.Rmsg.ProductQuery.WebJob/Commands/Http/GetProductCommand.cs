@@ -40,7 +40,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
             var culture = new CultureInfo(parameters[1]);
 
-            var uri = link.ForGran(parameters[0]).ForCulture(culture).ToUri();
+            var uri = link.ForGran(parameters[0]).ForCulture(culture);
 
             return await client.GetAsync<Product>(uri);
         }

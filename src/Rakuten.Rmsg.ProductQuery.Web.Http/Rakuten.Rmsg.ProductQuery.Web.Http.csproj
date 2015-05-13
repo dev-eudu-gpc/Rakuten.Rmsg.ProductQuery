@@ -295,6 +295,7 @@
     <Compile Include="Exceptions\InvalidStatusException.cs" />
     <Compile Include="Exceptions\Core\ObjectNotFoundException.cs" />
     <Compile Include="Exceptions\ProductQueryCultureNotFoundException.cs" />
+    <Compile Include="Exceptions\ProductQueryGroupNotFoundException.cs" />
     <Compile Include="Exceptions\ProductQueryNotFoundException.cs" />
     <Compile Include="Exceptions\Core\ValidationFailedException.cs" />
     <Compile Include="Links\AzureBlobLink.cs" />
@@ -306,6 +307,7 @@
     <Compile Include="Resources\ProductQuery.cs" />
     <Compile Include="Resources\ProductQueryProgress.cs" />
     <Compile Include="Resources\ProductQueryStatus.cs" />
+    <Compile Include="Resources\ReadyForProcessingRequest.cs" />
     <Compile Include="Web\Http\Common\TaskHelpers.cs" />
     <Compile Include="Web\Http\ExceptionHandling\ApiExceptionMetadata.cs" />
     <Compile Include="Web\Http\ExceptionHandling\AttributeApiExceptionMetadataProvider.cs" />

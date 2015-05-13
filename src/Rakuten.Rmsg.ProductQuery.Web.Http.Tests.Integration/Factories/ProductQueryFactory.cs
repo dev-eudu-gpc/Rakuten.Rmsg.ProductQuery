@@ -18,12 +18,21 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// <param name="id">The identifier of the product query.</param>
         /// <param name="culture">The culture of the product query.</param>
         /// <returns>A new instance of <see cref="ProductQuery"/>.</returns>
-        public static ProductQuery Create(string id = null, string culture = null)
+        public static ProductQuery Create(string id = null, string culture = "en-US")
         {
+            var newId = id ?? Guid.NewGuid().ToString();
+
             return new ProductQuery
             {
-                Culture = culture ?? "en-US",
-                Id = id ?? Guid.NewGuid().ToString()
+                Culture = culture,
+                Id = newId,
+                Links = new ProductQueryLinks
+                {
+                    Self = new ProductQueryLink
+                    {
+                        Href = string.Format("/product-query/{0}/culture/{1}", newId, culture)
+                    }
+                }
             };
         }
     }

@@ -92,21 +92,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     // Macro commands
                     var createCommand = new CreateCommand(
                         this.context,
-                        ////uris.ProductQuerySelfLink,
-                        ////uris.AzureBlobLink,
                         uriTemplates.ProductQuery,
                         uriTemplates.AzureBlob,
+                        uriTemplates.ProductQueryMonitorLink,
                         createDatabaseCommand,
                         createStorageBlobCommand,
                         updateProductQueryUriDatabaseCommand);
 
                     var getCommand = new GetCommand(
                         this.context,
-                        ////uris.AzureBlobLink,
-                        ////uris.ProductQueryLink,
-                        ////uris.ProductQueryMonitorLink,
-                        ////uris.AzureBlobLink,
-                        ////uris.ProductQueryMonitorLink,
                         uriTemplates.ProductQuery,
                         uriTemplates.AzureBlob,
                         uriTemplates.ProductQueryMonitorLink,
@@ -121,7 +115,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                     controller = new ProductQueryController(
                         getCommand,
                         createCommand,
-                        readyForProcessingCommand);
+                        readyForProcessingCommand,
+                        uriTemplates.ProductQuery);
 
                     break;
                 case "ProductQueryGroup":

@@ -89,7 +89,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                 throw new ProductQueryCultureNotFoundException(parameters.Id, parameters.Culture, productQuery);
             }
 
-            //// TODO: [WB 23-Apr-2015] Specific exception for status being wrong?
+            //// TODO: [WB 23-Apr-2015] Should we throw an exception if the status of the product query
+            ////                        is not New ?
 
             if (productQuery.Status == ProductQueryStatus.New)
             {
@@ -98,9 +99,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
 
                 // Update the status of the product query in the database.
                 await this.updateProductQueryStatusDatabaseCommand.Execute(
-                    new UpdateStatusDatabaseCommandParameters(parameters.Id, "submitted"));
+                    new UpdateStatusDatabaseCommandParameters(parameters.Id, ProductQueryStatus.Submitted));
 
-                await this.dispatchMessageCommand.Execute(new DispatchMessageCommandParameters(blobLink));
+                await this.dispatchMessageCommand.Execute(new DispatchMessageCommandParameters(
+                    parameters.Id, parameters.Culture.Name, blobLink));
+
+                // Update the status in the product query object rather than get
+                // it again from the database as we know that that is the only change
+                productQuery.Status = ProductQueryStatus.Submitted;
             }
 
             return productQuery;

@@ -52,6 +52,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         {
             return Task.Run(() =>
             {
+                // Ensure the product query group exists
+                if (!this.databaseContext
+                        .rmsgProductQueryGroups
+                        .Any<rmsgProductQueryGroup>(q => q.rmsgProductQueryGroupID == parameters.Id))
+                {
+                    throw new ProductQueryGroupNotFoundException(parameters.Id);
+                }
+
                 // Get the statistics for all product queries in the group
                 var progressMap = this.databaseContext.rmsgProductQueries
                     .Where(query => query.rmsgProductQueryGroupID == parameters.Id)

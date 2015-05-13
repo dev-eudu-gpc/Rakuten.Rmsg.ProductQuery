@@ -10,7 +10,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
     using System.Linq;
     using System.Threading.Tasks;
     using Rakuten.Rmsg.ProductQuery.Configuration;
-    using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
     /// <summary>
     /// A command for obtaining the progress of a given product query
@@ -61,6 +60,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <returns>The progress map as an image.</returns>
         public override async Task<Stream> ExecuteAsync(GetProgressCommandParameters parameters)
         {
+            // Ensure that the product query group exists
             // Get the progress map from the database
             var progressMap = await this.getProgressDatabaseCommand.Execute(
                 new GetProgressDatabaseCommandParameters(

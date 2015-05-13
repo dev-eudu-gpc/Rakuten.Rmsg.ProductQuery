@@ -54,30 +54,21 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         public GetCommand(
             IApiContext context,
             IUriTemplate productQueryUriTemplate,
-            ////AzureBlobLink azureBlobLink,
-            ////ProductQueryLink productQueryLink,
-            ////ProductQueryMonitorLink productQueryMonitorLink,
             IUriTemplate azureBlobUriTemplate,
             IUriTemplate monitorUriTemplate,
             ICommand<GetDatabaseCommandParameters, Task<ProductQuery>> getDatabaseCommand)
         {
-            ////Contract.Requires(azureBlobLink != null);
             Contract.Requires(context != null);
             Contract.Requires(productQueryUriTemplate != null);
             Contract.Requires(azureBlobUriTemplate != null);
             Contract.Requires(monitorUriTemplate != null);
             Contract.Requires(getDatabaseCommand != null);
-            ////Contract.Requires(productQueryLink != null);
-            ////Contract.Requires(productQueryMonitorLink != null);
 
             this.azureBlobLink = new AzureBlobLink("enclosure", azureBlobUriTemplate);
-            ////this.azureBlobLink = azureBlobLink;
             this.context = context;
             this.getDatabaseCommand = getDatabaseCommand;
             this.monitorLink = new ProductQueryMonitorLink("monitor", monitorUriTemplate, new TargetAttributes(null, "image/png", null));
-            ////this.monitorLink = productQueryMonitorLink;
             this.selfLink = new ProductQueryLink(productQueryUriTemplate);
-            ////this.selfLink = productQueryLink;
         }
 
         /// <summary>
@@ -98,16 +89,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                 {
                     this.selfLink
                         .ForId(parameters.Id.ToString())
-                        .ForCulture(parameters.Culture.Name)
-                        .ToLink(true),
+                        .ForCulture(productQuery.CultureName)
+                        .Expand(),
                     this.monitorLink
                         .ForId(productQuery.GroupId.ToString())
-                        .ToLink(true)
                 };
 
                 if (!string.IsNullOrEmpty(productQuery.Uri))
                 {
-                    productQuery.Links.Add(this.azureBlobLink.ForId(productQuery.Uri).ToLink(true));
+                    productQuery.Links.Add(this.azureBlobLink.ForId(productQuery.Uri).Expand());
                 }
             }
 

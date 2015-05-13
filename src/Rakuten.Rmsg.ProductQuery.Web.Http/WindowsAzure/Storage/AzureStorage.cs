@@ -145,7 +145,6 @@ namespace Rakuten.WindowsAzure.Storage
             // Inform the client that the specified upload was not found.
             if (!blockBlob.Exists())
             {
-                // TODO: [MM, 23/10] Should this be an "internal" exception?
                 throw new ObjectNotFoundException(new ProductUploadNotFoundException(blobName));
             }
 
