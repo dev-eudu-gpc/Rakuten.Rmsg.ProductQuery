@@ -9,15 +9,12 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Rakuten.Fakes;
-    using Rakuten.Gpc.Api.Client.Fakes;
-    using Rakuten.Net.Http.Fakes;
     using Rakuten.Rmsg.ProductQuery.WebJob.Api;
     using Rakuten.Rmsg.ProductQuery.WebJob.Linking.Fakes;
 
@@ -40,7 +37,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 
             // Act
             var products = await ExecuteSearchCommand.Execute(
-                () => CreateApiClient(message => Task.FromResult(Enumerable.Empty<Product>())),
+                () => StubApiClientFactory.Create(message => Task.FromResult(Enumerable.Empty<Product>())),
                 searchLink,
                 new[] { "EAN", "111111111116", "en-GB" });
 
@@ -61,7 +58,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 
             // Act
             var products = await ExecuteSearchCommand.Execute(
-                () => CreateApiClient(message => Task.FromResult(Enumerable.Empty<Product>())),
+                () => StubApiClientFactory.Create(message => Task.FromResult(Enumerable.Empty<Product>())),
                 searchLink,
                 new[] { "ISBN", "111111111116", "en-GB" });
 
@@ -101,7 +98,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 
             // Act
             var products = await ExecuteSearchCommand.Execute(
-                () => CreateApiClient(handleResponse),
+                () => StubApiClientFactory.Create(handleResponse),
                 searchLink,
                 new[] { "ISBN", "111111111116", "en-GB" });
 
@@ -134,7 +131,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 
             // Act
             var products = await ExecuteSearchCommand.Execute(
-                () => CreateApiClient(handleResponse),
+                () => StubApiClientFactory.Create(handleResponse),
                 searchLink,
                 new[] { "ISBN", "111111111116", "en-GB" });
 
@@ -178,7 +175,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 
             // Act
             var products = await ExecuteSearchCommand.Execute(
-                () => CreateApiClient(handleResponse),
+                () => StubApiClientFactory.Create(handleResponse),
                 searchLink,
                 new[] { "ISBN", "111111111116", "en-GB" });
 
@@ -199,7 +196,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 
             // Act
             var products = await ExecuteSearchCommand.Execute(
-                () => CreateApiClient(message => Task.FromResult(Enumerable.Empty<Product>())),
+                () => StubApiClientFactory.Create(message => Task.FromResult(Enumerable.Empty<Product>())),
                 searchLink,
                 new[] { "ISBN", "111111111116", "en-GB" });
 
@@ -220,9 +217,31 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 
             // Act
             var products = await ExecuteSearchCommand.Execute(
-                () => CreateApiClient(message => Task.FromResult(Enumerable.Empty<Product>())),
+                () => StubApiClientFactory.Create(message => Task.FromResult(Enumerable.Empty<Product>())),
                 searchLink,
                 new[] { "JAN", "111111111116", "en-GB" });
+
+            // Assert
+            Assert.IsNotNull(products);
+        }
+
+        /// <summary>
+        /// Ensures that when a product search is performed using an un-supported GTIN a non-null collection is 
+        /// returned.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
+        [TestMethod]
+        public async Task ExecuteSearchCommandReturnsANonNullCollectionForAnUnsupportedGtin()
+        {
+            // Arrange
+            var searchLink = new StubProductSearchLink(new StubUriTemplate(
+                "/v1/product?filter={filter}&culture={culture}&skip={skip}&top={top}"));
+
+            // Act
+            var products = await ExecuteSearchCommand.Execute(
+                () => StubApiClientFactory.Create(message => Task.FromResult(Enumerable.Empty<Product>())),
+                searchLink,
+                new[] { "UCC", "00012345600012", "en-GB" });
 
             // Assert
             Assert.IsNotNull(products);
@@ -244,7 +263,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
             try
             {
                 await ExecuteSearchCommand.Execute(
-                    () => CreateApiClient(message => Task.FromResult(Enumerable.Empty<Product>())),
+                    () => StubApiClientFactory.Create(message => Task.FromResult(Enumerable.Empty<Product>())),
                     searchLink,
                     new[] { "ISBN", "111111111116", "xx-XX" });
             }
@@ -270,37 +289,12 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 
             // Act
             var products = await ExecuteSearchCommand.Execute(
-                () => CreateApiClient(message => Task.FromResult(Enumerable.Empty<Product>())),
+                () => StubApiClientFactory.Create(message => Task.FromResult(Enumerable.Empty<Product>())),
                 searchLink,
                 new[] { "UPC", "111111111116", "en-GB" });
 
             // Assert
             Assert.IsNotNull(products);
-        }
-
-        /// <summary>
-        /// Creates a configured <see cref="StubApiClient"/> instance that will use the specified delegate.
-        /// </summary>
-        /// <typeparam name="T">The type expected back from the response.</typeparam>
-        /// <param name="stub">The delegate to be used when handling the response.</param>
-        /// <returns>A new <see cref="StubApiClient"/> instance.</returns>
-        [TestMethod]
-        private static StubApiClient CreateApiClient<T>(Func<HttpResponseMessage, Task<T>> stub)
-        {
-            var stubIHttpResponseHandler = new StubIHttpResponseHandler();
-            stubIHttpResponseHandler.ReadAsyncOf1HttpResponseMessage(message => stub(message));
-
-            return new StubApiClient(
-                new StubIApiClientContext
-                {
-                    AuthorizationTokenGet = () => "1234567890",
-                    BaseAddressGet = () => new Uri("http://localhost")
-                },
-                new StubIHttpRequestHandler
-                {
-                    GetAsyncUri = uri => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK))
-                },
-                stubIHttpResponseHandler);
         }
     }
 }
