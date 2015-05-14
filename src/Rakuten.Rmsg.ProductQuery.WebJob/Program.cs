@@ -7,10 +7,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Entity;
     using System.Globalization;
     using System.IO;
-    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
@@ -46,20 +44,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             // Construct a delegate that will create a ApiClient instance.
             Func<ApiClient> createApiClient = () => CreateApiClient(apiContext);
 
-            // Create a template to get a collection of data sources.
-            var dataSourcesLink = new DataSourcesLink(new UriTemplate("/v1/datasources"));
-
-            // Start a task that will fetch a collection of data sources.
-            Task<IEnumerable<DataSource>> getDataSourcesTask = GetDataSourcesCommand.Execute(
-                dataSourcesLink, 
-                createApiClient);
-
             // Create a new database connection.
             var databaseContext = new ProductQueryContext();
-
-            // Start a task that will fetch the status that represents the completed status.
-            Task<ProductQueryStatus> getCompletedStatusTask = GetCompletedProductQueryStatusCommand.Execute(
-                databaseContext);
 
             // Create a connection to blob storage.
             CloudBlobClient blobClient = 
@@ -67,19 +53,29 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
             CloudBlobContainer blobContainer = blobClient.GetContainerReference(apiContext.BlobContainerName);
 
-            // Create a cache for a collection of products.
-            var searchCache = CreateProductsCache(createApiClient);
-
-            // Create a cache for a single product.
-            var productCache = CreateProductCache(createApiClient);
-
             var serializer = new LumenWorksSerializer<Item>();
-
-            Task.WaitAll(getDataSourcesTask, getCompletedStatusTask);
 
             // Create the delegate that the bound function will invoke.
             ProcessProductQueryFile.Process = (message, writer) =>
             {
+                // Create a template to get a collection of data sources.
+                var dataSourcesLink = new DataSourcesLink(new UriTemplate("/v1/datasources"));
+
+                // Start a task that will fetch a collection of data sources.
+                Task<IEnumerable<DataSource>> getDataSourcesTask = GetDataSourcesCommand.Execute(
+                    dataSourcesLink,
+                    createApiClient);
+
+                // Start a task that will fetch the status that represents the completed status.
+                Task<ProductQueryStatus> getCompletedStatusTask = GetCompletedProductQueryStatusCommand.Execute(
+                    databaseContext);
+
+                // Create a cache for a collection of products.
+                var searchCache = CreateProductsCache(createApiClient);
+
+                // Create a cache for a single product.
+                var productCache = CreateProductCache(createApiClient);
+
                 var parseFileTransform = ParseFileTransformFactory.Create(
                     () => ParseFileCommand.Execute(
                         serializer, 
@@ -132,6 +128,9 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                     new TransformBlock<ItemMessageState, Item>(state => Task.FromResult(state.Item)));
 
                 dataflow.Post(message);
+
+                Task.WaitAll(getDataSourcesTask, getCompletedStatusTask);
+
                 dataflow.Complete();
 
                 var items = new List<Item>();
