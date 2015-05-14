@@ -190,6 +190,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
             {
                 result = new SeeOtherResult(cultureException.ProductQuery.GetUri(), this.Request);
             }
+            catch (ProductQueryAlreadySubmittedException alreadySubmittedException)
+            {
+                throw new ConstraintViolationException(alreadySubmittedException);
+            }
             catch (ProductQueryNotFoundException notFoundException)
             {
                 throw new ObjectNotFoundException(notFoundException);

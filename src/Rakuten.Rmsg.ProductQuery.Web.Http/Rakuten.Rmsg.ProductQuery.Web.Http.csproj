@@ -301,6 +301,7 @@
     <Compile Include="Exceptions\InvalidGuidException.cs" />
     <Compile Include="Exceptions\InvalidStatusException.cs" />
     <Compile Include="Exceptions\Core\ObjectNotFoundException.cs" />
+    <Compile Include="Exceptions\ProductQueryAlreadySubmittedException.cs" />
     <Compile Include="Exceptions\ProductQueryCultureNotFoundException.cs" />
     <Compile Include="Exceptions\ProductQueryGroupNotFoundException.cs" />
     <Compile Include="Exceptions\ProductQueryNotFoundException.cs" />

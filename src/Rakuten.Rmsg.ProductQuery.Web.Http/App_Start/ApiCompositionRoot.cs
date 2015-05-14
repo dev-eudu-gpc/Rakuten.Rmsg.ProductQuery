@@ -110,7 +110,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
                         this.context,
                         dispatchMessageCommand,
                         getCommand,
-                        updateProductQueryStatusDatabaseCommand);
+                        updateProductQueryStatusDatabaseCommand,
+                        uriTemplates.ProductQuery);
 
                     controller = new ProductQueryController(
                         getCommand,
