@@ -66,6 +66,9 @@
     <Reference Include="Rakuten.Gpc.Api.Client.Fakes">
       <HintPath>FakesAssemblies\Rakuten.Gpc.Api.Client.Fakes.dll</HintPath>
     </Reference>
+    <Reference Include="Rakuten.IO.Delimited.Fakes">
+      <HintPath>FakesAssemblies\Rakuten.IO.Delimited.Fakes.dll</HintPath>
+    </Reference>
     <Reference Include="Rakuten.Rmsg.ProductQuery.WebJob.Fakes">
       <HintPath>FakesAssemblies\Rakuten.Rmsg.ProductQuery.WebJob.Fakes.dll</HintPath>
     </Reference>
@@ -114,6 +117,10 @@
       <Project>{924d65b3-56eb-4bff-abb9-e1df0c5da412}</Project>
       <Name>Rakuten.Gpc.Api.Client</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rakuten.IO.Csv\Rakuten.IO.Delimited.csproj">
+      <Project>{1e0b210c-fe27-4511-8d51-240295cb1b5b}</Project>
+      <Name>Rakuten.IO.Delimited</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rakuten.Rmsg.ProductQuery.WebJob\Rakuten.Rmsg.ProductQuery.WebJob.csproj">
       <Project>{854ec7d0-284e-4b95-8e81-1ed752796129}</Project>
       <Name>Rakuten.Rmsg.ProductQuery.WebJob</Name>
@@ -130,6 +137,9 @@
     <None Include="app.config" />
     <Fakes Include="Fakes\Rakuten.Gpc.Api.Client.fakes" />
     <Fakes Include="Fakes\Rakuten.Core.fakes" />
+    <Fakes Include="Fakes\Rakuten.IO.Delimited.fakes">
+      <SubType>Designer</SubType>
+    </Fakes>
     <None Include="packages.config" />
     <None Include="Settings.StyleCop" />
   </ItemGroup>
