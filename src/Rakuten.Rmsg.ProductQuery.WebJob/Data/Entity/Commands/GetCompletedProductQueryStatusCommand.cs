@@ -1,33 +1,34 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="UpdateEntityBlockCommand.cs" company="Rakuten">
+// <copyright file="GetCompletedProductQueryStatusCommand.cs" company="Rakuten">
 //   Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
+    using System;
     using System.Data.Entity;
     using System.Threading.Tasks;
 
-    using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
-
     /// <summary>
-    /// Updates the record of the product query in the persistent storage.
+    /// Retrieves the record that represents the completed status for a product query.
     /// </summary>
-    internal class UpdateEntityBlockCommand
+    internal class GetCompletedProductQueryStatusCommand
     {
         /// <summary>
-        /// Updates the record of the given item in the persistent storage specifying that just the GRAN has been 
-        /// altered.
+        /// Retrieves the status from the persistent storage that represents the completed status.
         /// </summary>
         /// <param name="context">The <see cref="DbContext"/> instance using which the database can be queried.</param>
-        /// <param name="item">The instance representing the record to update.</param>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        public static async Task Execute(ProductQueryContext context, ProductQueryItem item)
+        public static async Task<ProductQueryStatus> Execute(ProductQueryContext context)
         {
-            context.ProductQueryItems.Attach(item);
-            context.Entry(item).Property(i => i.Gran).IsModified = true;
+            var status = await context.ProductQueryStatus.SingleOrDefaultAsync(s => s.Name == "completed");
 
-            await context.SaveChangesAsync();
+            if (status == null)
+            {
+                throw new InvalidOperationException("The completed status could not be found.");
+            }
+
+            return status;
         }
     }
 }

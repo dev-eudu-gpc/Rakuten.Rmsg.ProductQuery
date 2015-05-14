@@ -10,8 +10,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using System.IO;
     using System.Threading.Tasks;
 
-    using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
-
     /// <summary>
     /// Represents the factory that will create a delegate to retrieve the record of a product query from persistent 
     /// storage.

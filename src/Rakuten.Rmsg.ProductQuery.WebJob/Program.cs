@@ -26,7 +26,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using Rakuten.Net.Http;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using Rakuten.Rmsg.ProductQuery.WebJob.Api;
-    using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
     using Rakuten.Rmsg.ProductQuery.WebJob.Linking;
 
     using UriTemplate = Rakuten.UriTemplate;
@@ -58,6 +57,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             // Create a new database connection.
             var databaseContext = new ProductQueryContext();
 
+            // Start a task that will fetch the status that represents the completed status.
+            Task<ProductQueryStatus> getCompletedStatusTask = GetCompletedProductQueryStatusCommand.Execute(
+                databaseContext);
+
             // Create a connection to blob storage.
             CloudBlobClient blobClient = 
                 CloudStorageAccount.Parse(apiContext.StorageConnectionString).CreateCloudBlobClient();
@@ -72,8 +75,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
             var serializer = new LumenWorksSerializer<Item>();
 
-            // Wait for the collection of data sources to be returned.
-            var dataSources = getDataSourcesTask.Result;
+            Task.WaitAll(getDataSourcesTask, getCompletedStatusTask);
 
             // Create the delegate that the bound function will invoke.
             ProcessProductQueryFile.Process = (message, writer) =>
@@ -86,26 +88,22 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                         new CultureInfo(message.Culture));
                 var getQueryItemTransform = GetQueryItemTransformFactory.Create(
                     (id, gtin) => GetProductQueryItemCommand.Execute(
-                        (guid, s) => (
-                            from item in databaseContext.ProductQueryItems
-                            where item.ProductQueryId == id && item.Gtin == gtin
-                            select item)
-                            .ToListAsync(), 
+                        (guid, s) => FindProductQueryItemCommand.Execute(databaseContext, guid, s),
                         id, 
                         gtin));
                 var createQueryItemTransform = CreateQueryItemTransformFactory.Create(
                     (guid, s) => 
                         CreateProductQueryItemCommand.Execute(
-                            entity => SaveProductQueryItemAsync(databaseContext, entity), 
+                            entity => AddProductQueryItemCommand.Execute(databaseContext, entity), 
                             guid, 
                             s));
                 var productSearchTransform = ProductSearchTransformFactory.Create(
                     (type, gtin, culture) => 
                         searchCache.GetOrAddAsync(string.Concat(type, gtin, culture.Name), type, gtin, culture.Name));
                 var filterProductsTransform = FilterProductsTransformFactory.Create(
-                    products => FilterProductsCommand.Execute(dataSources, products));
+                    products => FilterProductsCommand.Execute(getDataSourcesTask.Result, products));
                 var updateEntityTransform = UpdateEntityTransformFactory.Create(
-                    query => UpdateEntityBlockCommand.Execute(databaseContext, query));
+                    entity => UpdateProductQueryItemCommand.Execute(databaseContext, entity));
                 var getProductTransform = GetProductTransformFactory.Create(
                     (gran, culture) =>
                         productCache.GetOrAddAsync(string.Concat(gran, culture.Name), gran, culture.Name));
@@ -113,7 +111,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
                 var dataflow = new ProcessFileDataflow(
                     new TransformBlock<Message, Stream>(msg => DownloadFileCommand.Execute(
-                        (blobName, content) => DownloadCloudBlob(blobContainer, blobName, content), 
+                        (blobName, content) => DownloadCloudBlobCommand.Execute(blobContainer, blobName, content), 
                         msg, 
                         new MemoryStream())),
                     new TransformManyBlock<Stream, ItemMessageState>(file => parseFileTransform(file, writer)),
@@ -157,13 +155,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 var stream = ParseItemsCommand.Execute(items, new MemoryStream(), serializer).Result;
 
                 WriteBlobCommand.Execute(
-                    (file, filename) => UploadCloudBlob(blobContainer, stream, filename), 
+                    (file, filename) => UploadCloudBlobCommand.Execute(blobContainer, stream, filename), 
                     message, 
                     stream)
                     .Wait();
 
                 // Mark the product query as processed.
-                UpdateProductQueryCommand.Execute(databaseContext, message.Id).Wait();
+                UpdateProductQueryCommand.Execute(databaseContext, getCompletedStatusTask.Result, message.Id).Wait();
 
                 writer.WriteLine("process.");
             };
@@ -232,62 +230,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                     new ProductSearchLink(new UriTemplate(
                         "/v1/product?filter={filter}&culture={culture}&skip={skip}&top={top}")),
                     parameters).Result);
-        }
-
-        /// <summary>
-        /// Downloads the specified file from the given container to the given <see cref="Stream"/>.
-        /// </summary>
-        /// <param name="container">The container in which the specified blob is located.</param>
-        /// <param name="filename">A string containing the name of the blob.</param>
-        /// <param name="stream">The <see cref="Stream"/> to which the file will be downloaded.</param>
-        /// <returns>
-        /// A <see cref="Task"/> the represents the asynchronous operation where the task result will be the stream 
-        /// containing the blob contents.
-        /// </returns>
-        private static async Task<Stream> DownloadCloudBlob(
-            CloudBlobContainer container, 
-            string filename, 
-            Stream stream)
-        {
-            // Get a reference to the blob in the container.
-            CloudBlockBlob blob = container.GetBlockBlobReference(filename);
-
-            // Ensure the blob exists.
-            if (!blob.Exists())
-            {
-                throw new InvalidOperationException("The specified blob was not found within the given container.");
-            }
-
-            await blob.DownloadToStreamAsync(stream);
-
-            return stream;
-        }
-
-        /// <summary>
-        /// Asynchronously persists a <see cref="ProductQueryItem"/> to storage.
-        /// </summary>
-        /// <param name="context">The <see cref="DbContext"/> to be used when persisting data.</param>
-        /// <param name="entity">The details of the record to be persisted.</param>
-        /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        private static Task SaveProductQueryItemAsync(ProductQueryContext context, ProductQueryItem entity)
-        {
-            context.ProductQueryItems.Attach(entity);
-            return context.SaveChangesAsync();
-        }
-
-        /// <summary>
-        /// Uploads the content from the given stream into a blob contained within the given container.
-        /// </summary>
-        /// <param name="container">The container in which the specified blob is located.</param>
-        /// <param name="stream">The <see cref="Stream"/> to which the content will be written.</param>
-        /// <param name="filename">A string containing the name of the blob.</param>
-        /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        private static async Task UploadCloudBlob(CloudBlobContainer container, Stream stream, string filename)
-        {
-            // Get a reference to the blob in the container.
-            CloudBlockBlob blob = container.GetBlockBlobReference(filename);
-
-            await blob.UploadFromStreamAsync(stream);
         }
     }
 }

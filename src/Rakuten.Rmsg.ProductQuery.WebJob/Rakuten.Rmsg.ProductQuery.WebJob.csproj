@@ -164,6 +164,7 @@
     <Compile Include="Client\Linking\DataSourcesLink.cs" />
     <Compile Include="Client\Linking\ProductLink.cs" />
     <Compile Include="Client\Linking\ProductSearchLink.cs" />
+    <Compile Include="Data\Entity\Commands\GetCompletedProductQueryStatusCommand.cs" />
     <Compile Include="Commands\MergeProductCommand.cs" />
     <Compile Include="Commands\EntityFramework\CreateProductQueryItemCommand.cs" />
     <Compile Include="Commands\Azure\DownloadFileCommand.cs" />
@@ -174,14 +175,16 @@
     <Compile Include="Commands\EntityFramework\GetProductQueryItemCommand.cs" />
     <Compile Include="Commands\IO\ParseFileCommand.cs" />
     <Compile Include="Commands\IO\ParseItemsCommand.cs" />
-    <Compile Include="Commands\EntityFramework\UpdateEntityBlockCommand.cs" />
-    <Compile Include="Commands\EntityFramework\UpdateProductQueryCommand.cs" />
+    <Compile Include="Data\Entity\Commands\FindProductQueryItemCommand.cs" />
+    <Compile Include="Data\Entity\Commands\AddProductQueryItemCommand.cs" />
+    <Compile Include="Data\Entity\Commands\UpdateProductQueryCommand.cs" />
     <Compile Include="Commands\Azure\WriteBlobCommand.cs" />
-    <Compile Include="Entities\ProductQuery.cs" />
-    <Compile Include="Entities\ProductQueryContext.cs" />
-    <Compile Include="Entities\ProductQueryGroup.cs" />
-    <Compile Include="Entities\ProductQueryItem.cs" />
-    <Compile Include="Entities\ProductQueryStatus.cs" />
+    <Compile Include="Data\Entity\Commands\UpdateProductQueryItemCommand.cs" />
+    <Compile Include="Data\Entity\ProductQuery.cs" />
+    <Compile Include="Data\Entity\ProductQueryContext.cs" />
+    <Compile Include="Data\Entity\ProductQueryGroup.cs" />
+    <Compile Include="Data\Entity\ProductQueryItem.cs" />
+    <Compile Include="Data\Entity\ProductQueryStatus.cs" />
     <Compile Include="Extensions\GenericExtensions.cs" />
     <Compile Include="Caching\ICache{T}.cs" />
     <Compile Include="Caching\ConcurrentDictionaryCache{T}.cs" />
@@ -203,6 +206,8 @@
     <Compile Include="Threading\Tasks\Dataflow\Factories\UpdateEntityTransformFactory.cs" />
     <Compile Include="Threading\Tasks\Dataflow\ItemMessageState.cs" />
     <Compile Include="Threading\Tasks\Dataflow\ProcessFileDataflow.cs" />
+    <Compile Include="WindowsAzure\Storage\Blob\Commands\DownloadCloudBlobCommand.cs" />
+    <Compile Include="WindowsAzure\Storage\Blob\Commands\UploadCloudBlobCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

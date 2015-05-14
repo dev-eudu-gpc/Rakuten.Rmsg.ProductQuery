@@ -11,8 +11,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
-
     /// <summary>
     /// A suite of tests for the <see cref="GetProductQueryItemCommand"/> class.
     /// </summary>

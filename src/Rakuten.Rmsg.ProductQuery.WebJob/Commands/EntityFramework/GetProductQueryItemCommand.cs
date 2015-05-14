@@ -7,11 +7,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using Rakuten.Rmsg.ProductQuery.WebJob.Entities;
 
     /// <summary>
     /// Retrieves the record of a GTIN search within the context of a query.

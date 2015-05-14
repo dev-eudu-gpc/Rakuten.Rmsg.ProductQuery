@@ -67,7 +67,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             }
 
             searchLink = searchLink.ForCulture(culture).Taking(PageSize);
-
             Contract.Assume(searchLink != null);
 
             var products = new List<Product>();
