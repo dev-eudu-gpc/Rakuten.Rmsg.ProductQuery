@@ -157,19 +157,43 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\UriBuilderErrorMessages.Designer.cs" />
     <Compile Include="Properties\UriTemplateErrorMessages.Designer.cs" />
-    <Compile Include="UriTemplate.BoundUriTemplate.cs" />
-    <Compile Include="UriTemplate.ComponentContract.cs" />
+    <Compile Include="UriTemplate.BoundUriTemplate.cs">
+        <DependentUpon>UriTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UriTemplate.ComponentContract.cs">
+        <DependentUpon>UriTemplate.cs</DependentUpon>
+    </Compile>
     <Compile Include="UriTemplate.cs" />
-    <Compile Include="UriTemplate.Expression.cs" />
-    <Compile Include="UriTemplate.IComponent.cs" />
-    <Compile Include="UriTemplate.Lexer.cs" />
-    <Compile Include="UriTemplate.Literal.cs" />
-    <Compile Include="UriTemplate.Operator.cs" />
-    <Compile Include="UriTemplate.Parser.cs" />
-    <Compile Include="UriTemplate.Token.cs" />
-    <Compile Include="UriTemplate.TokenType.cs" />
-    <Compile Include="UriTemplate.Varspec.cs" />
-    <Compile Include="UriTemplateContract.cs" />
+    <Compile Include="UriTemplate.Expression.cs">
+        <DependentUpon>UriTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UriTemplate.IComponent.cs">
+        <DependentUpon>UriTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UriTemplate.Lexer.cs">
+        <DependentUpon>UriTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UriTemplate.Literal.cs">
+        <DependentUpon>UriTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UriTemplate.Operator.cs">
+        <DependentUpon>UriTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UriTemplate.Parser.cs">
+        <DependentUpon>UriTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UriTemplate.Token.cs">
+        <DependentUpon>UriTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UriTemplate.TokenType.cs">
+        <DependentUpon>UriTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UriTemplate.Varspec.cs">
+        <DependentUpon>UriTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UriTemplateContract.cs">
+        <DependentUpon>IUriTemplate.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

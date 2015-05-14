@@ -45,11 +45,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
             // TODO: [WB 11-May-2015] Actually implement this
             if (this.apiContext.BaseAddress.AbsoluteUri.StartsWith("http://localhost"))
             {
-                var x = "We're running locally";
             }
             else
             {
-                var y = "We're running remotely";
             }
         }
     }
