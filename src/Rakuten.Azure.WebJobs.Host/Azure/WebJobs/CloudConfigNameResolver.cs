@@ -6,9 +6,8 @@
 namespace Rakuten.Azure.WebJobs
 {
     using System;
-
+    using Microsoft.Azure;
     using Microsoft.Azure.WebJobs;
-    using Microsoft.WindowsAzure;
 
     /// <summary>
     /// Attempts to retrieve placeholder values in WebJobs SDK constructor parameters using the local config file.

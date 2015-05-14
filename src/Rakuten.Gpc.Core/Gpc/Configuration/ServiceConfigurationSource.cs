@@ -6,8 +6,7 @@
 namespace Rakuten.Gpc.Configuration
 {
     using System;
-
-    using Microsoft.WindowsAzure;
+    using Microsoft.Azure;
 
     /// <summary>
     /// Provides access to configuration data stored as service configuration.
