@@ -20,10 +20,11 @@ namespace Rakuten.IO.Delimited.Serialization
     using LumenWorks.Framework.IO.Csv;
 
     /// <summary>
-    /// Serializes delimited files using <see cref="LumenWorks"/>.
+    /// Serializes delimited files using the LumenWorks library.
     /// </summary>
     /// <typeparam name="T">The type of object to serialize.</typeparam>
-    public class LumenWorksSerializer<T> where T : new()
+    public class LumenWorksSerializer<T> : IFileReader<T>, IFileWriter<T>
+        where T : new()
     {
         /// <summary>
         /// The character that specifies the beginning of a comment.
@@ -203,40 +204,6 @@ namespace Rakuten.IO.Delimited.Serialization
 
             // Ensure that the client hasn't specified some stupid default value for a field. i.e. a string value for an int field.
             this.ValidateDefaults();
-        }
-
-        /// <summary>
-        /// Returns a <see cref="CsvReader"/> that can be used to read the file
-        /// </summary>
-        /// <param name="filename">
-        /// The filename.
-        /// </param>
-        /// <param name="hasHeaders">
-        /// The has headers.
-        /// </param>
-        /// <param name="supportsMultiline">
-        /// The supports Multiline.
-        /// </param>
-        /// <returns>
-        /// The <see cref="CsvReader"/>.
-        /// </returns>
-        public CsvReader GetReader(
-            string filename, 
-            bool hasHeaders = true, 
-            bool supportsMultiline = true)
-        {
-            var reader = new StreamReader(filename, Encoding.Default);
-            return new CsvReader(
-                reader, 
-                hasHeaders, 
-                this.delimiterCharacter, 
-                this.quoteCharacter, 
-                this.escapeCharacter, 
-                this.commentCharacter, 
-                this.valueTrimmingOptions)
-            {
-                SupportsMultiline = supportsMultiline
-            };
         }
 
         /// <summary>
@@ -583,9 +550,9 @@ namespace Rakuten.IO.Delimited.Serialization
         /// <returns>
         /// The <see cref="Task"/>.
         /// </returns>
-        public async Task WriteHeadersAsync(StreamWriter writer)
+        public Task WriteHeadersAsync(StreamWriter writer)
         {
-            await writer.WriteLineAsync(this.GetCsvHeaders());
+            return writer.WriteLineAsync(this.GetCsvHeaders());
         }
 
         /// <summary>
@@ -611,9 +578,9 @@ namespace Rakuten.IO.Delimited.Serialization
         /// <returns>
         /// The <see cref="Task"/>.
         /// </returns>
-        public async Task WriteLineAsync(T lineobject, StreamWriter writer)
+        public Task WriteLineAsync(T lineobject, StreamWriter writer)
         {
-            await writer.WriteLineAsync(this.GetCsvLine(lineobject));
+            return writer.WriteLineAsync(this.GetCsvLine(lineobject));
         }
 
         /// <summary>

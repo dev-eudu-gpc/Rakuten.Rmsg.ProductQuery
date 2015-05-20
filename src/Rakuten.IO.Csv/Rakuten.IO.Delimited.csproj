@@ -118,6 +118,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Exceptions\ReadLineException.cs" />
     <Compile Include="Serialization\FieldMapping.cs" />
+    <Compile Include="Serialization\IFileReader.cs" />
+    <Compile Include="Serialization\IFileWriter.cs" />
     <Compile Include="Serialization\LumenWorksSerializer.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
   </ItemGroup>
