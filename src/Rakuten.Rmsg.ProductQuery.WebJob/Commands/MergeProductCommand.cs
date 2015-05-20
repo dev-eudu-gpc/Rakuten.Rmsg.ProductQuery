@@ -42,7 +42,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                         { "image location 3", o => item.SetIfNullOrEmpty(i => i.ImageUrl3, o) },
                         { "image location 4", o => item.SetIfNullOrEmpty(i => i.ImageUrl4, o) },
                         { "image location 5", o => item.SetIfNullOrEmpty(i => i.ImageUrl5, o) },
-                    });
+                    },
+                    item1 => string.IsNullOrWhiteSpace(item.ImageUrl1));
 
                 ProcessAttributeSet(
                     item,
@@ -64,6 +65,33 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
                 return item;
             });
+        }
+
+        /// <summary>
+        /// Locates and maps the specified attribute set from the <see cref="Product"/> into the <see cref="Item"/> 
+        /// using the collection of <see cref="Action{T1}"/>s.
+        /// </summary>
+        /// <param name="item">The item onto which the additional data should be merged.</param>
+        /// <param name="product">The product from which the data should be extracted.</param>
+        /// <param name="name">The name of the attribute set to process.</param>
+        /// <param name="actions">
+        /// A collection of <see cref="KeyValuePair{TKey,TValue}"/> that define how to process each attribute in the 
+        /// set.
+        /// </param>
+        /// <param name="predicate">A filter that determines if data can be aggregated.</param>
+        private static void ProcessAttributeSet(
+            Item item,
+            Product product,
+            string name,
+            Dictionary<string, Action<object>> actions,
+            Predicate<Item> predicate)
+        {
+            if (!predicate(item))
+            {
+                return;
+            }
+
+            ProcessAttributeSet(item, product, name, actions);
         }
 
         /// <summary>
