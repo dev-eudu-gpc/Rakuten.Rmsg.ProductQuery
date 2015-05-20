@@ -33,6 +33,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         private readonly ICommand<GetCommandParameters, Task<ProductQuery>> getProductQueryCommand;
 
         /// <summary>
+        /// A link template representing the canonical link of a product query.
+        /// </summary>
+        private readonly IUriTemplate productQueryUriTemplate;
+
+        /// <summary>
         /// A command that updates the status of a product query in the database.
         /// </summary>
         private readonly ICommand<UpdateStatusDatabaseCommandParameters, Task> updateProductQueryStatusDatabaseCommand;
@@ -44,20 +49,24 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
         /// <param name="dispatchMessageCommand">A command that dispatches a product query message to the queue.</param>
         /// <param name="getProductQueryCommand">A command for getting a product query.</param>
         /// <param name="updateProductQueryStatusDatabaseCommand">A command that updates the status of a product query in the database.</param>
+        /// <param name="productQueryUriTemplate">A link template representing the canonical location of the resource.</param>
         public ReadyForProcessingCommand(
             IApiContext context,
             ICommand<DispatchMessageCommandParameters, Task> dispatchMessageCommand,
             ICommand<GetCommandParameters, Task<ProductQuery>> getProductQueryCommand,
-            ICommand<UpdateStatusDatabaseCommandParameters, Task> updateProductQueryStatusDatabaseCommand)
+            ICommand<UpdateStatusDatabaseCommandParameters, Task> updateProductQueryStatusDatabaseCommand,
+            IUriTemplate productQueryUriTemplate)
         {
             Contract.Requires(context != null);
             Contract.Requires(dispatchMessageCommand != null);
             Contract.Requires(getProductQueryCommand != null);
+            Contract.Requires(productQueryUriTemplate != null);
             Contract.Requires(updateProductQueryStatusDatabaseCommand != null);
 
             this.context = context;
             this.dispatchMessageCommand = dispatchMessageCommand;
             this.getProductQueryCommand = getProductQueryCommand;
+            this.productQueryUriTemplate = productQueryUriTemplate;
             this.updateProductQueryStatusDatabaseCommand = updateProductQueryStatusDatabaseCommand;
         }
 
@@ -89,24 +98,27 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Commands
                 throw new ProductQueryCultureNotFoundException(parameters.Id, parameters.Culture, productQuery);
             }
 
-            //// TODO: [WB 23-Apr-2015] Should we throw an exception if the status of the product query
-            ////                        is not New ?
-
             if (productQuery.Status == ProductQueryStatus.New)
             {
                 // Send a message to the queue.
                 var blobLink = productQuery.Links.First(link => link.RelationType.Equals("enclosure", StringComparison.InvariantCultureIgnoreCase));
+                await this.dispatchMessageCommand.Execute(new DispatchMessageCommandParameters(
+                    parameters.Id, parameters.Culture.Name, blobLink));
 
                 // Update the status of the product query in the database.
                 await this.updateProductQueryStatusDatabaseCommand.Execute(
                     new UpdateStatusDatabaseCommandParameters(parameters.Id, ProductQueryStatus.Submitted));
 
-                await this.dispatchMessageCommand.Execute(new DispatchMessageCommandParameters(
-                    parameters.Id, parameters.Culture.Name, blobLink));
-
                 // Update the status in the product query object rather than get
                 // it again from the database as we know that that is the only change
                 productQuery.Status = ProductQueryStatus.Submitted;
+            }
+            else
+            {
+                throw new ProductQueryAlreadySubmittedException(
+                    parameters.Id.ToString(),
+                    parameters.Culture.Name,
+                    this.productQueryUriTemplate);
             }
 
             return productQuery;

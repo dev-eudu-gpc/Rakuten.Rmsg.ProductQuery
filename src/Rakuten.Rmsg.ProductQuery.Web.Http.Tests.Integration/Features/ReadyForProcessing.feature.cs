@@ -108,6 +108,43 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Flagging a product query as ready for processing creates a message on the queue")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ReadyForProcessing")]
+        public virtual void FlaggingAProductQueryAsReadyForProcessingCreatesAMessageOnTheQueue()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Flagging a product query as ready for processing creates a message on the queue", ((string[])(null)));
+            this.ScenarioSetup(scenarioInfo);
+            testRunner.Given("the web job is not running", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.When("a request is made to flag the product query as ready for processing with a status" +
+                    " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.Then("the HTTP status code is 202", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+            testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Flagging a product query as ready for processing with an identifier that exists b" +
+            "ut in a different culture returns the correct response")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ReadyForProcessing")]
+        public virtual void FlaggingAProductQueryAsReadyForProcessingWithAnIdentifierThatExistsButInADifferentCultureReturnsTheCorrectResponse()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Flagging a product query as ready for processing with an identifier that exists b" +
+                    "ut in a different culture returns the correct response", ((string[])(null)));
+            this.ScenarioSetup(scenarioInfo);
+            testRunner.Given("a valid new product query with a culture of en-US has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the culture of the new product query is updated to en-GB", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.When("a request is made to flag the product query as ready for processing with a status" +
+                    " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.Then("the HTTP status code is 303", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+            testRunner.And("the HTTP location header is /product-query/{id}/culture/en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Flagging a product query as ready for processing with an invalid GUID returns the" +
             " correct response")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ReadyForProcessing")]
@@ -173,25 +210,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Flagging a product query as ready for processing with an identifier that exists b" +
-            "ut in a different culture returns the correct response")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ReadyForProcessing")]
-        public virtual void FlaggingAProductQueryAsReadyForProcessingWithAnIdentifierThatExistsButInADifferentCultureReturnsTheCorrectResponse()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Flagging a product query as ready for processing with an identifier that exists b" +
-                    "ut in a different culture returns the correct response", ((string[])(null)));
-            this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query with a culture of en-US has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the culture of the new product query is updated to en-GB", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.When("a request is made to flag the product query as ready for processing with a status" +
-                    " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-            testRunner.Then("the HTTP status code is 303", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("the HTTP location header is /product-query/{id}/culture/en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Flagging a product query as ready for processing and supplying an invalid status " +
             "returns the correct response")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ReadyForProcessing")]
@@ -209,10 +227,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/invalid-product-query-sta" +
                     "tus", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is An invalid product query status was supplied.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the HTTP problem detail for the product query request is You attempted to update " +
-                    "the status of the query at \'/product-query/{id}\' to \'{status}\', which is an inva" +
-                    "lid status.  The only valid status to which this query can be set is \'submitted\'" +
-                    ".", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And(@"the HTTP problem detail for the product query request is You attempted to update the status of the query at '/product-query/{id}/culture/{culture}' to '{status}', which is an invalid status.  The only valid status to which this query can be set is 'submitted'.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem contains a link of relation type http://rels.rakuten.com/product" +
                     "-query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem link of relation type http://rels.rakuten.com/product-query has " +
@@ -221,20 +236,33 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Flagging a product query as ready for processing creates a message on the queue")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Flagging a product query as ready for processing when it has already been flagged" +
+            " as such returns the correct response")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ReadyForProcessing")]
-        public virtual void FlaggingAProductQueryAsReadyForProcessingCreatesAMessageOnTheQueue()
+        public virtual void FlaggingAProductQueryAsReadyForProcessingWhenItHasAlreadyBeenFlaggedAsSuchReturnsTheCorrectResponse()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Flagging a product query as ready for processing creates a message on the queue", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Flagging a product query as ready for processing when it has already been flagged" +
+                    " as such returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("the web job is not running", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-            testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-            testRunner.Then("the HTTP status code is 202", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a request is made to flag the product query as ready for processing with a status" +
+                    " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.Then("the HTTP status code is 403", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+            testRunner.And("an HTTP problem can be retrieved from the response body", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem is of type http://problems.rakuten.com/product-query-already-rea" +
+                    "dy-for-processing", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem title is The product query has already been flagged as ready for" +
+                    " processing.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem detail for the product query request is You attempted to flag th" +
+                    "e query at \'/product-query/{id}/culture/{culture}\' as ready for processing but h" +
+                    "as already been flagged as such.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem contains a link of relation type http://rels.rakuten.com/product" +
+                    "-query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem link of relation type http://rels.rakuten.com/product-query has " +
+                    "an href that points to the product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
     }

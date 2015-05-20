@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="InvalidStatusException.cs" company="Rakuten">
+// <copyright file="ProductQueryAlreadySubmittedException.cs" company="Rakuten">
 //   Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -12,39 +12,37 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http
     using Rakuten.Rmsg.ProductQuery.Web.Http.Links;
 
     /// <summary>
-    /// Represents the error raised when trying to set the status of a product query
-    /// to an invalid status.
+    /// Represents the error raised when trying to flag a product query as ready
+    /// for processing when it has already been done.
     /// </summary>
-    [ApiException("http://problems.rakuten.com/invalid-product-query-status", "An invalid product query status was supplied.")]
-    internal class InvalidStatusException : ApiException
+    [ApiException("http://problems.rakuten.com/product-query-already-ready-for-processing", "The product query has already been flagged as ready for processing.")]
+    internal class ProductQueryAlreadySubmittedException : ApiException
     {
         /// <summary>
         /// The message that describes this error.
         /// </summary>
         private const string Detail =
-            @"You attempted to update the status of the query at '/product-query/{0}/culture/{1}' to '{2}', which is an invalid status.  The only valid status to which this query can be set is 'submitted'.";
+            @"You attempted to flag the query at '/product-query/{0}/culture/{1}' as ready for processing but has already been flagged as such.";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidStatusException"/> class.
+        /// Initializes a new instance of the <see cref="ProductQueryAlreadySubmittedException"/> class.
         /// </summary>
-        public InvalidStatusException()
+        public ProductQueryAlreadySubmittedException()
             : base(Detail)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidStatusException"/> class.
+        /// Initializes a new instance of the <see cref="ProductQueryAlreadySubmittedException"/> class.
         /// </summary>
         /// <param name="id">The identifier of the product query.</param>
         /// <param name="culture">The culture of the product query.</param>
-        /// <param name="suppliedStatus">The value for the status that was invalid.</param>
         /// <param name="productQueryUriTemplate">A link template representing the canonical location of the resource.</param>
-        public InvalidStatusException(
+        public ProductQueryAlreadySubmittedException(
             string id, 
             string culture,
-            string suppliedStatus,
             IUriTemplate productQueryUriTemplate)
-            : base(string.Format(Detail, id, culture, suppliedStatus))
+            : base(string.Format(Detail, id, culture))
         {
             Contract.Requires(productQueryUriTemplate != null);
 
