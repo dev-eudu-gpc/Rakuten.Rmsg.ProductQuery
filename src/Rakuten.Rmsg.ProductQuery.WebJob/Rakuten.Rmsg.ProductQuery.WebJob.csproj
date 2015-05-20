@@ -173,7 +173,6 @@
     <Compile Include="Commands\Http\GetDataSourcesCommand.cs" />
     <Compile Include="Commands\Http\GetProductCommand.cs" />
     <Compile Include="Commands\EntityFramework\GetProductQueryItemCommand.cs" />
-    <Compile Include="Commands\IO\ParseFileCommand.cs" />
     <Compile Include="Commands\IO\ParseItemsCommand.cs" />
     <Compile Include="Data\Entity\Commands\FindProductQueryItemCommand.cs" />
     <Compile Include="Data\Entity\Commands\AddProductQueryItemCommand.cs" />

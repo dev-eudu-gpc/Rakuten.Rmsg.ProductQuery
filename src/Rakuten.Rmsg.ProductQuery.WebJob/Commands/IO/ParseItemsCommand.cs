@@ -20,25 +20,20 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// Writes the collection of <see cref="Item"/>s onto the given <see cref="Stream"/>.
         /// </summary>
         /// <param name="items">The collection of items.</param>
-        /// <param name="stream">The stream onto which the collection of items should be written.</param>
+        /// <param name="writer">The <see cref="TextWriter"/> instance.</param>
         /// <param name="serializer">The serializer to be used.</param>
         /// <returns>A <see cref="Task"/> the represents the asynchronous operation.</returns>
-        public static async Task<Stream> Execute(
-            IEnumerable<Item> items, 
-            Stream stream, 
-            LumenWorksSerializer<Item> serializer)
+        public static async Task Execute(
+            IEnumerable<Item> items,
+            StreamWriter writer, 
+            IFileWriter<Item> serializer)
         {
-            using (var writer = new StreamWriter(stream))
+            await serializer.WriteHeadersAsync(writer);
+
+            foreach (var item in items)
             {
-                await serializer.WriteHeadersAsync(writer);
-
-                foreach (var item in items)
-                {
-                    await serializer.WriteLineAsync(item, writer);
-                }
+                await serializer.WriteLineAsync(item, writer);
             }
-
-            return stream;
         }
     }
 }

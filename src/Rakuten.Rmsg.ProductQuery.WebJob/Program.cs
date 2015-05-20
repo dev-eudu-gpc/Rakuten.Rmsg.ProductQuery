@@ -14,6 +14,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using System.Threading.Tasks;
     using System.Threading.Tasks.Dataflow;
 
+    using LumenWorks.Framework.IO.Csv;
+
     using Microsoft.Azure.WebJobs;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
@@ -76,12 +78,19 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 // Create a cache for a single product.
                 var productCache = CreateProductCache(createApiClient);
 
+                Task.WaitAll(getDataSourcesTask, getCompletedStatusTask);
+
                 var parseFileTransform = ParseFileTransformFactory.Create(
-                    () => ParseFileCommand.Execute(
-                        serializer, 
-                        new MemoryStream()), 
-                        message.Id, 
-                        new CultureInfo(message.Culture));
+                    stream1 => Task.Run(() =>
+                    {
+                        using (var streamReader = new StreamReader(stream1))
+                        using (var delimitedReader = new CsvReader(streamReader, true, ','))
+                        {
+                            return serializer.ReadFileByIndex(delimitedReader);
+                        }
+                    }),
+                    message.Id,
+                    new CultureInfo(message.Culture));
                 var getQueryItemTransform = GetQueryItemTransformFactory.Create(
                     (id, gtin) => GetProductQueryItemCommand.Execute(
                         (guid, s) => FindProductQueryItemCommand.Execute(databaseContext, guid, s),
@@ -128,9 +137,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                     new TransformBlock<ItemMessageState, Item>(state => Task.FromResult(state.Item)));
 
                 dataflow.Post(message);
-
-                Task.WaitAll(getDataSourcesTask, getCompletedStatusTask);
-
                 dataflow.Complete();
 
                 var items = new List<Item>();
@@ -150,13 +156,16 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                     }
                 }
 
+                // Create a stream to serialize to.
+                var writeStream = new MemoryStream();
+
                 // Write out the list of items collected from the dataflow to the blob.
-                var stream = ParseItemsCommand.Execute(items, new MemoryStream(), serializer).Result;
+                ParseItemsCommand.Execute(items, new StreamWriter(writeStream), serializer).Wait();
 
                 WriteBlobCommand.Execute(
-                    (file, filename) => UploadCloudBlobCommand.Execute(blobContainer, stream, filename), 
-                    message, 
-                    stream)
+                    (file, filename) => UploadCloudBlobCommand.Execute(blobContainer, writeStream, filename), 
+                    message,
+                    writeStream)
                     .Wait();
 
                 // Mark the product query as processed.

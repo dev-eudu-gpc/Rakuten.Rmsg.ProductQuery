@@ -103,9 +103,11 @@
     <Compile Include="Tests\Commands\Azure\WriteBlobCommandTests.cs" />
     <Compile Include="Tests\Commands\EntityFramework\CreateProductQueryItemCommandTests.cs" />
     <Compile Include="Tests\Commands\EntityFramework\GetProductQueryItemCommandTests.cs" />
+    <Compile Include="Tests\Commands\FilterProductsCommandTests.cs" />
     <Compile Include="Tests\Commands\Http\ExecuteSearchCommandTests.cs" />
     <Compile Include="Tests\Commands\Http\GetDataSourcesCommandTests.cs" />
     <Compile Include="Tests\Commands\Http\GetProductCommandTests.cs" />
+    <Compile Include="Tests\Commands\IO\ParseItemsCommandTests.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

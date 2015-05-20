@@ -30,7 +30,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <param name="culture">The culture in which the product data should be expressed.</param>
         /// <returns>A <see cref="Func{T1,T2,TResult}"/>.</returns>
         public static Func<Stream, TextWriter, Task<IEnumerable<ItemMessageState>>> Create(
-            Func<Task<IEnumerable<Item>>> command,
+            Func<Stream, Task<IEnumerable<Item>>> command,
             Guid id,
             CultureInfo culture)
         {
@@ -40,7 +40,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             {
                 try
                 {
-                    IEnumerable<Item> items = await command();
+                    IEnumerable<Item> items = await command(stream);
 
                     return from item in items select new ItemMessageState(id, culture, item);
                 }
