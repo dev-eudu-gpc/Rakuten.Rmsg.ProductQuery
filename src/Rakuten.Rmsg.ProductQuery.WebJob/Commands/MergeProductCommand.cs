@@ -43,7 +43,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                         { "image location 4", o => item.SetIfNullOrEmpty(i => i.ImageUrl4, o) },
                         { "image location 5", o => item.SetIfNullOrEmpty(i => i.ImageUrl5, o) },
                     },
-                    item1 => string.IsNullOrWhiteSpace(item.ImageUrl1));
+                    item1 => string.IsNullOrEmpty(item.ImageUrl1));
 
                 ProcessAttributeSet(
                     item,
@@ -111,6 +111,11 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             string name, 
             Dictionary<string, Action<object>> actions)
         {
+            if (product.Attributes == null)
+            {
+                return;
+            }
+
             var set = product.Attributes.FirstOrDefault(
                 a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 

@@ -108,6 +108,7 @@
     <Compile Include="Tests\Commands\Http\GetDataSourcesCommandTests.cs" />
     <Compile Include="Tests\Commands\Http\GetProductCommandTests.cs" />
     <Compile Include="Tests\Commands\IO\ParseItemsCommandTests.cs" />
+    <Compile Include="Tests\Commands\MergeProductCommandTests.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
