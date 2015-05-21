@@ -130,7 +130,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             aggregateBlock.LinkTo(outputBlock);
             aggregateBlock.OnFaultOrCompletion(outputBlock);
 
+            // Set the block which can be awaited for completion of the pipeline.
             this.Completion = outputBlock.Completion;
+
+            // Set the block from which processed items can be received.
             this.ReceivableBlock = outputBlock;
         }
     }
