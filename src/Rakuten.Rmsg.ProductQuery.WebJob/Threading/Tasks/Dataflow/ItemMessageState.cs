@@ -150,7 +150,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <returns>A new <see cref="ItemMessageState"/> instance containing the exception.</returns>
         public ItemMessageState AddException(Exception exception)
         {
-            var exceptions = this.Exceptions.ToList();
+            var exceptions = this.Exceptions.IsDefaultOrEmpty ? new List<Exception>() : this.Exceptions.ToList();
             exceptions.Add(exception);
 
             if (this.Product != null)

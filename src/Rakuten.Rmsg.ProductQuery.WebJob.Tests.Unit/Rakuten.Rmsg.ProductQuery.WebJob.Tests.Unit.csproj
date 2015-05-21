@@ -73,6 +73,10 @@
       <HintPath>FakesAssemblies\Rakuten.Rmsg.ProductQuery.WebJob.Fakes.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.36.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.36\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -109,6 +113,14 @@
     <Compile Include="Tests\Commands\Http\GetProductCommandTests.cs" />
     <Compile Include="Tests\Commands\IO\ParseItemsCommandTests.cs" />
     <Compile Include="Tests\Commands\MergeProductCommandTests.cs" />
+    <Compile Include="Tests\Threading\Tasks\Dataflow\Factories\CreateQueryItemTransformFactoryTests.cs" />
+    <Compile Include="Tests\Threading\Tasks\Dataflow\Factories\ProductSearchTransformFactoryTests.cs" />
+    <Compile Include="Tests\Threading\Tasks\Dataflow\Factories\UpdateEntityTransformFactoryTests.cs" />
+    <Compile Include="Tests\Threading\Tasks\Dataflow\Factories\ParseFileTransformFactoryTests.cs" />
+    <Compile Include="Tests\Threading\Tasks\Dataflow\Factories\MergeProductTransformFactoryTests.cs" />
+    <Compile Include="Tests\Threading\Tasks\Dataflow\Factories\GetQueryItemTransformFactoryTests.cs" />
+    <Compile Include="Tests\Threading\Tasks\Dataflow\Factories\GetProductTransformFactoryTests.cs" />
+    <Compile Include="Tests\Threading\Tasks\Dataflow\Factories\FilterProductsTransformFactoryTests.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -131,6 +143,10 @@
     <ProjectReference Include="..\Rakuten.Rmsg.ProductQuery\Rakuten.Rmsg.ProductQuery.csproj">
       <Project>{9ad4ec9a-333a-4779-9f7d-4245710f19a2}</Project>
       <Name>Rakuten.Rmsg.ProductQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rakuten.Threading.Tasks.Dataflow\Rakuten.Threading.Tasks.Dataflow.csproj">
+      <Project>{0cdc25b7-4f06-4c94-9bf8-02be03022074}</Project>
+      <Name>Rakuten.Threading.Tasks.Dataflow</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

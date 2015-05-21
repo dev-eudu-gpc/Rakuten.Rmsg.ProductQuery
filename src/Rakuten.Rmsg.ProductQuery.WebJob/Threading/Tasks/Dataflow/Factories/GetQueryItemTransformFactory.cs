@@ -35,7 +35,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 }
                 catch (Exception ex)
                 {
-                    writer.WriteLine("An issue was encountered parsing the uploaded file: " + ex.ToString());
+                    writer.WriteLine("An issue was encountered attempting to retrieve the record: " + ex.ToString());
 
                     return state.AddException(ex);
                 }
