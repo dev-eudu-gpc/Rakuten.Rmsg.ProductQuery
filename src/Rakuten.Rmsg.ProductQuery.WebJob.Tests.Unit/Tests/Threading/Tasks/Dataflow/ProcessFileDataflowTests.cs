@@ -33,19 +33,17 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
         public void ProcessFileDataflowHandlesAFileThatContainsNoItems()
         {
             // Arrange
-            var id = Guid.NewGuid();
-
             var dataflow = BuildDataflowPipeline(
                 parseFile: stream => Enumerable.Empty<ItemMessageState>());
 
-            // Act
-            dataflow.Post(new Message(id, "en-GB", new Link()));
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
             dataflow.Complete();
 
-            // Assert
+            // Act
             var items = PollDataflowUntilCompletion(dataflow);
 
-            Assert.IsTrue(items.Count == 0);
+            // Assert
+            Assert.AreEqual(0, items.Count);
         }
 
         /// <summary>
@@ -55,12 +53,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
         public void ProcessFileDataflowHandlesAnExceptionThrownWhenFetchingAFile()
         {
             // Arrange
-            var id = Guid.NewGuid();
-
             var dataflow = BuildDataflowPipeline(
                 downloadFile: state => { throw new Exception("Ninja Cat riding a Fire-breathing Unicorn"); });
 
-            dataflow.Post(new Message(id, "en-GB", new Link()));
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
             dataflow.Complete();
 
             Exception exception = null;
@@ -86,13 +82,11 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
         public void ProcessFileDataflowHandlesAnExceptionThrownWhenParsingAFile()
         {
             // Arrange
-            var id = Guid.NewGuid();
-
             var dataflow = BuildDataflowPipeline(
                 parseFile: state => { throw new Exception("Ninja Cat riding a Fire-breathing Unicorn"); });
 
             // Act
-            dataflow.Post(new Message(id, "en-GB", new Link()));
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
             dataflow.Complete();
 
             Exception exception = null;
@@ -119,13 +113,14 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
         public void ProcessFileDataflowHandlesAnItemThatHasAMatchingRecord()
         {
             // Arrange
-            var id = Guid.NewGuid();
-
             var dataflow = BuildDataflowPipeline(
                 parseFile: stream =>
                     new List<ItemMessageState>
                     {
-                        new ItemMessageState(id, new CultureInfo("en-GB"), new Item { GtinValue = "1111111111116" })
+                        new ItemMessageState(
+                            Guid.NewGuid(), 
+                            new CultureInfo("en-GB"), 
+                            new Item { GtinValue = "1111111111116" })
                     },
                 getEntity: state => new ItemMessageState(
                     state.Id,
@@ -137,13 +132,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
                         Gtin = state.Item.GtinValue
                     }));
 
-            // Act
-            dataflow.Post(new Message(id, "en-GB", new Link()));
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
             dataflow.Complete();
 
-            // Assert
+            // Act
             var items = PollDataflowUntilCompletion(dataflow);
 
+            // Assert
             Assert.IsTrue(items.Count > 0);
         }
 
@@ -154,13 +149,14 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
         public void ProcessFileDataflowHandlesAnItemThatHasBeenPreviouslyAssignedAGran()
         {
             // Arrange
-            var id = Guid.NewGuid();
-
             var dataflow = BuildDataflowPipeline(
                 parseFile: stream =>
                     new List<ItemMessageState>
                     {
-                        new ItemMessageState(id, new CultureInfo("en-GB"), new Item { GtinValue = "1111111111116" })
+                        new ItemMessageState(
+                            Guid.NewGuid(), 
+                            new CultureInfo("en-GB"), 
+                            new Item { GtinValue = "1111111111116" })
                     },
                 getEntity: state => new ItemMessageState(
                     state.Id,
@@ -173,13 +169,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
                         Gran = "000000000000"
                     }));
 
-            // Act
-            dataflow.Post(new Message(id, "en-GB", new Link()));
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
             dataflow.Complete();
 
-            // Assert
+            // Act
             var items = PollDataflowUntilCompletion(dataflow);
 
+            // Assert
             Assert.IsTrue(items.Count > 0);
         }
 
@@ -190,13 +186,14 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
         public void ProcessFileDataflowHandlesNoResultsFromAProductSearch()
         {
             // Arrange
-            var id = Guid.NewGuid();
-
             var dataflow = BuildDataflowPipeline(
                 parseFile: stream =>
                     new List<ItemMessageState>
                     {
-                        new ItemMessageState(id, new CultureInfo("en-GB"), new Item { GtinValue = "1111111111116" })
+                        new ItemMessageState(
+                            Guid.NewGuid(), 
+                            new CultureInfo("en-GB"), 
+                            new Item { GtinValue = "1111111111116" })
                     },
                 createEntity: state => new ItemMessageState(
                     state.Id,
@@ -214,13 +211,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
                     state.Query,
                     Enumerable.Empty<Product>()));
 
-            // Act
-            dataflow.Post(new Message(id, "en-GB", new Link()));
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
             dataflow.Complete();
 
-            // Assert
+            // Act
             var items = PollDataflowUntilCompletion(dataflow);
 
+            // Assert
             Assert.IsTrue(items.Count > 0);
         }
 
@@ -231,13 +228,11 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
         public void ProcessFileDataflowProcessesAFile()
         {
             // Arrange
-            var id = Guid.NewGuid();
-
             var dataflow = BuildDataflowPipeline(
                 parseFile: stream => new List<ItemMessageState>
                 {
                     new ItemMessageState(
-                        id, 
+                        Guid.NewGuid(), 
                         new CultureInfo("en-GB"), 
                         new Item
                         {
@@ -292,13 +287,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
                         state.Product);
                 });
 
-            // Act
-            dataflow.Post(new Message(id, "en-GB", new Link()));
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
             dataflow.Complete();
 
-            // Assert
+            // Act
             var items = PollDataflowUntilCompletion(dataflow);
 
+            // Assert
             Assert.AreEqual("Microsoft", items[0].Manufacturer);
         }
 
@@ -309,22 +304,20 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
         public void ProcessFileDataflowReturnsAnItem()
         {
             // Arrange
-            var id = Guid.NewGuid();
-
             var dataflow = BuildDataflowPipeline(
                 parseFile: stream =>
                     new List<ItemMessageState>
                     {
-                        new ItemMessageState(id, new CultureInfo("en-GB"), new Item())
+                        new ItemMessageState(Guid.NewGuid(), new CultureInfo("en-GB"), new Item())
                     });
 
-            // Act
-            dataflow.Post(new Message(id, "en-GB", new Link()));
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
             dataflow.Complete();
 
-            // Assert
+            // Act
             var items = PollDataflowUntilCompletion(dataflow);
 
+            // Assert
             Assert.IsTrue(items.Count > 0);
         }
 
@@ -336,23 +329,281 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
         public void ProcessFileDataflowReturnsAnItemThatHasNoGtinSpecified()
         {
             // Arrange
-            var id = Guid.NewGuid();
-
             var dataflow = BuildDataflowPipeline(
                 parseFile: stream =>
                     new List<ItemMessageState>
                     {
-                        new ItemMessageState(id, new CultureInfo("en-GB"), new Item { GtinValue = string.Empty })
+                        new ItemMessageState(
+                            Guid.NewGuid(), 
+                            new CultureInfo("en-GB"), 
+                            new Item { GtinValue = string.Empty })
                     });
 
-            // Act
-            dataflow.Post(new Message(id, "en-GB", new Link()));
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
             dataflow.Complete();
 
-            // Assert
+            // Act
             var items = PollDataflowUntilCompletion(dataflow);
 
+            // Assert
             Assert.IsTrue(items.Count > 0);
+        }
+
+        /// <summary>
+        /// Ensures that when an exception is handled when aggregating product and item data an item is returned from 
+        /// the pipeline.
+        /// </summary>
+        [TestMethod]
+        public void ProcessFileDataflowReturnsAnItemWhenAnExceptionIsHandledAggregatingData()
+        {
+            // Arrange
+            var dataflow = BuildDataflowPipeline(
+                parseFile: stream =>
+                    new List<ItemMessageState>
+                    {
+                        new ItemMessageState(
+                            Guid.NewGuid(), 
+                            new CultureInfo("en-GB"), 
+                            new Item { GtinValue = "1111111111116" })
+                    },
+                aggregateData: state => new ItemMessageState(
+                    Guid.NewGuid(),
+                    new CultureInfo("en-GB"),
+                    new Item(),
+                    new List<Exception>
+                    {
+                        new Exception("Ninja Cat riding a Fire-breathing Unicorn")
+                    }));
+
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
+            dataflow.Complete();
+
+            // Act
+            var items = PollDataflowUntilCompletion(dataflow);
+
+            // Assert
+            Assert.AreEqual(1, items.Count);
+        }
+
+        /// <summary>
+        /// Ensures that when an exception is handled when attempting to create a record of the product query in the 
+        /// persistent storage.
+        /// </summary>
+        [TestMethod]
+        public void ProcessFileDataflowReturnsAnItemWhenAnExceptionIsHandledWhenCreatingAnEntity()
+        {
+            // Arrange
+            var dataflow = BuildDataflowPipeline(
+                parseFile: stream =>
+                    new List<ItemMessageState>
+                    {
+                        new ItemMessageState(
+                            Guid.NewGuid(), 
+                            new CultureInfo("en-GB"), 
+                            new Item { GtinValue = "1111111111116" })
+                    },
+                createEntity: state => new ItemMessageState(
+                    Guid.NewGuid(),
+                    new CultureInfo("en-GB"),
+                    new Item(),
+                    new List<Exception>
+                    {
+                        new Exception("Ninja Cat riding a Fire-breathing Unicorn")
+                    }));
+
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
+            dataflow.Complete();
+
+            // Act
+            var items = PollDataflowUntilCompletion(dataflow);
+
+            // Assert
+            Assert.AreEqual(1, items.Count);
+        }
+
+        /// <summary>
+        /// Ensures that when an exception is handled when attempting to fetch a products data an item is returned from 
+        /// the pipeline.
+        /// </summary>
+        [TestMethod]
+        public void ProcessFileDataflowReturnsAnItemWhenAnExceptionIsHandledWhenFetchingAProduct()
+        {
+            // Arrange
+            var dataflow = BuildDataflowPipeline(
+                parseFile: stream =>
+                    new List<ItemMessageState>
+                    {
+                        new ItemMessageState(
+                            Guid.NewGuid(), 
+                            new CultureInfo("en-GB"), 
+                            new Item { GtinValue = "1111111111116" })
+                    },
+                getProduct: state => new ItemMessageState(
+                    Guid.NewGuid(),
+                    new CultureInfo("en-GB"),
+                    new Item(),
+                    new ProductQueryItem(),
+                    new List<Exception>
+                    {
+                        new Exception("Ninja Cat riding a Fire-breathing Unicorn")
+                    }));
+
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
+            dataflow.Complete();
+
+            // Act
+            var items = PollDataflowUntilCompletion(dataflow);
+
+            // Assert
+            Assert.AreEqual(1, items.Count);
+        }
+
+        /// <summary>
+        /// Ensures that when an exception is handled when attempting to filter a collection of products the item is 
+        /// returned from the pipeline.
+        /// </summary>
+        [TestMethod]
+        public void ProcessFileDataflowReturnsAnItemWhenAnExceptionIsHandledWhenFilteringProducts()
+        {
+            // Arrange
+            var dataflow = BuildDataflowPipeline(
+                parseFile: stream =>
+                    new List<ItemMessageState>
+                    {
+                        new ItemMessageState(
+                            Guid.NewGuid(), 
+                            new CultureInfo("en-GB"), 
+                            new Item { GtinValue = "1111111111116" })
+                    },
+                filterProducts: state => new ItemMessageState(
+                    Guid.NewGuid(),
+                    new CultureInfo("en-GB"),
+                    new Item(),
+                    new ProductQueryItem(),
+                    Enumerable.Empty<Product>(),
+                    new List<Exception>
+                    {
+                        new Exception("Ninja Cat riding a Fire-breathing Unicorn")
+                    }));
+
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
+            dataflow.Complete();
+
+            // Act
+            var items = PollDataflowUntilCompletion(dataflow);
+
+            // Assert
+            Assert.AreEqual(1, items.Count);
+        }
+
+        /// <summary>
+        /// Ensures that when an exception is handled when attempting to retrieve the entity relating to the product 
+        /// query the item is returned from the pipeline.
+        /// </summary>
+        [TestMethod]
+        public void ProcessFileDataflowReturnsAnItemWhenAnExceptionIsHandledWhenGettingAnEntity()
+        {
+            // Arrange
+            var dataflow = BuildDataflowPipeline(
+                parseFile: stream =>
+                    new List<ItemMessageState>
+                    {
+                        new ItemMessageState(
+                            Guid.NewGuid(), 
+                            new CultureInfo("en-GB"), 
+                            new Item { GtinValue = "1111111111116" })
+                    },
+                getEntity: state => new ItemMessageState(
+                    Guid.NewGuid(),
+                    new CultureInfo("en-GB"),
+                    new Item(),
+                    new List<Exception>
+                    {
+                        new Exception("Ninja Cat riding a Fire-breathing Unicorn")
+                    }));
+
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
+            dataflow.Complete();
+
+            // Act
+            var items = PollDataflowUntilCompletion(dataflow);
+
+            // Assert
+            Assert.AreEqual(1, items.Count);
+        }
+
+        /// <summary>
+        /// Ensures that when an exception is handled when attempting to search for a product the item is returned from 
+        /// the pipeline.
+        /// </summary>
+        [TestMethod]
+        public void ProcessFileDataflowReturnsAnItemWhenAnExceptionIsHandledWhenSearchingForAProduct()
+        {
+            // Arrange
+            var dataflow = BuildDataflowPipeline(
+                parseFile: stream =>
+                    new List<ItemMessageState>
+                    {
+                        new ItemMessageState(
+                            Guid.NewGuid(), 
+                            new CultureInfo("en-GB"), 
+                            new Item { GtinValue = "1111111111116" })
+                    },
+                searchProducts: state => new ItemMessageState(
+                    Guid.NewGuid(),
+                    new CultureInfo("en-GB"),
+                    new Item(),
+                    new ProductQueryItem(),
+                    new List<Exception>
+                    {
+                        new Exception("Ninja Cat riding a Fire-breathing Unicorn")
+                    }));
+
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
+            dataflow.Complete();
+
+            // Act
+            var items = PollDataflowUntilCompletion(dataflow);
+
+            // Assert
+            Assert.AreEqual(1, items.Count);
+        }
+
+        /// <summary>
+        /// Ensures that when an exception is handled when attempting to update a product query entity an item is 
+        /// returned from the pipeline.
+        /// </summary>
+        [TestMethod]
+        public void ProcessFileDataflowReturnsAnItemWhenAnExceptionIsHandledWhenUpdatingAnEntity()
+        {
+            // Arrange
+            var dataflow = BuildDataflowPipeline(
+                parseFile: stream =>
+                    new List<ItemMessageState>
+                    {
+                        new ItemMessageState(
+                            Guid.NewGuid(), 
+                            new CultureInfo("en-GB"), 
+                            new Item { GtinValue = "1111111111116" })
+                    },
+                updateEntity: state => new ItemMessageState(
+                    Guid.NewGuid(),
+                    new CultureInfo("en-GB"),
+                    new Item(),
+                    new ProductQueryItem(),
+                    new List<Exception>
+                    {
+                        new Exception("Ninja Cat riding a Fire-breathing Unicorn")
+                    }));
+
+            dataflow.Post(new Message(Guid.NewGuid(), "en-GB", new Link()));
+            dataflow.Complete();
+
+            // Act
+            var items = PollDataflowUntilCompletion(dataflow);
+
+            // Assert
+            Assert.AreEqual(1, items.Count);
         }
 
         /// <summary>
