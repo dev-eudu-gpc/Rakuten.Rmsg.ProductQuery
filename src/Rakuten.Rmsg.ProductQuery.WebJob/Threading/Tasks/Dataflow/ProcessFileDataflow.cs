@@ -7,8 +7,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 {
     using System.Diagnostics.Contracts;
     using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
     using System.Threading.Tasks.Dataflow;
 
     using Rakuten.Threading.Tasks.Dataflow;
@@ -82,14 +80,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 state => !string.IsNullOrWhiteSpace(state.Item.GtinValue), 
                 outputBlock);
 
+            parseFileBlock.LinkTo(outputBlock, state => string.IsNullOrWhiteSpace(state.Item.GtinValue));
+
             parseFileBlock.OnFaultOrCompletion(getEntityBlock);
 
             // If we do not have a database record, create one.
             getEntityBlock.LinkTo(createEntityBlock, state => state.Query == null, outputBlock);
             getEntityBlock.OnFaultOrCompletion(createEntityBlock);
-
-            // Once we have recorded the request, search for the product.
-            createEntityBlock.LinkTo(searchBlock, outputBlock);
 
             // If we have a database record but it has not GRAN search for a product.
             getEntityBlock.LinkTo(
@@ -97,20 +94,19 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 state => state.Query != null && string.IsNullOrWhiteSpace(state.Query.Gran),
                 outputBlock);
 
-            // Only complete the search block once the create entity and get entity blocks have completed.
-            Task.WhenAll(getEntityBlock.Completion, createEntityBlock.Completion)
-                .ContinueWith(_ => searchBlock.Complete());
+            // Once we have recorded the request, search for the product.
+            createEntityBlock.LinkTo(searchBlock, outputBlock);
+            createEntityBlock.OnFaultOrCompletion(searchBlock);
 
             // Once we have received the product data, get the most appropriate product.
-            searchBlock.LinkTo(filterBlock, state => state.Products != null && state.Products.Any(), outputBlock);
+            searchBlock.LinkTo(filterBlock, state => !state.Products.IsDefault, outputBlock);
             searchBlock.OnFaultOrCompletion(filterBlock);
+
+            searchBlock.LinkTo(outputBlock, state => state.Products.IsDefault);
 
             // Now we have filtered the results, record the GRAN in the database.
             filterBlock.LinkTo(updateEntityBlock, outputBlock);
             filterBlock.OnFaultOrCompletion(updateEntityBlock);
-
-            // Get all available details for the GRAN.
-            updateEntityBlock.LinkTo(getProductBlock, outputBlock);
 
             // If we have a database record that has a registered GRAN then get that product.
             getEntityBlock.LinkTo(
@@ -118,9 +114,9 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 state => state.Query != null && !string.IsNullOrWhiteSpace(state.Query.Gran),
                 outputBlock);
 
-            // Only complete the get product block once the update entity and get entity blocks have completed.
-            Task.WhenAll(getEntityBlock.Completion, updateEntityBlock.Completion)
-                .ContinueWith(_ => getProductBlock.Complete());
+            // Get all available details for the GRAN.
+            updateEntityBlock.LinkTo(getProductBlock, outputBlock);
+            updateEntityBlock.OnFaultOrCompletion(getProductBlock);
 
             // Merge the data with the original.
             getProductBlock.LinkTo(aggregateBlock, outputBlock);
@@ -135,6 +131,6 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
             // Set the block from which processed items can be received.
             this.ReceivableBlock = outputBlock;
-        }
+        }  
     }
 }

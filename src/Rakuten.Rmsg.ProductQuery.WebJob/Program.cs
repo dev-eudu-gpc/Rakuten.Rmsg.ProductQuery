@@ -141,16 +141,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
                 var items = new List<Item>();
 
-                bool itemsReceived = false;
-
                 // While we are receiving items from the dataflow and the dataflow has not finished.
-                while (!itemsReceived && (dataflow.Completion.IsCanceled || dataflow.Completion.IsCompleted || dataflow.Completion.IsFaulted))
+                while (!(dataflow.Completion.IsCanceled || dataflow.Completion.IsCompleted || dataflow.Completion.IsFaulted))
                 {
                     IList<Item> newItems;
 
                     // Receive a batch of items from the dataflow.
-                    itemsReceived = dataflow.TryReceiveAll(out newItems);
-                    if (itemsReceived)
+                    if (dataflow.TryReceiveAll(out newItems))
                     {
                         items.AddRange(newItems);
                     }

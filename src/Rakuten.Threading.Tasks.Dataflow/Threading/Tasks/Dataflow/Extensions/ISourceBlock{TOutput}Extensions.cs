@@ -62,7 +62,7 @@ namespace Rakuten.Threading.Tasks.Dataflow
             Predicate<TOutput> predicate,
             ITargetBlock<TOutput> onErrorTarget) where TOutput : IMessageState
         {
-            source.OnSuccessLinkTo(predicate, onSuccessTarget);
+            source.OnSuccessLinkTo(onSuccessTarget, predicate);
             source.OnErrorLinkTo(onErrorTarget);
         }
 
@@ -80,7 +80,7 @@ namespace Rakuten.Threading.Tasks.Dataflow
             this ISourceBlock<TOutput> source,
             ITargetBlock<TOutput> target) where TOutput : IMessageState
         {
-            return source.LinkTo(target, output => output.Exceptions.Any());
+            return source.LinkTo(target, new DataflowLinkOptions { Append = false }, output => !output.Exceptions.IsDefault);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Rakuten.Threading.Tasks.Dataflow
             this ISourceBlock<TOutput> source, 
             ITargetBlock<TOutput> target) where TOutput : IMessageState
         {
-            return source.LinkTo(target, output => !output.Exceptions.Any());
+            return source.LinkTo(target, output => output.Exceptions.IsDefault);
         }
 
         /// <summary>
@@ -108,19 +108,19 @@ namespace Rakuten.Threading.Tasks.Dataflow
         /// </summary>
         /// <typeparam name="TOutput">Specifies the type of data contained in the source.</typeparam>
         /// <param name="source">The source from which to link.</param>
+        /// <param name="target">The <see cref="ITargetBlock{TInput}"/> to which to connect the source.</param>
         /// <param name="predicate">
         /// The filter a message must pass in order for it to propagate from the source to the target.
         /// </param>
-        /// <param name="target">The <see cref="ITargetBlock{TInput}"/> to which to connect the source.</param>
         /// <returns>
         /// An <see cref="T:System.IDisposable"/> that, upon calling Dispose, will unlink the source from the target.
         /// </returns>
         public static IDisposable OnSuccessLinkTo<TOutput>(
             this ISourceBlock<TOutput> source,
-            Predicate<TOutput> predicate,
-            ITargetBlock<TOutput> target) where TOutput : IMessageState
+            ITargetBlock<TOutput> target,
+            Predicate<TOutput> predicate) where TOutput : IMessageState
         {
-            return source.LinkTo(target, output => predicate(output) && !output.Exceptions.Any());
+            return source.LinkTo(target, output => predicate(output) && output.Exceptions.IsDefault);
         }
     }
 }
