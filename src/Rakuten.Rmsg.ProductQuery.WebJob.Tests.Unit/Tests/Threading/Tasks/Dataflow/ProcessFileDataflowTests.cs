@@ -60,14 +60,23 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
             var dataflow = BuildDataflowPipeline(
                 downloadFile: state => { throw new Exception("Ninja Cat riding a Fire-breathing Unicorn"); });
 
-            // Act
             dataflow.Post(new Message(id, "en-GB", new Link()));
             dataflow.Complete();
 
-            // Assert
-            var items = PollDataflowUntilCompletion(dataflow);
+            Exception exception = null;
 
-            Assert.IsTrue(items.Count == 0);
+            // Act
+            try
+            {
+                PollDataflowUntilCompletion(dataflow);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
+            // Assert
+            Assert.IsNotNull(exception);
         }
 
         /// <summary>
@@ -86,10 +95,20 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
             dataflow.Post(new Message(id, "en-GB", new Link()));
             dataflow.Complete();
 
-            // Assert
-            var items = PollDataflowUntilCompletion(dataflow);
+            Exception exception = null;
 
-            Assert.IsTrue(items.Count == 0);
+            // Act
+            try
+            {
+                PollDataflowUntilCompletion(dataflow);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
+            // Assert
+            Assert.IsNotNull(exception);
         }
 
         /// <summary>
