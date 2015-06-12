@@ -19,14 +19,17 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiClientContext"/> class.
         /// </summary>
-        /// <param name="context">Environmental settings for this instance.</param>
-        public ApiClientContext(IApiContext context)
+        /// <param name="baseAddress">The base address.</param>
+        /// <param name="authenticationToken">The authentication token for the request.</param>
+        public ApiClientContext(
+            Uri baseAddress,
+            string authenticationToken)
         {
-            Contract.Requires(context != null);
-            Contract.Requires(context.AuthenticationToken != null);
+            Contract.Requires(authenticationToken != null);
+            Contract.Requires(baseAddress != null);
 
-            this.AuthorizationToken = context.AuthenticationToken;
-            this.BaseAddress = context.BaseAddress;
+            this.AuthorizationToken = authenticationToken;
+            this.BaseAddress = baseAddress;
         }
 
         /// <summary>

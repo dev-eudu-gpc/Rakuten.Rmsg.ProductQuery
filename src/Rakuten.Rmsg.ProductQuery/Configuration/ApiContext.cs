@@ -21,7 +21,7 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// <summary>
         /// The base address to be used when sending requests.
         /// </summary>
-        private readonly Uri baseAddress;
+        private readonly Uri productQueryApiBaseAddress;
 
         /// <summary>
         /// The name of the blob container.
@@ -47,6 +47,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// The environment in which this GPC is running.
         /// </summary>
         private readonly string environmentName;
+
+        /// <summary>
+        /// The base address of the GPC core API.
+        /// </summary>
+        private readonly Uri gpcCoreApiBaseAddress;
 
         /// <summary>
         /// The name of the message queue.
@@ -87,7 +92,6 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// Initializes a new instance of the <see cref="ApiContext"/> class.
         /// </summary>
         /// <param name="authenticationToken">The authentication token to be used when making requests.</param>
-        /// <param name="baseAddress">The address to which requests should be made.</param>
         /// <param name="blobContainerName">The name of the blob container.</param>
         /// <param name="blobFileNameMask">The mask for the name of the file in blob storage</param>
         /// <param name="databaseConnectionString">The connection string for the database.</param>
@@ -95,8 +99,10 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// The connection string to the diagnostics storage account.
         /// </param>
         /// <param name="environmentName">The environment in which the application is running.</param>
+        /// <param name="gpcCoreApiBaseAddress">The base address of the GPC core API.</param>
         /// <param name="maximumQueriesPerGroup">The maximum number of queries per query group.</param>
         /// <param name="messageQueueName">The name of the message queue.</param>
+        /// <param name="productQueryApiBaseAddress">The address to which requests should be made.</param>
         /// <param name="progressMapIntervalInSeconds">The number of seconds between progress maps.</param>
         /// <param name="proportionOfTimeAllocatedForFinalization">
         /// The estimated proportion of product query processing that is used by the finalization process.
@@ -106,14 +112,15 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// <param name="storageConnectionString">The connection string for the storage account.</param>
         public ApiContext(
             string authenticationToken,
-            Uri baseAddress,
             string blobContainerName,
             string blobFileNameMask,
             string databaseConnectionString,
             string diagnosticsStorageConnectionString,
             string environmentName,
+            Uri gpcCoreApiBaseAddress,
             int maximumQueriesPerGroup,
             string messageQueueName,
+            Uri productQueryApiBaseAddress,
             int progressMapIntervalInSeconds,
             decimal proportionOfTimeAllocatedForFinalization,
             string region,
@@ -121,26 +128,28 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             string storageConnectionString)
         {
             Contract.Requires(authenticationToken != null);
-            Contract.Requires(baseAddress != null);
             Contract.Requires(blobContainerName != null);
             Contract.Requires(blobFileNameMask != null);
             Contract.Requires(databaseConnectionString != null);
             Contract.Requires(diagnosticsStorageConnectionString != null);
             Contract.Requires(environmentName != null);
+            Contract.Requires(gpcCoreApiBaseAddress != null);
             Contract.Requires(messageQueueName != null);
+            Contract.Requires(productQueryApiBaseAddress != null);
             Contract.Requires(region != null);
             Contract.Requires(serviceBusConnectionString != null);
             Contract.Requires(storageConnectionString != null);
 
             this.authenticationToken = authenticationToken;
-            this.baseAddress = baseAddress;
             this.blobContainerName = blobContainerName;
-            this.blobFileNameMask = blobFileNameMask;
             this.databaseConnectionString = databaseConnectionString;
+            this.blobFileNameMask = blobFileNameMask;
             this.diagnosticsStorageConnectionString = diagnosticsStorageConnectionString;
             this.environmentName = environmentName;
+            this.gpcCoreApiBaseAddress = gpcCoreApiBaseAddress;
             this.maximumQueriesPerGroup = maximumQueriesPerGroup;
             this.messageQueueName = messageQueueName;
+            this.productQueryApiBaseAddress = productQueryApiBaseAddress;
             this.progressMapIntervalInSeconds = progressMapIntervalInSeconds;
             this.proportionOfTimeAllocatedForFinalization = proportionOfTimeAllocatedForFinalization;
             this.region = region;
@@ -156,17 +165,6 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             get
             {
                 return this.authenticationToken;
-            }
-        }
-
-        /// <summary>
-        /// Gets the base address of the Internet resource when sending requests.
-        /// </summary>
-        public Uri BaseAddress
-        {
-            get
-            {
-                return this.baseAddress;
             }
         }
 
@@ -217,6 +215,14 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         }
 
         /// <summary>
+        /// Gets the base address of the GPC core API.
+        /// </summary>
+        public Uri GpcCoreApiBaseAddress
+        {
+            get { return this.gpcCoreApiBaseAddress; }
+        }
+
+        /// <summary>
         /// Gets the maximum number of queries per query group
         /// </summary>
         public int MaximumQueriesPerGroup
@@ -230,6 +236,17 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         public string MessageQueueName
         {
             get { return this.messageQueueName; }
+        }
+
+        /// <summary>
+        /// Gets the base address of the Internet resource when sending requests.
+        /// </summary>
+        public Uri ProductQueryApiBaseAddress
+        {
+            get
+            {
+                return this.productQueryApiBaseAddress;
+            }
         }
 
         /// <summary>

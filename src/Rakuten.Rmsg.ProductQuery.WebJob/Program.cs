@@ -192,7 +192,9 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// <returns>A new <see cref="ApiClient"/>.</returns>
         private static ApiClient CreateApiClient(IApiContext environment, params IUriBuilder[] uriBuilders)
         {
-            var context = new ApiClientContext(environment);
+            var context = new ApiClientContext(
+                environment.GpcCoreApiBaseAddress,
+                environment.AuthenticationToken);
 
             return new ApiClient(
                 context,

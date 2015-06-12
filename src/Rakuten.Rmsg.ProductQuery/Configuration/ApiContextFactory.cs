@@ -176,14 +176,23 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
                 throw new InvalidOperationException("Message queue name is not configured");
             }
 
-            // Get the address to which requests should be made.
-            string baseAddressString = source.GetConfigurationSettingValue(SettingKey.BaseAddressName);
-            if (baseAddressString == null)
+            // Get the base address of the product query API.
+            string productQueryApiBaseAddressString = source.GetConfigurationSettingValue(SettingKey.ProductQueryApiBaseAddress);
+            if (productQueryApiBaseAddressString == null)
             {
-                throw new InvalidOperationException("The base address is not configured.");
+                throw new InvalidOperationException("The product query API base address is not configured.");
             }
 
-            var baseAddress = new Uri(baseAddressString);
+            var productQueryApiBaseAddress = new Uri(productQueryApiBaseAddressString);
+
+            // Get the base address of the GPC core API.
+            string gpcCoreApiBaseAddressString = source.GetConfigurationSettingValue(SettingKey.GpcCoreApiBaseAddress);
+            if (gpcCoreApiBaseAddressString == null)
+            {
+                throw new InvalidOperationException("The GPC core API base address is not configured.");
+            }
+
+            var gpcCoreApiBaseAddress = new Uri(gpcCoreApiBaseAddressString);
 
             // Get the blob file name mask
             string authenticationToken = source.GetConfigurationSettingValue(SettingKey.AuthenticationToken);
@@ -194,14 +203,15 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
 
             return new ApiContext(
                 authenticationToken,
-                baseAddress,
                 blobContainerName,
                 blobFileNameMask,
                 databaseConnectionString,
                 diagnosticSorageConnectionString,
                 environmentName,
+                gpcCoreApiBaseAddress,
                 maxQueriesPerGroup,
                 messageQueueName,
+                productQueryApiBaseAddress,
                 progressMapInterval,
                 proportionOfTimeAllocatedForFinalization,
                 region,
@@ -328,11 +338,6 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             public const string AuthenticationToken = "Rakuten.Rmsg.ProductQuery.AuthenticationToken";
 
             /// <summary>
-            /// Indicates the setting for the base address.
-            /// </summary>
-            public const string BaseAddressName = "Rakuten.Rmsg.ProductQuery.BaseAddress";
-
-            /// <summary>
             /// Indicates the setting for the blob container name.
             /// </summary>
             public const string BlobContainerName = "Rakuten.Rmsg.ProductQuery.BlobContainerName";
@@ -368,6 +373,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             public const string EnvironmentName = "Rakuten.Rmsg.ProductQuery.Environment.Name";
 
             /// <summary>
+            /// Indicates the setting name for the GPC core API base address.
+            /// </summary>
+            public const string GpcCoreApiBaseAddress = "Rakuten.Gpc.Api.Core.BaseAddress";
+
+            /// <summary>
             /// Indicates the setting for the maximum number of queries per query group
             /// </summary>
             public const string MaximumQueriesPerGroup = "Rakuten.Rmsg.ProductQuery.MaximumQueriesPerGroup";
@@ -376,6 +386,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
             /// Indicates the setting for the message queue name
             /// </summary>
             public const string MessageQueueName = "Rakuten.Rmsg.ProductQuery.MessageQueueName";
+
+            /// <summary>
+            /// Indicates the setting for the base address.
+            /// </summary>
+            public const string ProductQueryApiBaseAddress = "Rakuten.Rmsg.ProductQuery.BaseAddress";
 
             /// <summary>
             /// Indicates the setting for the number of seconds between progress maps

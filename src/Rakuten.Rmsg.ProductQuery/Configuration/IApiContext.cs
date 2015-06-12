@@ -18,11 +18,6 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         string AuthenticationToken { get; }
 
         /// <summary>
-        /// Gets the base address of the Internet resource when sending requests.
-        /// </summary>
-        Uri BaseAddress { get; }
-
-        /// <summary>
         /// Gets the blob container name.
         /// </summary>
         string BlobContainerName { get; }
@@ -48,6 +43,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         string EnvironmentName { get; }
 
         /// <summary>
+        /// Gets the base address of the GPC core API.
+        /// </summary>
+        Uri GpcCoreApiBaseAddress { get; }
+
+        /// <summary>
         /// Gets the maximum number of queries per query group
         /// </summary>
         int MaximumQueriesPerGroup { get; }
@@ -56,6 +56,11 @@ namespace Rakuten.Rmsg.ProductQuery.Configuration
         /// Gets the name of the queue.
         /// </summary>
         string MessageQueueName { get; }
+
+        /// <summary>
+        /// Gets the base address of the product query API.
+        /// </summary>
+        Uri ProductQueryApiBaseAddress { get; }
 
         /// <summary>
         /// Gets the number of seconds between progress maps
