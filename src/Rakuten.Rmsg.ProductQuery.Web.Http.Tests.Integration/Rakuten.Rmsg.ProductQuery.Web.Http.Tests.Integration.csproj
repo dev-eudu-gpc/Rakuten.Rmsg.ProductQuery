@@ -120,7 +120,21 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Enumerations\AttributeSetName.cs" />
+    <Compile Include="Enumerations\IdentifierType.cs" />
+    <Compile Include="Enumerations\TextualRepresentationAttribute.cs" />
+    <Compile Include="Extensions\ProductQueryExtensions.cs" />
+    <Compile Include="Factories\AttributeSetFactory.cs" />
+    <Compile Include="Factories\GtinFactory.cs" />
+    <Compile Include="Factories\ProductFactory.cs" />
     <Compile Include="Factories\ProductQueryFactory.cs" />
+    <Compile Include="Factories\ProductQueryFileFactory.cs" />
+    <Compile Include="Factories\QueueClientFactory.cs" />
+    <Compile Include="Features\NewMessageProcessing.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>NewMessageProcessing.feature</DependentUpon>
+    </Compile>
     <Compile Include="Features\NewProductQuery.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -159,14 +173,17 @@
       <DependentUpon>ProductQuery.edmx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Gpc\AttributeSet.cs" />
+    <Compile Include="Resources\Gpc\Product.cs" />
     <Compile Include="Resources\HttpProblem.cs" />
+    <Compile Include="Resources\Json\DictionaryConverter.cs" />
     <Compile Include="Resources\Message.cs" />
-    <Compile Include="Resources\ProductQueryGroup.cs" />
-    <Compile Include="Resources\ProductQueryLink.cs" />
-    <Compile Include="Resources\ProductQueryLinks.cs" />
-    <Compile Include="Resources\ProductQuery.cs" />
-    <Compile Include="Resources\ProductQueryMonitorRequest.cs" />
-    <Compile Include="Resources\ProductQueryStatus.cs" />
+    <Compile Include="Resources\ProductQuery\ProductQueryGroup.cs" />
+    <Compile Include="Resources\ProductQuery\ProductQueryLink.cs" />
+    <Compile Include="Resources\ProductQuery\ProductQueryLinks.cs" />
+    <Compile Include="Resources\ProductQuery\ProductQuery.cs" />
+    <Compile Include="Resources\ProductQuery\ProductQueryMonitorRequest.cs" />
+    <Compile Include="Resources\ProductQuery\ProductQueryStatus.cs" />
     <Compile Include="rmsgProductQuery.cs">
       <DependentUpon>ProductQuery.tt</DependentUpon>
     </Compile>
@@ -179,10 +196,14 @@
     <Compile Include="rmsgProductQueryStatu.cs">
       <DependentUpon>ProductQuery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Steps\AzureStorageSteps.cs" />
+    <Compile Include="Steps\GpcCoreApiSteps.cs" />
     <Compile Include="Steps\MessageQueueSteps.cs" />
+    <Compile Include="Steps\ProductQueryFileSteps.cs" />
     <Compile Include="Steps\ProductQueryGroupSteps.cs" />
     <Compile Include="Steps\ProductQueryMonitorSteps.cs" />
-    <Compile Include="Steps\ServiceBusSteps.cs" />
+    <Compile Include="Steps\AzureServiceBusSteps.cs" />
+    <Compile Include="Steps\WebJobSteps.cs" />
     <Compile Include="Storage\ScenarioStorage.cs" />
     <Compile Include="Steps\DatabaseSteps.cs" />
     <Compile Include="Steps\HttpProblemSteps.cs" />
@@ -192,11 +213,17 @@
     <Compile Include="Steps\ProductQueryResponseSteps.cs" />
     <Compile Include="Storage\AzureStorage.cs" />
     <Compile Include="Storage\IStorage.cs" />
+    <Compile Include="WebJobClient\WebJobClient.cs" />
+    <Compile Include="Web\Http\GpcApiClient.cs" />
     <Compile Include="Web\Http\ProductQueryApiClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Features\NewMessageProcessing.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>NewMessageProcessing.feature.cs</LastGenOutput>
     </None>
     <None Include="Features\NewProductQuery.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

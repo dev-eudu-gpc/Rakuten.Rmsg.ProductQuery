@@ -7,6 +7,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System.Collections.Generic;
     using System.Net.Http;
+    using Microsoft.ServiceBus.Messaging;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -15,6 +16,22 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     /// </summary>
     public static class ScenarioStorage
     {
+        /// <summary>
+        /// Gets or sets a message identifier.
+        /// </summary>
+        public static BrokeredMessage DeadLetterMessage
+        {
+            get
+            {
+                return ScenarioContext.Current.Get<BrokeredMessage>("deadLetterMessage");
+            }
+
+            set
+            {
+                ScenarioContext.Current.Set<BrokeredMessage>(value, "deadLetterMessage");
+            }
+        }
+
         /// <summary>
         /// Gets or sets the HTTP problem that has been deserialized from the response message.
         /// </summary>
@@ -44,6 +61,22 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             set
             {
                 ScenarioContext.Current.Set<HttpResponseMessage>(value, "httpResponseMessage");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a message.
+        /// </summary>
+        public static BrokeredMessage Message
+        {
+            get
+            {
+                return ScenarioContext.Current.Get<BrokeredMessage>("message");
+            }
+
+            set
+            {
+                ScenarioContext.Current.Set<BrokeredMessage>(value, "message");
             }
         }
 
@@ -140,6 +173,54 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             set
             {
                 ScenarioContext.Current.Set<rmsgProductQueryGroup>(value, "productQueryGroupFromDatabase");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a collection of GPC products
+        /// </summary>
+        public static List<Product> Products
+        {
+            get
+            {
+                return ScenarioContext.Current.Get<List<Product>>("products");
+            }
+
+            set
+            {
+                ScenarioContext.Current.Set<List<Product>>(value, "products");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the name of the file for the product query.
+        /// </summary>
+        public static string ProductQueryFileName
+        {
+            get
+            {
+                return ScenarioContext.Current.Get<string>("productQueryFileName");
+            }
+
+            set
+            {
+                ScenarioContext.Current.Set<string>(value, "productQueryFileName");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the EANs in the product query file.
+        /// </summary>
+        public static List<string> ProductEANs
+        {
+            get
+            {
+                return ScenarioContext.Current.Get<List<string>>("productEANs");
+            }
+
+            set
+            {
+                ScenarioContext.Current.Set<List<string>>(value, "productEANs");
             }
         }
     }

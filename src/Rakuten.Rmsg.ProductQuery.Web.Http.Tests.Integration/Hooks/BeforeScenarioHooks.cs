@@ -6,8 +6,12 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
+    using System.Diagnostics;
+    using System.Net.Http;
+    using System.Threading.Tasks;
     using BoDi;
     using Microsoft.ServiceBus.Messaging;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using TechTalk.SpecFlow;
 
@@ -58,6 +62,61 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         {
             this.container.Resolve<IApiContext>();
             this.container.Resolve<IStorage>();
+        }
+
+        /// <summary>
+        /// Initializes dependencies of all scenarios that require the GPC core API to be running.
+        /// </summary>
+        [BeforeScenario("GpcCoreApi")]
+        public void BeforeScenarioGpcCoreApi()
+        {
+            IApiContext apiContext = this.container.Resolve<IApiContext>();
+
+            // Ensure that the GPC core API is available, if not inform the user
+            // and bail out of the test run.
+            Assert.IsTrue(
+                IsWebsiteAvailableAsync(apiContext.GpcCoreApiBaseAddress).Result,
+                string.Format("The GPC core API did not response for URI {0}", apiContext.GpcCoreApiBaseAddress));
+        }
+
+        /// <summary>
+        /// Initializes dependencies of all scenarios that require the web job to be running.
+        /// </summary>
+        [BeforeScenario("WebJob")]
+        public void BeforeScenarioWebJob()
+        {
+            IApiContext apiContext = this.container.Resolve<IApiContext>();
+
+            var webJobClient = new WebJobClient();
+
+            this.container.RegisterInstanceAs(webJobClient);
+        }
+
+        /// <summary>
+        /// Verifies that the specified website is available by making a HTTP request to the 
+        /// <paramref name="address"/>.
+        /// </summary>
+        /// <param name="address">
+        /// The URI to which a request should be made to check availability.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task"/> that will determine if the website is available.
+        /// </returns>
+        private static async Task<bool> IsWebsiteAvailableAsync(Uri address)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    await client.GetAsync(address.ToString());
+                }
+                catch (HttpRequestException)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

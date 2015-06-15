@@ -8,6 +8,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
+    using System.IO;
     using System.Linq;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
@@ -38,26 +39,41 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// </summary>
         private static readonly IList<string> ExposedHeaders = new List<string> { "*" };
 
-        /// <summary>
-        /// Determines whether a blob exists for a given product query.
-        /// </summary>
-        /// <param name="connectionString">The connection string for storage.</param>
-        /// <param name="containerName">The name of the container in which the blob should be found.</param>
-        /// <param name="productQueryId">The identifier of the product query.</param>
-        /// <param name="dateCreated">The date/time on which the product query was created.</param>
-        public void BlobExists(
-            string connectionString,
-            string containerName,
-            Guid productQueryId,
-            DateTime dateCreated)
-        {
-            Contract.Requires(!string.IsNullOrWhiteSpace(connectionString));
-            Contract.Requires(!string.IsNullOrWhiteSpace(containerName));
+        /////// <summary>
+        /////// Determines whether a blob exists for a given product query.
+        /////// </summary>
+        /////// <param name="connectionString">The connection string for storage.</param>
+        /////// <param name="containerName">The name of the container in which the blob should be found.</param>
+        /////// <param name="productQueryId">The identifier of the product query.</param>
+        /////// <param name="dateCreated">The date/time on which the product query was created.</param>
+        ////public void BlobExists(
+        ////    string connectionString,
+        ////    string containerName,
+        ////    Guid productQueryId,
+        ////    DateTime dateCreated)
+        ////{
+        ////    Contract.Requires(!string.IsNullOrWhiteSpace(connectionString));
+        ////    Contract.Requires(!string.IsNullOrWhiteSpace(containerName));
 
-            CloudBlobClient blobClient = GetCloudBlobClient(connectionString);
-            CloudBlobContainer blobContainer = GetCloudBlobContainer(blobClient, containerName);
-            var list = blobContainer.ListBlobs();
-            var c = list.Count();
+        ////    CloudBlobClient blobClient = GetCloudBlobClient(connectionString);
+        ////    CloudBlobContainer blobContainer = GetCloudBlobContainer(blobClient, containerName);
+        ////    var list = blobContainer.ListBlobs();
+        ////    var c = list.Count();
+        ////}
+
+        /// <summary>
+        /// Gets a specified blob from storage.
+        /// </summary>
+        /// <param name="connectionString">A valid connection string.</param>
+        /// <param name="containerName">A string containing the name of the container.</param>
+        /// <param name="blobName">A string containing the name of the Blob.</param>
+        /// <returns>The blob.</returns>
+        public CloudBlockBlob GetBlob(string connectionString, string containerName, string blobName)
+        {
+            CloudBlobClient client = GetCloudBlobClient(connectionString);
+            CloudBlobContainer container = GetCloudBlobContainer(client, containerName);
+
+            return container.GetBlockBlobReference(blobName);
         }
 
         /// <summary>
@@ -93,6 +109,23 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             DateTimeOffset expiryTime = DateTime.UtcNow.AddHours(2);
 
             return GetSharedAccessSignature(blobContainer, blobName);
+        }
+
+        /// <summary>
+        /// Uploads a file to storage.
+        /// </summary>
+        /// <param name="connectionString">The connection string for the storage account.</param>
+        /// <param name="containerName">The name of the blob container.</param>
+        /// <param name="blobName">The name of the blob.</param>
+        /// <param name="sourceFilename">The name of the source file.</param>
+        public void UploadFile(string connectionString, string containerName, string blobName, string sourceFilename)
+        {
+            CloudBlobClient client = GetCloudBlobClient(connectionString);
+            CloudBlobContainer container = GetCloudBlobContainer(client, containerName);
+            CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+
+            // Upload the file
+            blob.UploadFromFile(sourceFilename, FileMode.Open);
         }
 
         /// <summary>

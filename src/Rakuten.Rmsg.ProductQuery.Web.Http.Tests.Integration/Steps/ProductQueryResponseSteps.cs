@@ -3,7 +3,7 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
+namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
     using System.Diagnostics.Contracts;

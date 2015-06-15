@@ -6,10 +6,11 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
-    using System.Diagnostics.Contracts;
-    using System.Linq;
-    using Rakuten.Rmsg.ProductQuery.Configuration;
-    using TechTalk.SpecFlow;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rakuten.Rmsg.ProductQuery.Configuration;
+using TechTalk.SpecFlow;
 
     // TODO: Connection string from config
 
@@ -178,6 +179,29 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                     databaseContext.rmsgProductQueries
                         .Where(q => q.rmsgProductQueryID == source.IdAsGuid && q.culture == source.Culture)
                         .Single();
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the product query items in the database 
+        /// match those in the product query file.
+        /// </summary>
+        [Then(@"the items in the database match the items in the file")]
+        public void ThenTheItemsInTheDatabaseMatchTheItemsInTheFile()
+        {
+            // Get the product query from scenario storage
+            var productQuery = ScenarioStorage.NewProductQuery;
+            var expectedEans = ScenarioStorage.ProductEANs;
+
+            // Get the items from the database
+            using (var databaseContext = new ProductQueryDbContext())
+            {
+                var databaseEans = databaseContext.rmsgProductQueryItems
+                    .Where(i => i.rmsgProductQueryID == productQuery.IdAsGuid)
+                    .Select(i => i.gtin)
+                    .ToList();
+
+                CollectionAssert.AreEqual(expectedEans, databaseEans);
             }
         }
     }

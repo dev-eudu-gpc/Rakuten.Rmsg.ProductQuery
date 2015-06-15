@@ -10,6 +10,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     using System.IO;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using TechTalk.SpecFlow;
 
@@ -33,23 +34,18 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         {
             IApiContext apiContext = new ApiContextFactory(new AppSettingsConfigurationSource()).Create();
 
+            // Ensure that the product query API is available.
             var root = AppDomain.CurrentDomain.BaseDirectory;
-
             EnsureWebsiteAvailable(
-                apiContext.BaseAddress,
+                apiContext.ProductQueryApiBaseAddress,
                 Path.Combine(root, @"..\..\..\Rakuten.Rmsg.ProductQuery.Web.Http"));
         }
 
         /// <summary>
-        /// Ensures that the specified website is available, if not, starts an IIS Express instance to host the 
-        /// website.
+        /// Ensures that the specified website is available, if not, starts an IIS Express instance to host the website.
         /// </summary>
-        /// <param name="address">
-        /// The website address to ensure is available.
-        /// </param>
-        /// <param name="directory">
-        /// The directory in which the website can be hosted from.
-        /// </param>
+        /// <param name="address">The website address to ensure is available.</param>
+        /// <param name="directory">The directory in which the website can be hosted from.</param>
         private static void EnsureWebsiteAvailable(Uri address, string directory)
         {
             var isAvailable = IsWebsiteAvailableAsync(address).Result;

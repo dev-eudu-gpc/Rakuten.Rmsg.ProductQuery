@@ -60,6 +60,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         ///  using a given value for the status and stores the response in scenario storage.
         /// </summary>
         /// <param name="status">The status to include in the request body.</param>
+        [Given(@"a request is made to flag the product query as ready for processing with a status of (.*)")]
         [When(@"a request is made to flag the product query as ready for processing with a status of (.*)")]
         public void WhenARequestIsMadeToFlagTheProductQueryAsReadyForProcessingWithAStatusOf(string status)
         {

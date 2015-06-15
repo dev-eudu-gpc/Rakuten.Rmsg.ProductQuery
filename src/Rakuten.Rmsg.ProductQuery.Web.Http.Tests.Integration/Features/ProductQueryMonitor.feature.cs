@@ -29,7 +29,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "ProductQueryMonitor", "Ensures that when using the API endpoint for monitoring the status of a product q" +
-                    "uery group\nthat the API operates according to the specification.", ProgrammingLanguage.CSharp, ((string[])(null)));
+                    "uery group\r\nthat the API operates according to the specification.", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         

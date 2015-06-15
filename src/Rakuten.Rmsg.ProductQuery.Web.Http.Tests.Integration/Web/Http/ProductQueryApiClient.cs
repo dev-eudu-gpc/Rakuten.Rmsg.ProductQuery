@@ -41,7 +41,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         {
             // Create the HTTP client
             var handler = new HttpClientHandler { AllowAutoRedirect = false };
-            var client = new HttpClient(handler) { BaseAddress = this.context.BaseAddress };
+            var client = new HttpClient(handler) { BaseAddress = this.context.ProductQueryApiBaseAddress };
 
             // Construct the URI
             var uri = string.Format(
@@ -63,7 +63,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         {
             // Create the HTTP client
             var handler = new HttpClientHandler { AllowAutoRedirect = false };
-            var client = new HttpClient(handler) { BaseAddress = this.context.BaseAddress };
+            var client = new HttpClient(handler) { BaseAddress = this.context.ProductQueryApiBaseAddress };
 
             // Construct the URI
             var uri = string.Format(
@@ -96,7 +96,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         {
             // Create the HTTP client
             var handler = new HttpClientHandler { AllowAutoRedirect = false };
-            var client = new HttpClient(handler) { BaseAddress = this.context.BaseAddress };
+            var client = new HttpClient(handler) { BaseAddress = this.context.ProductQueryApiBaseAddress };
 
             // Construct the URI
             var uri = string.Format(

@@ -39,6 +39,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
             await blob.DownloadToStreamAsync(stream);
 
+            stream.Seek(0, SeekOrigin.Begin);
+
             return stream;
         }
     }

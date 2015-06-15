@@ -16,7 +16,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using Rakuten.Threading.Tasks.Dataflow;
 
     /// <summary>
-    /// Represents a factory that create a delegate to parse a given stream into a collection of <see cref="Item"/> 
+    /// Represents a factory that creates a delegate to parse a given stream into a collection of <see cref="Item"/> 
     /// instances.
     /// </summary>
     internal class ParseFileTransformFactory
