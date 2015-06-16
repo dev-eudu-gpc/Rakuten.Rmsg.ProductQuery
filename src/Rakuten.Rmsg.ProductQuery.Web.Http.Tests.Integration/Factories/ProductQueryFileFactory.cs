@@ -38,22 +38,20 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// <summary>
         /// Creates a valid row.
         /// </summary>
-        /// <param name="ean">The EAN for the row.</param>
+        /// <param name="gtinValue">The EAN for the row.</param>
         /// <returns>A valid row.</returns>
-        private static string GetDetailRow(string ean)
+        private static string GetDetailRow(string gtinValue)
         {
             int numberOfColumns = 82;
-            int gtinTypePosition = 24;
+            int gtinTypePosition = 25;
+            int gtinValuePosition = 26;
 
-            var x = string.Format(
-                "{0}{1}{2}{3}{4}",
-                new string(',', gtinTypePosition - 1),
-                "EAN",
-                ",",
-                ean,
-                new string(',', numberOfColumns - gtinTypePosition - 2));
+            string leadingCommas = new string(',', gtinTypePosition - 1);
+            string separatingCommas = new string(',', gtinValuePosition - gtinTypePosition);
+            string trailingCommas = new string(',', numberOfColumns - gtinValuePosition);
+            string gtinType = "EAN";
 
-            return x;
+            return string.Format("{0}{1}{2}{3}{4}", leadingCommas, gtinType, separatingCommas, gtinValue, trailingCommas);
         }
 
         /// <summary>
