@@ -8,6 +8,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.IO;
 
     /// <summary>
     /// A client for interacting with the web job.
@@ -27,8 +28,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             // Configure the process
             this.process = new Process();
 
-            // TODO: [WB 12-Jun-2015] Don't use hard coded path
-            this.process.StartInfo.FileName = @"C:\git\dev-eudu-gpc\Rakuten.Rmsg.ProductQuery\src\Rakuten.Rmsg.ProductQuery.WebJob\bin\Release\Rakuten.Rmsg.ProductQuery.WebJob.exe";
+#if DEBUG
+            var environment = "Debug";
+#else
+            var environment = "Release";
+#endif
+
+            this.process.StartInfo.FileName = Directory.GetCurrentDirectory() + string.Format("\\..\\..\\..\\Rakuten.Rmsg.ProductQuery.WebJob\\bin\\{0}\\Rakuten.Rmsg.ProductQuery.WebJob.exe", environment);
             this.process.StartInfo.RedirectStandardError = true;
             this.process.StartInfo.RedirectStandardOutput = true;
             this.process.StartInfo.UseShellExecute = false;

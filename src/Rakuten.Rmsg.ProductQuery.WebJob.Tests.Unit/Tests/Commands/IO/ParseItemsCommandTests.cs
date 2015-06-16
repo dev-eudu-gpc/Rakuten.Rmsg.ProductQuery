@@ -165,7 +165,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Tests.Unit
             reader.ReadLine();
             var content = reader.ReadLine();
 
-            Assert.AreEqual("123456789!,SKU123456789!,,,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,,0,,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,", content);
+            Assert.AreEqual("123456789!,SKU123456789!,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,", content);
         }
     }
 }

@@ -45,6 +45,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 enclosure.Segments[enclosure.Segments.Length - 2].TrimEnd('/'),
                 enclosure.Segments[enclosure.Segments.Length - 1]);
 
+            stream.Seek(0, SeekOrigin.Begin);
+
             // Get a reference to the blob in the container.
             await writeBlob(stream, filename);
         }

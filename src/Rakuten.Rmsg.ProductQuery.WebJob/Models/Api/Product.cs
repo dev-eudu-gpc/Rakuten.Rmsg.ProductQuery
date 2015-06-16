@@ -46,6 +46,12 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Api
         public string DataSource { get; set; }
 
         /// <summary>
+        /// Gets or sets the unique identifier of the data source.
+        /// </summary>
+        [JsonProperty("dataSourceId")]
+        public string DataSourceId { get; set; }
+
+        /// <summary>
         /// Gets or sets the description of this product.
         /// </summary>
         [JsonProperty("description")]

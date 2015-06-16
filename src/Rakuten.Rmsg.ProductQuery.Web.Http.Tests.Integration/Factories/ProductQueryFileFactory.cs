@@ -20,7 +20,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// <returns>The name of the file.</returns>
         public static string Create(IEnumerable<string> eans)
         {
-            var fileName = @"c:\temp\rmsgProductQuery.csv";
+            var fileName = System.IO.Path.GetTempFileName();
             using (var writer = new StreamWriter(fileName, false))
             {
                 writer.WriteLine(GetHeaderRow());

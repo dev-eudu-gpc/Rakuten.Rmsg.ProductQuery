@@ -34,6 +34,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             {
                 await serializer.WriteLineAsync(item, writer);
             }
+
+            await writer.FlushAsync();
         }
     }
 }

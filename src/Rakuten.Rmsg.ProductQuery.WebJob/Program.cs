@@ -9,8 +9,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
+    using System.Text;
     using System.Threading.Tasks;
     using System.Threading.Tasks.Dataflow;
 
@@ -43,23 +45,21 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             // Generate the connection strings to the diagnostics storage.
             IApiContext apiContext = new ApiContextFactory(new AppSettingsConfigurationSource()).Create();
 
-            // Construct a delegate that will create a ApiClient instance.
-            Func<ApiClient> createApiClient = () => CreateApiClient(apiContext);
-
-            // Create a new database connection.
-            var databaseContext = new ProductQueryContext();
-
-            // Create a connection to blob storage.
-            CloudBlobClient blobClient = 
-                CloudStorageAccount.Parse(apiContext.StorageConnectionString).CreateCloudBlobClient();
-
-            CloudBlobContainer blobContainer = blobClient.GetContainerReference(apiContext.BlobContainerName);
-
-            var serializer = new LumenWorksSerializer<Item>();
-
             // Create the delegate that the bound function will invoke.
             ProcessProductQueryFile.Process = (message, writer) =>
             {
+                // Construct a delegate that will create a ApiClient instance.
+                Func<ApiClient> createApiClient = () => CreateApiClient(apiContext);
+
+                // Create a new database connection.
+                var databaseContext = new ProductQueryContext();
+
+                // Create a connection to blob storage.
+                CloudBlobClient blobClient =
+                    CloudStorageAccount.Parse(apiContext.StorageConnectionString).CreateCloudBlobClient();
+
+                CloudBlobContainer blobContainer = blobClient.GetContainerReference(apiContext.BlobContainerName);
+
                 // Create a template to get a collection of data sources.
                 var dataSourcesLink = new DataSourcesLink(new UriTemplate("/v1/datasources"));
 
@@ -78,15 +78,21 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 // Create a cache for a single product.
                 var productCache = CreateProductCache(createApiClient);
 
+                var serializer = new LumenWorksSerializer<Item>();
+
                 Task.WaitAll(getDataSourcesTask, getCompletedStatusTask);
+
+                var memoryStream = new MemoryStream();
 
                 var parseFileTransform = ParseFileTransformFactory.Create(
                     stream1 => Task.Run(() =>
                     {
-                        using (var streamReader = new StreamReader(stream1))
+                        using (var streamReader = new StreamReader(stream1, true))
                         using (var delimitedReader = new CsvReader(streamReader, true, ','))
                         {
-                            return serializer.ReadFileByIndex(delimitedReader);
+                            return serializer.ReadFileByHeaders(
+                                delimitedReader,
+                                exception => writer.WriteLine(exception.ToString())).ToList().AsEnumerable();
                         }
                     }),
                     message.Id,
@@ -117,8 +123,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 var dataflow = new ProcessFileDataflow(
                     new TransformBlock<Message, Stream>(msg => DownloadFileCommand.Execute(
                         (blobName, content) => DownloadCloudBlobCommand.Execute(blobContainer, blobName, content), 
-                        msg, 
-                        new MemoryStream())),
+                        msg,
+                        memoryStream)),
                     new TransformManyBlock<Stream, ItemMessageState>(file => parseFileTransform(file, writer)),
                     new TransformBlock<ItemMessageState, ItemMessageState>(
                         state => getQueryItemTransform(state, writer)),
@@ -157,7 +163,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 var writeStream = new MemoryStream();
 
                 // Write out the list of items collected from the dataflow to the blob.
-                ParseItemsCommand.Execute(items, new StreamWriter(writeStream), serializer).Wait();
+                ParseItemsCommand.Execute(items, new StreamWriter(writeStream, Encoding.UTF8), serializer).Wait();
 
                 WriteBlobCommand.Execute(
                     (file, filename) => UploadCloudBlobCommand.Execute(blobContainer, writeStream, filename), 

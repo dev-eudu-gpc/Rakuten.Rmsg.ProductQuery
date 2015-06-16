@@ -69,6 +69,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Waits for the message queue to be empty for a maximum of one minute
         /// </summary>
         [When(@"the message queue is empty")]
+        [When(@"the message queue is empty once again")]
         public void WhenTheMessageQueueIsEmpty()
         {
             var stopWatch = new Stopwatch();

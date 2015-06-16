@@ -31,7 +31,9 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 {
                     var queryItem = await command(state.Id, state.Item.GtinValue);
 
-                    return new ItemMessageState(state.Id, state.Culture, state.Item, queryItem);
+                    return queryItem == null ? 
+                        state : 
+                        new ItemMessageState(state.Id, state.Culture, state.Item, queryItem);
                 }
                 catch (Exception ex)
                 {

@@ -250,21 +250,21 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// </summary>
         [Header("purchase_quantity_limit")]
         [Index(46)]
-        public int PurchaseQuantityLimit { get; set; }
+        public string PurchaseQuantityLimit { get; set; }
 
         /// <summary>
         /// Gets or sets how many of this item are available.
         /// </summary>
         [Header("quantity")]
         [Index(44)]
-        public int Quantity { get; set; }
+        public string Quantity { get; set; }
 
         /// <summary>
         /// Gets or sets the unique identifier of the category in which this item exists.
         /// </summary>
         [Header("rakuten_product_category_id")]
         [Index(23)]
-        public int RakutenProductCategoryId { get; set; }
+        public string RakutenProductCategoryId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to return the quantity purchased if an order is cancelled.

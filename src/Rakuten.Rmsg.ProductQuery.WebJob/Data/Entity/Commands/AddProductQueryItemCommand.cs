@@ -22,6 +22,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         public static Task Execute(ProductQueryContext context, ProductQueryItem entity)
         {
             context.ProductQueryItems.Attach(entity);
+            context.Entry(entity).State = EntityState.Added;
+
             return context.SaveChangesAsync();
         }
     }
