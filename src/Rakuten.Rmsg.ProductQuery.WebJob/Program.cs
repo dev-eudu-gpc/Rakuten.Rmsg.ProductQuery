@@ -159,6 +159,12 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                     }
                 }
 
+                // Check for exception
+                if (dataflow.Completion.IsFaulted && dataflow.Completion.Exception != null)
+                {
+                    throw dataflow.Completion.Exception;
+                }
+
                 // Create a stream to serialize to.
                 var writeStream = new MemoryStream();
 

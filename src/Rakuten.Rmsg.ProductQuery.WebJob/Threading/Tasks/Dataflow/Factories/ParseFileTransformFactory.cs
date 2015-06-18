@@ -23,7 +23,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
     {
         /// <summary>
         /// Returns a delegate that when executed will take the stream and attempt to convert it into a collection of 
-        /// <see cref="MessageState"/> instances.
+        /// <see cref="ItemMessageState"/> instances.
         /// </summary>
         /// <param name="command">The delegate that should be executed.</param>
         /// <param name="id">The unique identifier for the current query.</param>
