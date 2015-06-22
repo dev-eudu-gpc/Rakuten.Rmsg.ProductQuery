@@ -587,5 +587,98 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Header("weight")]
         [Index(41)]
         public string Weight { get; set; }
+
+        /// <summary>
+        /// Determines whether the specified object is equal to the current object.
+        /// </summary>
+        /// <param name="obj">The object to compare.</param>
+        /// <returns>True if the two objects are equal, false if not.</returns>
+        public override bool Equals(object obj)
+        {
+            Item other = obj as Item;
+
+            return (this.Attribute1 == other.Attribute1 || (string.IsNullOrWhiteSpace(this.Attribute1) && string.IsNullOrWhiteSpace(other.Attribute1))) &&
+                (this.Attribute2 == other.Attribute2 || (string.IsNullOrWhiteSpace(this.Attribute2) && string.IsNullOrWhiteSpace(other.Attribute2))) &&
+                (this.Attribute3 == other.Attribute3 || (string.IsNullOrWhiteSpace(this.Attribute3) && string.IsNullOrWhiteSpace(other.Attribute3))) &&
+                (this.Attribute4 == other.Attribute4 || (string.IsNullOrWhiteSpace(this.Attribute4) && string.IsNullOrWhiteSpace(other.Attribute4))) &&
+                (this.Attribute5 == other.Attribute5 || (string.IsNullOrWhiteSpace(this.Attribute5) && string.IsNullOrWhiteSpace(other.Attribute5))) &&
+                (this.AvailableEndDate == other.AvailableEndDate || (string.IsNullOrWhiteSpace(this.AvailableEndDate) && string.IsNullOrWhiteSpace(other.AvailableEndDate))) &&
+                (this.AvailableStartDate == other.AvailableStartDate || (string.IsNullOrWhiteSpace(this.AvailableStartDate) && string.IsNullOrWhiteSpace(other.AvailableStartDate))) &&
+                (this.BaseSku == other.BaseSku || (string.IsNullOrWhiteSpace(this.BaseSku) && string.IsNullOrWhiteSpace(other.BaseSku))) &&
+                (this.Brand == other.Brand || (string.IsNullOrWhiteSpace(this.Brand) && string.IsNullOrWhiteSpace(other.Brand))) &&
+                (this.Description == other.Description || (string.IsNullOrWhiteSpace(this.Description) && string.IsNullOrWhiteSpace(other.Description))) &&
+                (this.DisplayEndDate == other.DisplayEndDate || (string.IsNullOrWhiteSpace(this.DisplayEndDate) && string.IsNullOrWhiteSpace(other.DisplayEndDate))) &&
+                (this.DisplayQuantity == other.DisplayQuantity || (string.IsNullOrWhiteSpace(this.DisplayQuantity) && string.IsNullOrWhiteSpace(other.DisplayQuantity))) &&
+                (this.DisplayStartDate == other.DisplayStartDate || (string.IsNullOrWhiteSpace(this.DisplayStartDate) && string.IsNullOrWhiteSpace(other.DisplayStartDate))) &&
+                (this.FreeShipping == other.FreeShipping || (string.IsNullOrWhiteSpace(this.FreeShipping) && string.IsNullOrWhiteSpace(other.FreeShipping))) &&
+                (this.GtinType == other.GtinType || (string.IsNullOrWhiteSpace(this.GtinType) && string.IsNullOrWhiteSpace(other.GtinType))) &&
+                (this.GtinValue == other.GtinValue || (string.IsNullOrWhiteSpace(this.GtinValue) && string.IsNullOrWhiteSpace(other.GtinValue))) &&
+                (this.ImageUrl1 == other.ImageUrl1 || (string.IsNullOrWhiteSpace(this.ImageUrl1) && string.IsNullOrWhiteSpace(other.ImageUrl1))) &&
+                (this.ImageUrl2 == other.ImageUrl2 || (string.IsNullOrWhiteSpace(this.ImageUrl2) && string.IsNullOrWhiteSpace(other.ImageUrl2))) &&
+                (this.ImageUrl3 == other.ImageUrl3 || (string.IsNullOrWhiteSpace(this.ImageUrl3) && string.IsNullOrWhiteSpace(other.ImageUrl3))) &&
+                (this.ImageUrl4 == other.ImageUrl4 || (string.IsNullOrWhiteSpace(this.ImageUrl4) && string.IsNullOrWhiteSpace(other.ImageUrl4))) &&
+                (this.ImageUrl5 == other.ImageUrl5 || (string.IsNullOrWhiteSpace(this.ImageUrl5) && string.IsNullOrWhiteSpace(other.ImageUrl5))) &&
+                (this.ImageUrl6 == other.ImageUrl6 || (string.IsNullOrWhiteSpace(this.ImageUrl6) && string.IsNullOrWhiteSpace(other.ImageUrl6))) &&
+                (this.ImageUrl7 == other.ImageUrl7 || (string.IsNullOrWhiteSpace(this.ImageUrl7) && string.IsNullOrWhiteSpace(other.ImageUrl7))) &&
+                (this.ImageUrl8 == other.ImageUrl8 || (string.IsNullOrWhiteSpace(this.ImageUrl8) && string.IsNullOrWhiteSpace(other.ImageUrl8))) &&
+                (this.ImageUrl9 == other.ImageUrl9 || (string.IsNullOrWhiteSpace(this.ImageUrl9) && string.IsNullOrWhiteSpace(other.ImageUrl9))) &&
+                (this.ImageUrl10 == other.ImageUrl10 || (string.IsNullOrWhiteSpace(this.ImageUrl10) && string.IsNullOrWhiteSpace(other.ImageUrl10))) &&
+                (this.Labels == other.Labels || (string.IsNullOrWhiteSpace(this.Labels) && string.IsNullOrWhiteSpace(other.Labels))) &&
+                (this.LegalInformation == other.LegalInformation || (string.IsNullOrWhiteSpace(this.LegalInformation) && string.IsNullOrWhiteSpace(other.LegalInformation))) &&
+                (this.Manufacturer == other.Manufacturer || (string.IsNullOrWhiteSpace(this.Manufacturer) && string.IsNullOrWhiteSpace(other.Manufacturer))) &&
+                (this.ManufacturerPartNumber == other.ManufacturerPartNumber || (string.IsNullOrWhiteSpace(this.ManufacturerPartNumber) && string.IsNullOrWhiteSpace(other.ManufacturerPartNumber))) &&
+                (this.Name == other.Name || (string.IsNullOrWhiteSpace(this.Name) && string.IsNullOrWhiteSpace(other.Name))) &&
+                (this.OperatorForQuantity == other.OperatorForQuantity || (string.IsNullOrWhiteSpace(this.OperatorForQuantity) && string.IsNullOrWhiteSpace(other.OperatorForQuantity))) &&
+                (this.Price == other.Price || (string.IsNullOrWhiteSpace(this.Price) && string.IsNullOrWhiteSpace(other.Price))) &&
+                (this.PurchaseQuantityLimit == other.PurchaseQuantityLimit || (string.IsNullOrWhiteSpace(this.PurchaseQuantityLimit) && string.IsNullOrWhiteSpace(other.PurchaseQuantityLimit))) &&
+                (this.Quantity == other.Quantity || (string.IsNullOrWhiteSpace(this.Quantity) && string.IsNullOrWhiteSpace(other.Quantity))) &&
+                (this.RakutenProductCategoryId == other.RakutenProductCategoryId || (string.IsNullOrWhiteSpace(this.RakutenProductCategoryId) && string.IsNullOrWhiteSpace(other.RakutenProductCategoryId))) &&
+                (this.ReturnQuantityInCancel == other.ReturnQuantityInCancel || (string.IsNullOrWhiteSpace(this.ReturnQuantityInCancel) && string.IsNullOrWhiteSpace(other.ReturnQuantityInCancel))) &&
+                (this.ShippingHeight == other.ShippingHeight || (string.IsNullOrWhiteSpace(this.ShippingHeight) && string.IsNullOrWhiteSpace(other.ShippingHeight))) &&
+                (this.ShippingInstructions == other.ShippingInstructions || (string.IsNullOrWhiteSpace(this.ShippingInstructions) && string.IsNullOrWhiteSpace(other.ShippingInstructions))) &&
+                (this.ShippingLength == other.ShippingLength || (string.IsNullOrWhiteSpace(this.ShippingLength) && string.IsNullOrWhiteSpace(other.ShippingLength))) &&
+                (this.ShippingOption1 == other.ShippingOption1 || (string.IsNullOrWhiteSpace(this.ShippingOption1) && string.IsNullOrWhiteSpace(other.ShippingOption1))) &&
+                (this.ShippingOption2 == other.ShippingOption2 || (string.IsNullOrWhiteSpace(this.ShippingOption2) && string.IsNullOrWhiteSpace(other.ShippingOption2))) &&
+                (this.ShippingOption3 == other.ShippingOption3 || (string.IsNullOrWhiteSpace(this.ShippingOption3) && string.IsNullOrWhiteSpace(other.ShippingOption3))) &&
+                (this.ShippingOption4 == other.ShippingOption4 || (string.IsNullOrWhiteSpace(this.ShippingOption4) && string.IsNullOrWhiteSpace(other.ShippingOption4))) &&
+                (this.ShippingOption5 == other.ShippingOption5 || (string.IsNullOrWhiteSpace(this.ShippingOption5) && string.IsNullOrWhiteSpace(other.ShippingOption5))) &&
+                (this.ShippingOption6 == other.ShippingOption6 || (string.IsNullOrWhiteSpace(this.ShippingOption6) && string.IsNullOrWhiteSpace(other.ShippingOption6))) &&
+                (this.ShippingOption7 == other.ShippingOption7 || (string.IsNullOrWhiteSpace(this.ShippingOption7) && string.IsNullOrWhiteSpace(other.ShippingOption7))) &&
+                (this.ShippingOption8 == other.ShippingOption8 || (string.IsNullOrWhiteSpace(this.ShippingOption8) && string.IsNullOrWhiteSpace(other.ShippingOption8))) &&
+                (this.ShippingOption9 == other.ShippingOption9 || (string.IsNullOrWhiteSpace(this.ShippingOption9) && string.IsNullOrWhiteSpace(other.ShippingOption9))) &&
+                (this.ShippingOption10 == other.ShippingOption10 || (string.IsNullOrWhiteSpace(this.ShippingOption10) && string.IsNullOrWhiteSpace(other.ShippingOption10))) &&
+                (this.ShippingOption11 == other.ShippingOption11 || (string.IsNullOrWhiteSpace(this.ShippingOption11) && string.IsNullOrWhiteSpace(other.ShippingOption11))) &&
+                (this.ShippingOption12 == other.ShippingOption12 || (string.IsNullOrWhiteSpace(this.ShippingOption12) && string.IsNullOrWhiteSpace(other.ShippingOption12))) &&
+                (this.ShippingOption13 == other.ShippingOption13 || (string.IsNullOrWhiteSpace(this.ShippingOption13) && string.IsNullOrWhiteSpace(other.ShippingOption13))) &&
+                (this.ShippingOption14 == other.ShippingOption14 || (string.IsNullOrWhiteSpace(this.ShippingOption14) && string.IsNullOrWhiteSpace(other.ShippingOption14))) &&
+                (this.ShippingOption15 == other.ShippingOption15 || (string.IsNullOrWhiteSpace(this.ShippingOption15) && string.IsNullOrWhiteSpace(other.ShippingOption15))) &&
+                (this.ShippingOption16 == other.ShippingOption16 || (string.IsNullOrWhiteSpace(this.ShippingOption16) && string.IsNullOrWhiteSpace(other.ShippingOption16))) &&
+                (this.ShippingOption17 == other.ShippingOption17 || (string.IsNullOrWhiteSpace(this.ShippingOption17) && string.IsNullOrWhiteSpace(other.ShippingOption17))) &&
+                (this.ShippingOption18 == other.ShippingOption18 || (string.IsNullOrWhiteSpace(this.ShippingOption18) && string.IsNullOrWhiteSpace(other.ShippingOption18))) &&
+                (this.ShippingOption19 == other.ShippingOption19 || (string.IsNullOrWhiteSpace(this.ShippingOption19) && string.IsNullOrWhiteSpace(other.ShippingOption19))) &&
+                (this.ShippingOption20 == other.ShippingOption20 || (string.IsNullOrWhiteSpace(this.ShippingOption20) && string.IsNullOrWhiteSpace(other.ShippingOption20))) &&
+                (this.ShippingPreparationTime == other.ShippingPreparationTime || (string.IsNullOrWhiteSpace(this.ShippingPreparationTime) && string.IsNullOrWhiteSpace(other.ShippingPreparationTime))) &&
+                (this.ShippingWidth == other.ShippingWidth || (string.IsNullOrWhiteSpace(this.ShippingWidth) && string.IsNullOrWhiteSpace(other.ShippingWidth))) &&
+                (this.ShopProductUniqueIdentifier1 == other.ShopProductUniqueIdentifier1 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier1) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier1))) &&
+                (this.ShopProductUniqueIdentifier2 == other.ShopProductUniqueIdentifier2 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier2) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier2))) &&
+                (this.ShopProductUniqueIdentifier3 == other.ShopProductUniqueIdentifier3 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier3) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier3))) &&
+                (this.ShopProductUniqueIdentifier4 == other.ShopProductUniqueIdentifier4 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier4) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier4))) &&
+                (this.ShopProductUniqueIdentifier5 == other.ShopProductUniqueIdentifier5 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier5) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier5))) &&
+                (this.ShopProductUniqueIdentifier6 == other.ShopProductUniqueIdentifier6 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier6) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier6))) &&
+                (this.ShopProductUniqueIdentifier7 == other.ShopProductUniqueIdentifier7 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier7) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier7))) &&
+                (this.ShopProductUniqueIdentifier8 == other.ShopProductUniqueIdentifier8 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier8) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier8))) &&
+                (this.ShopProductUniqueIdentifier9 == other.ShopProductUniqueIdentifier9 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier9) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier9))) &&
+                (this.ShopProductUniqueIdentifier10 == other.ShopProductUniqueIdentifier10 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier10) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier10))) &&
+                (this.ShopProductUniqueIdentifier11 == other.ShopProductUniqueIdentifier11 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier11) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier11))) &&
+                (this.ShopProductUniqueIdentifier12 == other.ShopProductUniqueIdentifier12 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier12) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier12))) &&
+                (this.ShopProductUniqueIdentifier13 == other.ShopProductUniqueIdentifier13 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier13) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier13))) &&
+                (this.ShopProductUniqueIdentifier14 == other.ShopProductUniqueIdentifier14 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier14) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier14))) &&
+                (this.ShopProductUniqueIdentifier15 == other.ShopProductUniqueIdentifier15 || (string.IsNullOrWhiteSpace(this.ShopProductUniqueIdentifier15) && string.IsNullOrWhiteSpace(other.ShopProductUniqueIdentifier15))) &&
+                (this.Sku == other.Sku || (string.IsNullOrWhiteSpace(this.Sku) && string.IsNullOrWhiteSpace(other.Sku))) &&
+                (this.Tagline == other.Tagline || (string.IsNullOrWhiteSpace(this.Tagline) && string.IsNullOrWhiteSpace(other.Tagline))) &&
+                (this.Url == other.Url || (string.IsNullOrWhiteSpace(this.Url) && string.IsNullOrWhiteSpace(other.Url))) &&
+                (this.VideoUrl == other.VideoUrl || (string.IsNullOrWhiteSpace(this.VideoUrl) && string.IsNullOrWhiteSpace(other.VideoUrl))) &&
+                (this.Weight == other.Weight || (string.IsNullOrWhiteSpace(this.Weight) && string.IsNullOrWhiteSpace(other.Weight)));
+        }
     }
 }

@@ -65,7 +65,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Ensures that only one product query group that has members but 
+        /// Ensures that only one product query group that has members but
         /// is not full exists in the database.
         /// The product query group is stored in scenario context.
         /// </summary>
@@ -112,7 +112,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Verifies that the product query items in the database 
+        /// Verifies that the product query items in the database
         /// match those in the product query file.
         /// </summary>
         [Then(@"the items in the database match the items in the file")]
@@ -135,7 +135,22 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Retrieves the product query group from the database for the 
+        /// Verifies that there are no items for the product query in the database.
+        /// </summary>
+        [Then(@"there are no items for the product query in the database")]
+        public void ThenThereAreNoItemsForTheProductQueryInTheDatabase()
+        {
+            using (var databaseContext = new ProductQueryDbContext())
+            {
+                var hasItems = databaseContext.rmsgProductQueryItems
+                        .Any(i => i.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid);
+
+                Assert.IsFalse(hasItems, "There are items for the product query in the database when none were expected.");
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the product query group from the database for the
         /// new product query stored in scenario context.
         /// </summary>
         [Given(@"the product query group for the new product query has been retrieved from the database")]
@@ -161,7 +176,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Retrieves the product query group from the database for the 
+        /// Retrieves the product query group from the database for the
         /// product query that is stored in scenario storage and puts it
         /// in scenario storage.
         /// </summary>
@@ -192,7 +207,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 // Get the details of the new product query from the current scenario context
                 var source = ScenarioStorage.NewProductQuery;
 
-                // Get the product query from the database, construct a new product query 
+                // Get the product query from the database, construct a new product query
                 // resource and dump it in scenario storage.
                 ScenarioStorage.ProductQueryFromDatabase =
                     databaseContext.rmsgProductQueries
