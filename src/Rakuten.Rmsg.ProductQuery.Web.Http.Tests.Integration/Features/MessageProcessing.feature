@@ -33,6 +33,7 @@ Scenario: A query file with a single valid product is processed correctly
 Scenario: A query item with an image in the source file does not have its images updated
 	Given the web job is stopped
 	And the message queue is empty
+	And the dead letter message queue is empty
 	And a new product has been created in GPC
 	And a valid new product query has been prepared
 	And a product query file containing image urls for the new product has been created
@@ -43,6 +44,7 @@ Scenario: A query item with an image in the source file does not have its images
 	When the web job is started
 	And the status of the product query is completed
 	And the results file is retrieved from storage
+	And the items have been parsed from the results file
 	Then the message queue is empty
 	And the dead letter queue is empty
 	And the items in the database match the items in the file
