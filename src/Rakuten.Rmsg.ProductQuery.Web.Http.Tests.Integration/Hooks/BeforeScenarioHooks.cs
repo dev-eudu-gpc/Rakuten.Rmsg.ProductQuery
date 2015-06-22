@@ -68,9 +68,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             // Ensure that the GPC core API is available, if not inform the user
             // and bail out of the test run.
             var isAvailable = IsWebsiteAvailableAsync(apiContext.GpcCoreApiBaseAddress).Result;
-            Assert.IsTrue(isAvailable, string.Format(
+            var message = string.Format(
                     "The GPC core API did not response for URI {0}.  Please ensure that web site is started.",
-                    apiContext.GpcCoreApiBaseAddress));
+                    apiContext.GpcCoreApiBaseAddress);
+            
+            Assert.IsTrue(isAvailable, message);
         }
 
         /// <summary>
