@@ -103,6 +103,24 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         }
 
         /// <summary>
+        /// Creates a new file for a product query with a single row
+        /// but with no header row
+        /// </summary>
+        [Given(@"a product query file with no header row has been created")]
+        public void GivenAProductQueryFileWithNoHeaderRowHasBeenCreated()
+        {
+            var items = ScenarioStorage.Products
+                .Select(p => ItemFactory.Create("EAN", string.Empty));
+
+            // Create a product query file for the products
+            var filename = ProductQueryFileFactory.Create(items, false);
+
+            // Store details in scenario storage
+            ScenarioStorage.ProductQueryFileName = filename;
+            ScenarioStorage.Items = items.ToList();
+        }
+
+        /// <summary>
         /// Verifies that the images in the result file are the same as those in the source file.
         /// </summary>
         [Then(@"the images in the file have been preserved")]

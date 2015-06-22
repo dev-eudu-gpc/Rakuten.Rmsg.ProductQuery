@@ -19,15 +19,21 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Creates a file containing the specified items.
         /// </summary>
         /// <param name="items">The items to write to the file.</param>
+        /// <param name="includeHeaderRow">A value indicating whether to include the header row in the file.</param>
         /// <returns>The name of the file.</returns>
-        public static string Create(IEnumerable<Item> items)
+        public static string Create(
+            IEnumerable<Item> items,
+            bool includeHeaderRow = true)
         {
             var serializer = new LumenWorksSerializer<Item>();
             var fileName = System.IO.Path.GetTempFileName();
 
             using (var writer = new StreamWriter(fileName, false, Encoding.UTF8))
             {
-                serializer.WriteHeaders(writer);
+                if (includeHeaderRow)
+                {
+                    serializer.WriteHeaders(writer);
+                }
 
                 foreach (var item in items)
                 {
