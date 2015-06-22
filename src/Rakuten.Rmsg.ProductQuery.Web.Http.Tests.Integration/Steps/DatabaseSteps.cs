@@ -135,6 +135,31 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
+        /// Verifies that the items in the database match the valid items in the
+        /// file and that only those items exist for the product query.
+        /// </summary>
+        [Then(@"the items in the database match the valid items in the file")]
+        public void ThenTheItemsInTheDatabaseMatchTheValidItemsInTheFile()
+        {
+            // Get the product query from scenario storage
+            var productQuery = ScenarioStorage.NewProductQuery;
+            var expectedEans = ScenarioStorage.Items
+                .Where(item => !string.IsNullOrWhiteSpace(item.GtinValue))
+                .Select(item => item.GtinValue).ToList();
+
+            // Assert
+            using (var databaseContext = new ProductQueryDbContext())
+            {
+                var databaseEans = databaseContext.rmsgProductQueryItems
+                    .Where(i => i.rmsgProductQueryID == productQuery.IdAsGuid)
+                    .Select(i => i.gtin)
+                    .ToList();
+
+                CollectionAssert.AreEqual(expectedEans, databaseEans);
+            }
+        }
+
+        /// <summary>
         /// Verifies that there are no items for the product query in the database.
         /// </summary>
         [Then(@"there are no items for the product query in the database")]

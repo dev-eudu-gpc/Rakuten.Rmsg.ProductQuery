@@ -121,6 +121,33 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         }
 
         /// <summary>
+        /// Creates a new file for a product with some rows having GTINs
+        /// but others not.  The rows that have GTINs are taken from the 
+        /// products in scenario storage and those that don't are randomly 
+        /// generated.
+        /// </summary>
+        [Given(@"a product query file with only some rows having GTINs has been created")]
+        public void GivenAProductQueryFileWithOnlySomeRowsHavingGTINsHasBeenCreated()
+        {
+            // Create the items that have GTINs
+            var items = ScenarioStorage.Products
+                .Select(p => ItemFactory.Create("EAN", p.GetEAN()))
+                .ToList();
+
+            // Create items without GTINs
+            items.Add(ItemFactory.Create(null, null));
+            items.Add(ItemFactory.Create(null, null));
+            items.Add(ItemFactory.Create(null, null));
+
+            // Create a product query file for the items
+            var filename = ProductQueryFileFactory.Create(items);
+
+            // Storage
+            ScenarioStorage.ProductQueryFileName = filename;
+            ScenarioStorage.Items = items;
+        }
+
+        /// <summary>
         /// Verifies that the images in the result file are the same as those in the source file.
         /// </summary>
         [Then(@"the images in the file have been preserved")]
@@ -221,6 +248,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
             var sourceProducts = ScenarioStorage.Products;
             var resultItems = ScenarioStorage.ResultItems;
 
+            // Assert
             foreach (var result in resultItems)
             {
                 var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
@@ -258,6 +286,140 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
             // Arrange
             var sourceProducts = ScenarioStorage.Products;
             var resultItems = ScenarioStorage.ResultItems;
+
+            foreach (var result in resultItems)
+            {
+                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+
+                Assert.IsNotNull(product);
+                Assert.AreEqual(product.GetVideoUrl(), result.VideoUrl);
+            }
+        }
+
+        /// <summary>
+        ///  Verifies that the items in the source file that do not have a GTIN value
+        ///  have the same values in the results file.
+        /// </summary>
+        [Then(@"the items that do not have a GTIN value are the same in the results file as in the source file")]
+        public void ThenTheItemsThatDoNotHaveAGTINValueAreTheSameInTheResultsFileAsInTheSourceFile()
+        {
+            // Arrange
+            var sourceItems = ScenarioStorage.Items
+                .Where(item => string.IsNullOrWhiteSpace(item.GtinValue))
+                .ToList();
+            var resultItems = ScenarioStorage.ResultItems
+                .Where(item => string.IsNullOrWhiteSpace(item.GtinValue))
+                .ToList();
+
+            // Assert
+            Assert.AreEqual(sourceItems.Count, resultItems.Count);
+
+            for (int i = 0; i < sourceItems.Count; i++)
+            {
+                Assert.AreEqual(sourceItems[i], resultItems[i]);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the items in the results file that have a GTIN value 
+        /// have the correct brand.
+        /// </summary>
+        [Then(@"the valid items in the results file have the correct brand")]
+        public void ThenTheValidItemsInTheResultsFileHaveTheCorrectBrand()
+        {
+            // Arrange
+            var sourceProducts = ScenarioStorage.Products;
+            var resultItems = ScenarioStorage.ResultItems
+                .Where(item => !string.IsNullOrEmpty(item.GtinValue));
+
+            foreach (var result in resultItems)
+            {
+                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+
+                Assert.IsNotNull(product);
+                Assert.AreEqual(product.GetBrand(), result.Brand);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the items in the results file that have a GTIN value 
+        /// have the correct images.
+        /// </summary>
+        [Then(@"the valid items in the results file have the correct images")]
+        public void ThenTheValidItemsInTheResultsFileHaveTheCorrectImages()
+        {
+            // Arrange
+            var sourceProducts = ScenarioStorage.Products;
+            var resultItems = ScenarioStorage.ResultItems
+                .Where(item => !string.IsNullOrEmpty(item.GtinValue));
+
+            foreach (var result in resultItems)
+            {
+                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+
+                Assert.IsNotNull(product);
+                Assert.AreEqual(product.GetImageUrl(1), result.ImageUrl1);
+                Assert.AreEqual(product.GetImageUrl(2), result.ImageUrl2);
+                Assert.AreEqual(product.GetImageUrl(3), result.ImageUrl3);
+                Assert.AreEqual(product.GetImageUrl(4), result.ImageUrl4);
+                Assert.AreEqual(product.GetImageUrl(5), result.ImageUrl5);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the items in the results file that have a GTIN value 
+        /// have the correct manufacturer.
+        /// </summary>
+        [Then(@"the valid items in the results file have the correct manufacturer")]
+        public void ThenTheValidItemsInTheResultsFileHaveTheCorrectManufacturer()
+        {
+            // Arrange
+            var sourceProducts = ScenarioStorage.Products;
+            var resultItems = ScenarioStorage.ResultItems
+                .Where(item => !string.IsNullOrEmpty(item.GtinValue));
+
+            // Assert
+            foreach (var result in resultItems)
+            {
+                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+
+                Assert.IsNotNull(product);
+                Assert.AreEqual(product.Manufacturer, result.Manufacturer);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the items in the results file that have a GTIN value 
+        /// have the correct manufacturer part number.
+        /// </summary>
+        [Then(@"the valid items in the results file have the correct manufacturer part number")]
+        public void ThenTheValidItemsInTheResultsFileHaveTheCorrectManufacturerPartNumber()
+        {
+            // Arrange
+            var sourceProducts = ScenarioStorage.Products;
+            var resultItems = ScenarioStorage.ResultItems
+                .Where(item => !string.IsNullOrEmpty(item.GtinValue));
+
+            foreach (var result in resultItems)
+            {
+                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+
+                Assert.IsNotNull(product);
+                Assert.AreEqual(product.PartNumber, result.ManufacturerPartNumber);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the items in the results file that have a GTIN value 
+        /// have the correct video url.
+        /// </summary>
+        [Then(@"the valid items in the results file have the correct video URL")]
+        public void ThenTheValidItemsInTheResultsFileHaveTheCorrectVideoURL()
+        {
+            // Arrange
+            var sourceProducts = ScenarioStorage.Products;
+            var resultItems = ScenarioStorage.ResultItems
+                .Where(item => !string.IsNullOrEmpty(item.GtinValue));
 
             foreach (var result in resultItems)
             {
