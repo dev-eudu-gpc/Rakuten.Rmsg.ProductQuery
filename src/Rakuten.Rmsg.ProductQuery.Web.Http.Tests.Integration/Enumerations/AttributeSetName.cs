@@ -23,6 +23,12 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         AlternativeIdentifiers,
 
         /// <summary>
+        /// The brand attribute set.
+        /// </summary>
+        [TextualRepresentation("Brand")]
+        Brand,
+
+        /// <summary>
         /// The common attributes attribute set.
         /// </summary>
         [TextualRepresentation("Rakuten Common Attributes")]

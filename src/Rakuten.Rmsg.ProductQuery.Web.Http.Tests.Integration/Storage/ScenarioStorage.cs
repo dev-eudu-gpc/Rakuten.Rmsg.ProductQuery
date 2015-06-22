@@ -209,18 +209,50 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Gets or sets the EANs in the product query file.
+        /// Gets or sets the items in the product query results file.
         /// </summary>
-        public static List<string> ProductEANs
+        public static List<Item> ResultItems
         {
             get
             {
-                return ScenarioContext.Current.Get<List<string>>("productEANs");
+                return ScenarioContext.Current.Get<List<Item>>("resultItems");
             }
 
             set
             {
-                ScenarioContext.Current.Set<List<string>>(value, "productEANs");
+                ScenarioContext.Current.Set<List<Item>>(value, "resultItems");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the items in the product query file.
+        /// </summary>
+        public static List<Item> Items
+        {
+            get
+            {
+                return ScenarioContext.Current.Get<List<Item>>("items");
+            }
+
+            set
+            {
+                ScenarioContext.Current.Set<List<Item>>(value, "items");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the fully qualified name of the downloaded result file.
+        /// </summary>
+        public static string ResultFileName
+        {
+            get
+            {
+                return ScenarioContext.Current.Get<string>("resultFileName");
+            }
+
+            set
+            {
+                ScenarioContext.Current.Set<string>(value, "resultFileName");
             }
         }
     }

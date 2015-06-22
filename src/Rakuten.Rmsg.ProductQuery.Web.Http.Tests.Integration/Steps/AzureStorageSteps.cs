@@ -6,13 +6,8 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
     using Newtonsoft.Json;
     using Rakuten.Rmsg.ProductQuery.Configuration;
@@ -56,22 +51,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Given(@"the file is uploaded to blob storage")]
         public void GivenTheFileIsUploadedToBlobStorage()
         {
-            ////// Create a connection to blob storage.
-            ////CloudBlobClient blobClient = CloudStorageAccount
-            ////    .Parse(this.apiContext.StorageConnectionString)
-            ////    .CreateCloudBlobClient();
-
-            ////CloudBlobContainer blobContainer = blobClient.GetContainerReference(this.apiContext.BlobContainerName);
-
             // Get the product query from the response body
             var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsStringAsync().Result;
             var productQuery = JsonConvert.DeserializeObject<ProductQuery>(content);
 
-            ////CloudBlockBlob blob = blobContainer.GetBlockBlobReference(filename);
-
-            // Get the file
-            /////blob.UploadFromFile(ScenarioStorage.ProductQueryFileName, FileMode.Open);
-
+            // Upload to storage
             this.storage.UploadFile(
                 this.apiContext.StorageConnectionString,
                 this.apiContext.BlobContainerName,
@@ -80,10 +64,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Retrieves the product query file from storage.
+        /// Retrieves the product query results file from storage.
         /// </summary>
-        [When(@"the file is retrieved from storage")]
-        public void WhenTheFileIsRetrievedFromStorage()
+        [When(@"the results file is retrieved from storage")]
+        public void WhenTheResultsFileIsRetrievedFromStorage()
         {
             // Get the product query from the response body
             var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsStringAsync().Result;
@@ -101,7 +85,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 throw new InvalidOperationException("The specified blob was not found within the given container.");
             }
 
-            ////await blob.DownloadToStreamAsync(stream);
+            var targetFileName = Path.GetTempFileName();
+
+            blob.DownloadToFile(targetFileName, FileMode.Create);
+
+            ScenarioStorage.ResultFileName = targetFileName;
         }
     }
 }

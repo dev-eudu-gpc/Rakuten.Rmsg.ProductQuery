@@ -68,7 +68,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// <returns>
         /// The <see cref="System.String"/> representation of the specified enumeration value.
         /// </returns>
-        private static string GetNameFromEnum(AttributeSetName value)
+        public static string GetNameFromEnum(AttributeSetName value)
         {
             Type type = value.GetType();
 

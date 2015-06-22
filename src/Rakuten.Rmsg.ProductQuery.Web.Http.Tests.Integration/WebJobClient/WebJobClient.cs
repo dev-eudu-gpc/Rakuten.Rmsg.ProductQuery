@@ -6,7 +6,6 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
 
@@ -47,8 +46,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 #else
             var environment = "Release";
 #endif
-
-            this.Process.StartInfo.FileName = Directory.GetCurrentDirectory() + string.Format("\\..\\..\\..\\Rakuten.Rmsg.ProductQuery.WebJob\\bin\\{0}\\Rakuten.Rmsg.ProductQuery.WebJob.exe", environment);
+            this.Process.StartInfo.FileName = Directory.GetCurrentDirectory() + string.Format(
+                @"\..\..\..\Rakuten.Rmsg.ProductQuery.WebJob\bin\{0}\Rakuten.Rmsg.ProductQuery.WebJob.exe",
+                environment);
             this.Process.StartInfo.RedirectStandardError = true;
             this.Process.StartInfo.RedirectStandardOutput = true;
             this.Process.StartInfo.UseShellExecute = false;
@@ -60,7 +60,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             this.Process.BeginErrorReadLine();
 
             // Wait until the process is considered ready or errors have been thrown
-            while (!this.IsReady || this.HasErrors)
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (!this.IsReady || this.HasErrors || stopwatch.ElapsedMilliseconds > 60000)
             {
             }
         }
@@ -82,7 +84,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// </summary>
         public void Dispose()
         {
-            this.Process.Kill();
+            if (this.Process != null)
+            {
+                this.Process.Kill();
+            }
         }
 
         /// <summary>

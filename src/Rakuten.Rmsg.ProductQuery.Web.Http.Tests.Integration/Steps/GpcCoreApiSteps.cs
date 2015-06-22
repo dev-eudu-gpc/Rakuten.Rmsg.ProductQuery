@@ -7,7 +7,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -39,7 +38,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         public void GivenANewProductWithAnEANHasBeenCreatedInGPC()
         {
             // Create the object
-            var product = ProductFactory.CreateMinimumViableProduct();
+            var product = ProductFactory.CreateMinimumProduct();
 
             // Call GPC
             var result = this.apiClient.CreateProduct(product).Result;

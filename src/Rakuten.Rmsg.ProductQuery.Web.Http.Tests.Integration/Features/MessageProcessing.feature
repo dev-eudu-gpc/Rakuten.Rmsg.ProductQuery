@@ -1,5 +1,7 @@
 ﻿Feature: NewMessageProcessing
-	Ensures the processing of new messages on the queue
+	Ensures that message processing performs as expected
+
+# TODO: Use cultures in tests
 
 @GpcCoreApi @WebJob
 Scenario: A query file with a single valid product is processed correctly
@@ -13,22 +15,38 @@ Scenario: A query file with a single valid product is processed correctly
 	And the file is uploaded to blob storage
 	And a request is made to flag the product query as ready for processing with a status of submitted
 	And a message has been created on the queue
-	#When the web job is started
-	When the message queue is empty once again
+	When the web job is started
+	And the status of the product query is completed
 	And the product query is retrieved from the database
-	And the file is retrieved from storage
-	#Then the dead letter queue has remained empty
-	Then the items in the database match the items in the file
-	#And some assertions about the product details
-	#And the item in the updated file has the correct manufacturer
-	#And the item in the updated file has the correct manufacturer part number
-	#And the item in the updated file has the correct brand
-	#And the item in the updated file has the correct video URL
-	#And the item in the updated file has the correct images
-	And the status of the product query from the database is completed
+	And the results file is retrieved from storage
+	And the items have been parsed from the results file
+	Then the message queue is empty
+	And the dead letter queue is empty
+	And the items in the database match the items in the file
+	And the items in the results file have the correct manufacturer
+	And the items in the results file have the correct manufacturer part number
+	And the items in the results file have the correct brand
+	And the items in the results file have the correct video URL
+	And the items in the results file have the correct images
 
 @GpcCoreApi @WebJob
 Scenario: A query item with an image in the source file does not have its images updated
+	Given the web job is stopped
+	And the message queue is empty
+	And a new product has been created in GPC
+	And a valid new product query has been prepared
+	And a product query file containing image urls for the new product has been created
+	And a request has been made to submit the new product query
+	And the file is uploaded to blob storage
+	And a request is made to flag the product query as ready for processing with a status of submitted
+	And a message has been created on the queue
+	When the web job is started
+	And the status of the product query is completed
+	And the results file is retrieved from storage
+	Then the message queue is empty
+	And the dead letter queue is empty
+	And the items in the database match the items in the file
+	And the images in the file have been preserved
 
 @GpcCoreApi @WebJob
 Scenario: Query items with no GTIN type are ignored

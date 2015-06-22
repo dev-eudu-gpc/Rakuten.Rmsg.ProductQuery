@@ -6,11 +6,9 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
-    using System.Diagnostics;
     using System.Net.Http;
     using System.Threading.Tasks;
     using BoDi;
-    using Microsoft.ServiceBus.Messaging;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using TechTalk.SpecFlow;
@@ -41,15 +39,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             IApiContext apiContext = new ApiContextFactory(new AppSettingsConfigurationSource()).Create();
             IStorage azureStorage = new AzureStorage();
             ProductQueryApiClient apiClient = new ProductQueryApiClient(apiContext);
-            QueueClient queueClient = QueueClient.CreateFromConnectionString(
-                apiContext.ServiceBusConnectionString,
-                apiContext.MessageQueueName,
-                ReceiveMode.ReceiveAndDelete);
 
             container.RegisterInstanceAs(apiContext);
             container.RegisterInstanceAs(azureStorage);
             container.RegisterInstanceAs(apiClient);
-            container.RegisterInstanceAs(queueClient);
 
             this.container = container;
         }
@@ -74,9 +67,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 
             // Ensure that the GPC core API is available, if not inform the user
             // and bail out of the test run.
-            Assert.IsTrue(
-                IsWebsiteAvailableAsync(apiContext.GpcCoreApiBaseAddress).Result,
-                string.Format("The GPC core API did not response for URI {0}", apiContext.GpcCoreApiBaseAddress));
+            var isAvailable = IsWebsiteAvailableAsync(apiContext.GpcCoreApiBaseAddress).Result;
+            Assert.IsTrue(isAvailable, string.Format(
+                    "The GPC core API did not response for URI {0}.  Please ensure that web site is started.",
+                    apiContext.GpcCoreApiBaseAddress));
         }
 
         /// <summary>

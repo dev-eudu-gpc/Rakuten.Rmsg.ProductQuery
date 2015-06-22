@@ -6,11 +6,12 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rakuten.Rmsg.ProductQuery.Configuration;
-using TechTalk.SpecFlow;
+    using System.Diagnostics.Contracts;
+    using System.Linq;
+    using System.Threading;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Rakuten.Rmsg.ProductQuery.Configuration;
+    using TechTalk.SpecFlow;
 
     // TODO: Connection string from config
 
@@ -111,6 +112,29 @@ using TechTalk.SpecFlow;
         }
 
         /// <summary>
+        /// Verifies that the product query items in the database 
+        /// match those in the product query file.
+        /// </summary>
+        [Then(@"the items in the database match the items in the file")]
+        public void ThenTheItemsInTheDatabaseMatchTheItemsInTheFile()
+        {
+            // Get the product query from scenario storage
+            var productQuery = ScenarioStorage.NewProductQuery;
+            var expectedEans = ScenarioStorage.Items.Select(item => item.GtinValue).ToList();
+
+            // Assert
+            using (var databaseContext = new ProductQueryDbContext())
+            {
+                var databaseEans = databaseContext.rmsgProductQueryItems
+                    .Where(i => i.rmsgProductQueryID == productQuery.IdAsGuid)
+                    .Select(i => i.gtin)
+                    .ToList();
+
+                CollectionAssert.AreEqual(expectedEans, databaseEans);
+            }
+        }
+
+        /// <summary>
         /// Retrieves the product query group from the database for the 
         /// new product query stored in scenario context.
         /// </summary>
@@ -133,11 +157,6 @@ using TechTalk.SpecFlow;
                             query => query.rmsgProductQueryGroupID,
                             (group, query) => group)
                         .Single();
-
-                ////ScenarioStorage.ProductQueryGroupActual =
-                ////    databaseContext.rmsgProductQueryGroups
-                ////        .Where(q => q.rmsgProductQueryGroupID == source.rmsgProductQueryGroupID)
-                ////        .Single();
             }
         }
 
@@ -183,25 +202,33 @@ using TechTalk.SpecFlow;
         }
 
         /// <summary>
-        /// Verifies that the product query items in the database 
-        /// match those in the product query file.
+        /// Waits for the product query to move to the specified status.
         /// </summary>
-        [Then(@"the items in the database match the items in the file")]
-        public void ThenTheItemsInTheDatabaseMatchTheItemsInTheFile()
+        /// <param name="expectedStatus">The status to wait for.</param>
+        [When(@"the status of the product query is (.*)")]
+        public void WhenTheStatusOfTheProductQueryIs(string expectedStatus)
         {
-            // Get the product query from scenario storage
             var productQuery = ScenarioStorage.NewProductQuery;
-            var expectedEans = ScenarioStorage.ProductEANs;
+            var isCompleted = false;
 
-            // Get the items from the database
             using (var databaseContext = new ProductQueryDbContext())
             {
-                var databaseEans = databaseContext.rmsgProductQueryItems
-                    .Where(i => i.rmsgProductQueryID == productQuery.IdAsGuid)
-                    .Select(i => i.gtin)
-                    .ToList();
+                // Check the status every 5 seconds for a maximum of 12 times
+                for (int i = 0; i < 12; i++)
+                {
+                    isCompleted = databaseContext.rmsgProductQueries
+                        .Any(q => q.rmsgProductQueryID == productQuery.IdAsGuid
+                            && q.rmsgProductQueryStatusID == (int)ProductQueryStatus.Completed);
 
-                CollectionAssert.AreEqual(expectedEans, databaseEans);
+                    if (isCompleted)
+                    {
+                        break;
+                    }
+
+                    Thread.Sleep(5000);
+                }
+
+                Assert.IsTrue(isCompleted);
             }
         }
     }

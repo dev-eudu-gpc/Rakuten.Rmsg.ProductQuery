@@ -14,10 +14,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     public class ProductFactory
     {
         /// <summary>
-        /// Creates a product with the minimum amount of data to be considered viable by the system.
+        /// Creates a product with the minimum amount of data required for testing.
         /// </summary>
-        /// <returns>A product considered to be valid by the system.</returns>
-        public static Product CreateMinimumViableProduct()
+        /// <returns>The new product..</returns>
+        public static Product CreateMinimumProduct()
         {
             string id = Guid.NewGuid().ToString("D");
 
@@ -27,6 +27,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 Culture = "en-US",
                 DataSource = "GECP",
                 Id = id,
+                ImageUrl = "dummy image " + id,
                 Name = "Integration test for rmsg product query API" + id,
                 Uploader = "Developer",
                 Manufacturer = "WARP Records",
@@ -38,6 +39,27 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                         new SortedDictionary<string, object>
                         {
                             { "EAN", GtinFactory.CreateEan() }
+                        }),
+                    AttributeSetFactory.CreateNewDefinedAttributeSet(
+                        AttributeSetName.Common,
+                        new SortedDictionary<string, object>
+                        {
+                            { "Video URL", "http://dummy.video.url/" + id }
+                        }),
+                    AttributeSetFactory.CreateNewDefinedAttributeSet(
+                        AttributeSetName.Brand,
+                        new SortedDictionary<string, object>
+                        {
+                            { "Brand", "Dummy brand for " + id }
+                        }),
+                    AttributeSetFactory.CreateImages(
+                        new Uri[]
+                        {
+                            new Uri("http://dummy.host/image_main_" + id),
+                            new Uri("http://dummy.host/image_" + Guid.NewGuid()),
+                            new Uri("http://dummy.host/image_" + Guid.NewGuid()),
+                            new Uri("http://dummy.host/image_" + Guid.NewGuid()),
+                            new Uri("http://dummy.host/image_" + Guid.NewGuid())
                         })
                 }
             };

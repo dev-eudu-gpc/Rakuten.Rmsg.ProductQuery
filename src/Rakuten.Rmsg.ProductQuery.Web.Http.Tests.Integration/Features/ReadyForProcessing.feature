@@ -22,8 +22,9 @@ Scenario: Flagging a product query as ready for processing returns the correct r
 	And the product query in the response body has the same created date as that in the database
 	And the product query in the response body has a status of Submitted
 
+@WebJob
 Scenario: Flagging a product query as ready for processing creates a message on the queue
-	Given the web job is not running
+	Given the web job is stopped
 	And the message queue is empty
 	And a valid new product query has been prepared
 	And a request has been made to submit the new product query
