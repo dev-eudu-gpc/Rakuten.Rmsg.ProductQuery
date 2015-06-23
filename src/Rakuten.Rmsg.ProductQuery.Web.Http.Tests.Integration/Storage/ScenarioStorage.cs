@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
+    using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using Microsoft.ServiceBus.Messaging;
@@ -253,6 +254,22 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             set
             {
                 ScenarioContext.Current.Set<string>(value, "resultFileName");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the time at which the scenario started.
+        /// </summary>
+        public static DateTime ScenarioStartTime
+        {
+            get
+            {
+                return ScenarioContext.Current.Get<DateTime>("scenarioStartTime");
+            }
+
+            set
+            {
+                ScenarioContext.Current.Set<DateTime>(value, "scenarioStartTime");
             }
         }
     }

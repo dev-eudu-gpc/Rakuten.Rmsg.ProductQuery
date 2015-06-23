@@ -59,6 +59,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         {
             this.container.Resolve<IApiContext>();
             this.container.Resolve<IStorage>();
+
+            // Log the time at which the scenario began.
+            ScenarioStorage.ScenarioStartTime = DateTime.UtcNow;
         }
 
         /// <summary>

@@ -112,17 +112,31 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Verifies that all items for the product query have a completed date.
+        /// Verifies that all items for the product query have a completed date
+        /// and that the date is newer than the time at which the scenario started.
         /// </summary>
-        [Then(@"the items in the database have a completed date")]
-        public void ThenTheItemsInTheDatabaseHaveACompletedDate()
+        [Then(@"the items in the database have a valid completed date")]
+        public void ThenTheItemsInTheDatabaseHaveAValidCompletedDate()
         {
             using (var databaseContext = new ProductQueryDbContext())
             {
-                var hasItemsWithNullCompletedDate = databaseContext.rmsgProductQueryItems
-                    .Any(item => item.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid && item.dateCompleted == null);
+                var items = databaseContext.rmsgProductQueryItems
+                    .Where(item => item.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid);
 
-                Assert.IsFalse(hasItemsWithNullCompletedDate);
+                foreach (var item in items)
+                {
+                    Assert.IsNotNull(
+                        item.dateCompleted,
+                        string.Format("The item with GTIN {0} should have a completed date but hasn't", item.gtin));
+
+                    var message = string.Format(
+                            "The item with GTIN {0} has a completed date of {1} which is earlier than the scenario start date of {2}",
+                            item.gtin,
+                            item.dateCompleted,
+                            ScenarioStorage.ScenarioStartTime);
+
+                    Assert.IsTrue(item.dateCompleted > ScenarioStorage.ScenarioStartTime, message);
+                }
             }
         }
 
