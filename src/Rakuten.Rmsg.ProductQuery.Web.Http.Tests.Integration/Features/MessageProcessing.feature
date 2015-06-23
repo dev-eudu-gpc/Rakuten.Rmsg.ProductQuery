@@ -2,7 +2,6 @@
 	Ensures that message processing performs as expected
 
 # TODO: Use cultures in tests
-# TODO: Check that the completed date is updated
 
 @GpcCoreApi @WebJob
 Scenario: A query file with a single valid product is processed correctly
@@ -24,6 +23,7 @@ Scenario: A query file with a single valid product is processed correctly
 	Then the message queue is empty
 	And the dead letter queue is empty
 	And the items in the database match the items in the file
+	And the items in the database have a completed date
 	And the items in the results file have the correct manufacturer
 	And the items in the results file have the correct manufacturer part number
 	And the items in the results file have the correct brand
@@ -49,6 +49,7 @@ Scenario: A query item with an image in the source file does not have its images
 	Then the message queue is empty
 	And the dead letter queue is empty
 	And the items in the database match the items in the file
+	And the items in the database have a completed date
 	And the images in the file have been preserved
 
 @GpcCoreApi @WebJob
@@ -112,6 +113,7 @@ Scenario: Files with only some rows having GTINs are correctly processed
 	Then the message queue is empty
 	And the dead letter queue is empty
 	And the items in the database match the valid items in the file
+	And the items in the database have a completed date
 	And the valid items in the results file have the correct manufacturer
 	And the valid items in the results file have the correct manufacturer part number
 	And the valid items in the results file have the correct brand
@@ -156,6 +158,7 @@ Scenario: A file with a row with insufficient columns is processed correctly
 	Then the message queue is empty
 	And the dead letter queue is empty
 	And the items in the database match the valid items in the file
+	And the items in the database have a completed date
 	And the valid items in the results file have the correct manufacturer
 	And the valid items in the results file have the correct manufacturer part number
 	And the valid items in the results file have the correct brand

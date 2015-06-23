@@ -112,6 +112,21 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
+        /// Verifies that all items for the product query have a completed date.
+        /// </summary>
+        [Then(@"the items in the database have a completed date")]
+        public void ThenTheItemsInTheDatabaseHaveACompletedDate()
+        {
+            using (var databaseContext = new ProductQueryDbContext())
+            {
+                var hasItemsWithNullCompletedDate = databaseContext.rmsgProductQueryItems
+                    .Any(item => item.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid && item.dateCompleted == null);
+
+                Assert.IsFalse(hasItemsWithNullCompletedDate);
+            }
+        }
+
+        /// <summary>
         /// Verifies that the product query items in the database
         /// match those in the product query file.
         /// </summary>
