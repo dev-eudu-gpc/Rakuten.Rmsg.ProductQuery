@@ -38,18 +38,18 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
             return async (stream, writer) =>
             {
-                try
-                {
+                ////try
+                ////{
                     IEnumerable<Item> items = await command(stream);
 
                     return from item in items select new ItemMessageState(id, culture, item);
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine("An issue was encountered parsing the uploaded file: " + ex.ToString());
+                ////}
+                ////catch (Exception ex)
+                ////{
+                ////    writer.WriteLine("An issue was encountered parsing the uploaded file: " + ex.ToString());
 
-                    return null;
-                }
+                ////    return null;
+                ////}
             };
         }
     }

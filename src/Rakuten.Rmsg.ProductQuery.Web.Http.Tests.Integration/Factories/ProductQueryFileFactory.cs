@@ -7,6 +7,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Reflection;
     using System.Text;
     using Rakuten.IO.Delimited.Serialization;
 
@@ -26,7 +27,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             bool includeHeaderRow = true)
         {
             var serializer = new LumenWorksSerializer<Item>();
-            var fileName = System.IO.Path.GetTempFileName();
+            var fileName = string.Format("{0}.{1}", System.IO.Path.GetTempPath(), "rmsgpq-int");
 
             using (var writer = new StreamWriter(fileName, false, Encoding.UTF8))
             {
@@ -44,6 +45,18 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             }
 
             return fileName;
+        }
+
+        /// <summary>
+        /// Adds a row that has insufficient columns to the specified file.
+        /// </summary>
+        /// <param name="filename">The name of the file to add the row to.</param>
+        public static void AddRowWithInsufficientColumns(string filename)
+        {
+            using (var writer = new StreamWriter(filename, true, Encoding.UTF8))
+            {
+                writer.WriteLine(new string(',', 1));
+            }
         }
     }
 }

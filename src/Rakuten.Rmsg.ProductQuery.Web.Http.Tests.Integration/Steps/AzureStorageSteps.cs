@@ -8,6 +8,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     using System;
     using System.Diagnostics.Contracts;
     using System.IO;
+    using System.Reflection;
     using Microsoft.WindowsAzure.Storage.Blob;
     using Newtonsoft.Json;
     using Rakuten.Rmsg.ProductQuery.Configuration;
@@ -85,11 +86,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 throw new InvalidOperationException("The specified blob was not found within the given container.");
             }
 
-            var targetFileName = Path.GetTempFileName();
+            var fileName = string.Format("{0}.{1}", System.IO.Path.GetTempPath(), "rmsgpg-int");
 
-            blob.DownloadToFile(targetFileName, FileMode.Create);
+            blob.DownloadToFile(fileName, FileMode.Create);
 
-            ScenarioStorage.ResultFileName = targetFileName;
+            ScenarioStorage.ResultFileName = fileName;
         }
     }
 }

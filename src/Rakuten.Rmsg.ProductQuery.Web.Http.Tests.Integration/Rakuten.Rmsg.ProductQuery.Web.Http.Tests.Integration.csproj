@@ -146,6 +146,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>NewProductQuery.feature</DependentUpon>
     </Compile>
+    <Compile Include="Features\ProductMatching.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ProductMatching.feature</DependentUpon>
+    </Compile>
     <Compile Include="Features\ProductQueryGroup.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -234,6 +239,10 @@
     <None Include="Features\NewProductQuery.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>NewProductQuery.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\ProductMatching.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ProductMatching.feature.cs</LastGenOutput>
     </None>
     <None Include="Features\ProductQueryGroup.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

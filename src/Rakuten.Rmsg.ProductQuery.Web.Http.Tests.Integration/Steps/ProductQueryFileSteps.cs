@@ -49,6 +49,27 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         }
 
         /// <summary>
+        /// Creates a new product query file that has rows for the products created
+        /// in earlier steps and an additional row that has insufficient columns.
+        /// </summary>
+        [Given(@"a product query file for the new product and an additional row with insufficient columns has been created")]
+        public void GivenAProductQueryFileForTheNewProductAndAnAdditionalRowWithInsufficientColumnsHasBeenCreated()
+        {
+            // Create the items that have GTINs
+            var items = ScenarioStorage.Products
+                .Select(p => ItemFactory.Create("EAN", p.GetEAN()))
+                .ToList();
+
+            // Create a product query file for the items
+            var filename = ProductQueryFileFactory.Create(items);
+            ProductQueryFileFactory.AddRowWithInsufficientColumns(filename);
+
+            // Storage
+            ScenarioStorage.ProductQueryFileName = filename;
+            ScenarioStorage.Items = items;
+        }
+
+        /// <summary>
         /// Creates a new file for a product query using the products in
         /// scenario storage as the source for EAN.
         /// </summary>
@@ -110,7 +131,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void GivenAProductQueryFileWithNoHeaderRowHasBeenCreated()
         {
             var items = ScenarioStorage.Products
-                .Select(p => ItemFactory.Create("EAN", string.Empty));
+                .Select(p => ItemFactory.Create("EAN", p.GetEAN()));
 
             // Create a product query file for the products
             var filename = ProductQueryFileFactory.Create(items, false);
@@ -318,6 +339,21 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
             {
                 Assert.AreEqual(sourceItems[i], resultItems[i]);
             }
+        }
+
+        /// <summary>
+        /// Verifies that the items in the source file that have insufficient columns
+        /// are the same in the results file.
+        /// </summary>
+        [Then(@"the items that have insufficient columns are not present in the results file")]
+        public void ThenTheItemsThatHaveInsufficientColumnsAreNotPresentInTheResultsFile()
+        {
+            // Arrange
+            var resultItems = ScenarioStorage.ResultItems
+                .Where(item => string.IsNullOrWhiteSpace(item.GtinValue));
+
+            // Assert
+            Assert.AreEqual(0, resultItems.Count());
         }
 
         /// <summary>
