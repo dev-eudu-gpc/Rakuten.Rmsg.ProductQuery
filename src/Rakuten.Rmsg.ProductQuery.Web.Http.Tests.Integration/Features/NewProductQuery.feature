@@ -37,7 +37,7 @@ Scenario: Submitting a new product query with an identifier and culture that exi
 	And the product query in the response body has the correct monitor link
 
 Scenario: Submitting a new product query with an identifier that exists but in a different culture returns the correct response
-	Given a valid new product query with a culture of en-US has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	And a request has been made to submit the new product query
 	And the culture of the new product query is updated to en-GB
 	When a request is made to submit the new product query

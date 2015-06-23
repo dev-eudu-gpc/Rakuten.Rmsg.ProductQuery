@@ -17,9 +17,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Creates a product with the minimum amount of data required for testing.
         /// </summary>
         /// <param name="culture">The culture for the product.</param>
+        /// <param name="ean">The EAN for the product.</param>
+        /// <param name="dataSourceName">The data source.</param>
         /// <returns>The new product..</returns>
         public static Product CreateMinimumProduct(
-            string culture)
+            string culture = "en-US",
+            string ean = null,
+            string dataSourceName = "GECP")
         {
             string id = Guid.NewGuid().ToString("D");
 
@@ -27,19 +31,19 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             {
                 Category = "Rakuten",
                 Culture = culture,
-                DataSource = "GECP",
+                DataSource = dataSourceName,
                 ImageUrl = "dummy image " + id,
                 Name = "Integration test for rmsg product query API" + id,
                 Uploader = "Developer",
-                Manufacturer = "WARP Records",
-                PartNumber = "WAP001x" + id,
+                Manufacturer = "WARP Records " + id,
+                PartNumber = "WAP " + id,
                 AttributeSets = new List<AttributeSet>
                 {
                     AttributeSetFactory.CreateNewDefinedAttributeSet(
                         AttributeSetName.Gtin, 
                         new SortedDictionary<string, object>
                         {
-                            { "EAN", GtinFactory.CreateEan() }
+                            { "EAN", ean ?? GtinFactory.CreateEan() }
                         }),
                     AttributeSetFactory.CreateNewDefinedAttributeSet(
                         AttributeSetName.Common,

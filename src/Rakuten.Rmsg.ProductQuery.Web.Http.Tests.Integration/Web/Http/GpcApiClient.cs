@@ -68,6 +68,19 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
+        /// Gets a list of data sources from the GPC core API.
+        /// </summary>
+        /// <returns>A list of all data sources.</returns>
+        public async Task<HttpResponseMessage> GetDataSources()
+        {
+            // Create the HTTP client
+            var client = this.CreateNewHttpClient();
+
+            // Make the call
+            return await client.GetAsync("/v1/datasources");
+        }
+
+        /// <summary>
         /// Makes a call to improve a product.
         /// </summary>
         /// <param name="source">The parameters for the call.</param>

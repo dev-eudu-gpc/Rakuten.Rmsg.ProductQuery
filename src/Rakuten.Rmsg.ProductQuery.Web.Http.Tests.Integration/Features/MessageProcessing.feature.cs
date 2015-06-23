@@ -68,13 +68,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("A query file with a single valid product is processed correctly")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         public virtual void AQueryFileWithASingleValidProductIsProcessedCorrectly()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A query file with a single valid product is processed correctly", new string[] {
-                        "GpcCoreApi",
-                        "WebJob"});
+                        "WebJob",
+                        "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -107,13 +107,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("A query item with an image in the source file does not have its images updated")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         public virtual void AQueryItemWithAnImageInTheSourceFileDoesNotHaveItsImagesUpdated()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A query item with an image in the source file does not have its images updated", new string[] {
-                        "GpcCoreApi",
-                        "WebJob"});
+                        "WebJob",
+                        "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -141,13 +141,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Query items with no GTIN type are fuzzily matched")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         public virtual void QueryItemsWithNoGTINTypeAreFuzzilyMatched()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Query items with no GTIN type are fuzzily matched", new string[] {
-                        "GpcCoreApi",
-                        "WebJob"});
+                        "WebJob",
+                        "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -174,13 +174,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Query items with no GTIN value are ignored")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         public virtual void QueryItemsWithNoGTINValueAreIgnored()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Query items with no GTIN value are ignored", new string[] {
-                        "GpcCoreApi",
-                        "WebJob"});
+                        "WebJob",
+                        "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -207,13 +207,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Files with only some rows having GTINs are correctly processed")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         public virtual void FilesWithOnlySomeRowsHavingGTINsAreCorrectlyProcessed()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Files with only some rows having GTINs are correctly processed", new string[] {
-                        "GpcCoreApi",
-                        "WebJob"});
+                        "WebJob",
+                        "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -247,13 +247,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("A file with no header row is rejected")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         public virtual void AFileWithNoHeaderRowIsRejected()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A file with no header row is rejected", new string[] {
-                        "GpcCoreApi",
-                        "WebJob"});
+                        "WebJob",
+                        "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -276,13 +276,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("A file with a row with insufficient columns is processed correctly")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         public virtual void AFileWithARowWithInsufficientColumnsIsProcessedCorrectly()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A file with a row with insufficient columns is processed correctly", new string[] {
-                        "GpcCoreApi",
-                        "WebJob"});
+                        "WebJob",
+                        "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -318,14 +318,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Messages for product queries where no blob has been uploaded are processed correc" +
             "tly")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         public virtual void MessagesForProductQueriesWhereNoBlobHasBeenUploadedAreProcessedCorrectly()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Messages for product queries where no blob has been uploaded are processed correc" +
                     "tly", new string[] {
-                        "GpcCoreApi",
-                        "WebJob"});
+                        "WebJob",
+                        "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

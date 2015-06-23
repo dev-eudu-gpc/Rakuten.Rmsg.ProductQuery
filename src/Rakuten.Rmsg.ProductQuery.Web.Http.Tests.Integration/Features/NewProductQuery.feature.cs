@@ -141,7 +141,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Submitting a new product query with an identifier that exists but in a different " +
                     "culture returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query with a culture of en-US has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the culture of the new product query is updated to en-GB", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");

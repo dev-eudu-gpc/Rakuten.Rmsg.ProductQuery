@@ -3,7 +3,7 @@
 
 # TODO: Use cultures in tests
 
-@GpcCoreApi @WebJob
+@WebJob @GpcCoreApi
 Scenario: A query file with a single valid product is processed correctly
 	Given the web job is stopped
 	And the message queue is empty
@@ -30,7 +30,7 @@ Scenario: A query file with a single valid product is processed correctly
 	And the items in the results file have the correct video URL
 	And the items in the results file have the correct images
 
-@GpcCoreApi @WebJob
+@WebJob @GpcCoreApi
 Scenario: A query item with an image in the source file does not have its images updated
 	Given the web job is stopped
 	And the message queue is empty
@@ -52,7 +52,7 @@ Scenario: A query item with an image in the source file does not have its images
 	And the items in the database have a completed date
 	And the images in the file have been preserved
 
-@GpcCoreApi @WebJob
+@WebJob @GpcCoreApi
 Scenario: Query items with no GTIN type are fuzzily matched
 	Given the web job is stopped
 	And the message queue is empty
@@ -73,7 +73,7 @@ Scenario: Query items with no GTIN type are fuzzily matched
 	And there are no items for the product query in the database
 	And the item in the results file is the same as the item in the source file
 
-@GpcCoreApi @WebJob
+@WebJob @GpcCoreApi
 Scenario: Query items with no GTIN value are ignored
 	Given the web job is stopped
 	And the message queue is empty
@@ -94,7 +94,7 @@ Scenario: Query items with no GTIN value are ignored
 	And there are no items for the product query in the database
 	And the item in the results file is the same as the item in the source file
 
-@GpcCoreApi @WebJob
+@WebJob @GpcCoreApi
 Scenario: Files with only some rows having GTINs are correctly processed
 	Given the web job is stopped
 	And the message queue is empty
@@ -121,7 +121,7 @@ Scenario: Files with only some rows having GTINs are correctly processed
 	And the valid items in the results file have the correct images
 	And the items that do not have a GTIN value are the same in the results file as in the source file
 
-@GpcCoreApi @WebJob
+@WebJob @GpcCoreApi
 Scenario: A file with no header row is rejected
 	Given the web job is stopped
 	And the message queue is empty
@@ -138,7 +138,7 @@ Scenario: A file with no header row is rejected
 	And the message queue is empty
 	And there are no items for the product query in the database
 
-@GpcCoreApi @WebJob
+@WebJob @GpcCoreApi
 Scenario: A file with a row with insufficient columns is processed correctly
 	Given the web job is stopped
 	And the message queue is empty
@@ -166,7 +166,7 @@ Scenario: A file with a row with insufficient columns is processed correctly
 	And the valid items in the results file have the correct images
 	And the items that have insufficient columns are not present in the results file
 
-@GpcCoreApi @WebJob
+@WebJob @GpcCoreApi
 Scenario: Messages for product queries where no blob has been uploaded are processed correctly
     Given the web job is stopped
 	And the message queue is empty

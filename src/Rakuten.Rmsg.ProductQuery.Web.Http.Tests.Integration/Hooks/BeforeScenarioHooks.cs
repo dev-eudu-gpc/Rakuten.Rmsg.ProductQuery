@@ -6,10 +6,12 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
+    using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
     using BoDi;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Newtonsoft.Json;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using TechTalk.SpecFlow;
 
@@ -39,10 +41,12 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             IApiContext apiContext = new ApiContextFactory(new AppSettingsConfigurationSource()).Create();
             IStorage azureStorage = new AzureStorage();
             ProductQueryApiClient apiClient = new ProductQueryApiClient(apiContext);
+            GpcApiClient gpcApiClient = new GpcApiClient(apiContext);
 
             container.RegisterInstanceAs(apiContext);
             container.RegisterInstanceAs(azureStorage);
             container.RegisterInstanceAs(apiClient);
+            container.RegisterInstanceAs(gpcApiClient);
 
             this.container = container;
         }
@@ -63,6 +67,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [BeforeScenario("GpcCoreApi")]
         public void BeforeScenarioGpcCoreApi()
         {
+            // Get a reference to the context under which we're running
             IApiContext apiContext = this.container.Resolve<IApiContext>();
 
             // Ensure that the GPC core API is available, if not inform the user
@@ -73,6 +78,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                     apiContext.GpcCoreApiBaseAddress);
             
             Assert.IsTrue(isAvailable, message);
+
+            // Get a list of all data sources
+            var gpcApiClient = this.container.Resolve<GpcApiClient>();
+            var response = gpcApiClient.GetDataSources().Result;
+            var content = response.Content.ReadAsStringAsync().Result;
+            var dataSources = JsonConvert.DeserializeObject<List<DataSource>>(content);
+
+            // Register the list in the container
+            this.container.RegisterInstanceAs(dataSources);
         }
 
         /// <summary>

@@ -126,6 +126,7 @@
     <Compile Include="Enumerations\AttributeSetName.cs" />
     <Compile Include="Enumerations\IdentifierType.cs" />
     <Compile Include="Enumerations\TextualRepresentationAttribute.cs" />
+    <Compile Include="Extensions\DataSourceExtensions.cs" />
     <Compile Include="Extensions\ProductExtensions.cs" />
     <Compile Include="Extensions\ProductQueryExtensions.cs" />
     <Compile Include="Factories\AttributeSetFactory.cs" />
@@ -185,6 +186,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Gpc\AttributeSet.cs" />
+    <Compile Include="Resources\Gpc\DataSource.cs" />
     <Compile Include="Resources\Gpc\Product.cs" />
     <Compile Include="Resources\Gpc\ProductImprovement.cs" />
     <Compile Include="Resources\HttpProblem.cs" />

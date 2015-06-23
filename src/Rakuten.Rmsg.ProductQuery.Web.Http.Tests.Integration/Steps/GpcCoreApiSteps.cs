@@ -5,8 +5,10 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
+    using System.Linq;
     using Newtonsoft.Json;
     using TechTalk.SpecFlow;
 
@@ -22,14 +24,24 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         private readonly GpcApiClient apiClient;
 
         /// <summary>
+        /// A list of all data sources.
+        /// </summary>
+        private readonly List<DataSource> dataSources;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="GpcCoreApiSteps"/> class
         /// </summary>
         /// <param name="apiClient">A client for communicating with the GPC core API.</param>
-        public GpcCoreApiSteps(GpcApiClient apiClient)
+        /// <param name="dataSources">A list of all data sources.</param>
+        public GpcCoreApiSteps(
+            GpcApiClient apiClient,
+            List<DataSource> dataSources)
         {
             Contract.Requires(apiClient != null);
+            Contract.Requires(dataSources != null);
 
             this.apiClient = apiClient;
+            this.dataSources = dataSources;
         }
 
         /// <summary>
@@ -40,7 +52,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         public void GivenANewProductHasBeenCreatedInGPCForTheSpecifiedCulture(string culture)
         {
             // Create the object
-            var sourceProduct = ProductFactory.CreateMinimumProduct(culture);
+            var sourceProduct = ProductFactory.CreateMinimumProduct(
+                culture: culture,
+                dataSourceName: this.dataSources.GetHighestTrustScore(culture).Name);
 
             // Call GPC
             var response = this.apiClient.CreateProduct(sourceProduct).Result;
@@ -64,19 +78,77 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             foreach (var sourceProduct in ScenarioStorage.Products)
             {
                 // Create the product to improve to
-                var response = this.apiClient.CreateProduct(ProductFactory.CreateMinimumProduct(sourceProduct.Culture)).Result;
-                var newProduct = JsonConvert.DeserializeObject<Product>(response.Content.ReadAsStringAsync().Result);
+                var newProduct = ProductFactory.CreateMinimumProduct(sourceProduct.Culture);
+                var createResponse = this.apiClient.CreateProduct(newProduct).Result;
+                var createdProduct = JsonConvert.DeserializeObject<Product>(createResponse.Content.ReadAsStringAsync().Result);
 
                 // Improve the original product
-                var result = this.apiClient.ImproveProduct(new ProductImprovement
+                var improveResponse = this.apiClient.ImproveProduct(new ProductImprovement
                 {
                     Id = sourceProduct.Id,
-                    ImprovedId = newProduct.Id,
+                    ImprovedId = createdProduct.Id,
                     ImprovementCount = 1
                 }).Result;
 
-                result.EnsureSuccessStatusCode();
+                improveResponse.EnsureSuccessStatusCode();
             }
+        }
+
+        /// <summary>
+        /// Creates another new product with the same EAN as that one in scenario storage
+        /// but with a lower data source trust score.
+        /// </summary>
+        [Given(@"another new product with the same EAN but a lower data source trust score has been created")]
+        public void GivenAnotherNewProductWithTheSameEANButALowerDataSourceTrustScoreHasBeenCreated()
+        {
+            // TODO: We're talking about single products here but scenario storage only has a list of
+            //       products therefore we have a conflict of understanding with regards to what has
+            //       been set up in previous steps.
+
+            // Get the product already created
+            var sourceProduct = ScenarioStorage.Products.Single();
+
+            // Create a new product with the same EAN but a lower data source trust score
+            var newProduct = ProductFactory.CreateMinimumProduct(
+                culture: sourceProduct.Culture,
+                ean: sourceProduct.GetEAN(),
+                dataSourceName: this.dataSources.GetLowestTrustScore(sourceProduct.Culture).Name);
+
+            // Call the API
+            var response = this.apiClient.CreateProduct(newProduct).Result;
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        /// <summary>
+        /// Creates another new product with the same EAN and data source as the one
+        /// in scenario storage.  This new product replaces the original in scenario storage.
+        /// </summary>
+        [Given(@"another new product with the same EAN and data source but a more recent updated date has been created")]
+        public void GivenAnotherNewProductWithTheSameEANAndDataSourceButAMoreRecentUpdatedDateHasBeenCreated()
+        {
+            // TODO: We're talking about single products here but scenario storage only has a list of
+            //       products therefore we have a conflict of understanding with regards to what has
+            //       been set up in previous steps.
+
+            // Get the product already created
+            var sourceProduct = ScenarioStorage.Products.Single();
+
+            // Create a new product with the same EAN but a lower data source trust score
+            var newProduct = ProductFactory.CreateMinimumProduct(
+                culture: sourceProduct.Culture,
+                ean: sourceProduct.GetEAN(),
+                dataSourceName: sourceProduct.DataSource);
+
+            // Call the API
+            var response = this.apiClient.CreateProduct(newProduct).Result;
+
+            response.EnsureSuccessStatusCode();
+
+            // Replace the original product in scenario storage with the new one
+            var content = JsonConvert.DeserializeObject<Product>(response.Content.ReadAsStringAsync().Result);
+            ScenarioStorage.Products.Remove(sourceProduct);
+            ScenarioStorage.Products.Add(content);
         }
     }
 }
