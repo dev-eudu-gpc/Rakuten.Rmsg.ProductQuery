@@ -3,7 +3,7 @@
 	that the API operates according to the specification.
 
 Scenario: Getting the status of a product query group returns the correct response
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	And a request has been made to submit the new product query
 	And the product query group for the new product query has been retrieved from the database
 	And a product query monitor request for the new product query has been prepared

@@ -75,7 +75,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Flagging a product query as ready for processing persists the correct information" +
                     " to the database", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -91,7 +91,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Flagging a product query as ready for processing returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -118,7 +118,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -136,7 +136,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Flagging a product query as ready for processing with an identifier that exists b" +
                     "ut in a different culture returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query with a culture of en-US has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the culture of the new product query is updated to en-GB", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
@@ -199,7 +199,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Flagging a product query as ready for processing with an identifier that does not" +
                     " exist returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 404", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -220,7 +220,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Flagging a product query as ready for processing and supplying an invalid status " +
                     "returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of i-am-invalid", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -246,7 +246,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Flagging a product query as ready for processing when it has already been flagged" +
                     " as such returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");

@@ -41,19 +41,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Prepares a valid new product query object for use in a scenario
         /// and stores it in the scenario context.
         /// </summary>
-        [Given(@"a valid new product query has been prepared")]
-        public void GivenAValidNewProductQueryHasBeenPrepared()
-        {
-            ScenarioStorage.NewProductQuery = ProductQueryFactory.Create();
-        }
-
-        /// <summary>
-        /// Prepares a valid new product query object for use in a scenario
-        /// and stores it in the scenario context.
-        /// </summary>
-        /// <param name="culture">The culture for the new product query.</param>
-        [Given(@"a valid new product query with a culture of (.*) has been prepared")]
-        public void GivenAValidNewProductQueryWithASpecifiedCultureHasBeenPrepared(string culture)
+        /// <param name="culture">The culture for the product query.</param>
+        [Given(@"a valid new product query has been prepared for the culture (.*)")]
+        public void GivenAValidNewProductQueryHasBeenPreparedForTheSpecifiedCulture(string culture)
         {
             ScenarioStorage.NewProductQuery = ProductQueryFactory.Create(culture: culture);
         }

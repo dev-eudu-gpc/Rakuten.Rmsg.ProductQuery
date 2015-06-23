@@ -75,7 +75,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Submitting a new product query when there is no empty or sparse product query gro" +
                     "ups updates the database correctly", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("there are no empty or sparse product query groups in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("the product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -94,7 +94,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Submitting a new product query when there is one empty product query group update" +
                     "s the database correctly", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("only one empty product query group exists", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("the product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -116,7 +116,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Submitting a new product query when there is one sparse product query group updat" +
                     "es the database correctly", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("only one sparse product query group exists", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("the product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");

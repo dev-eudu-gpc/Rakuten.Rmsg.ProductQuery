@@ -16,15 +16,17 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// <summary>
         /// Creates a product with the minimum amount of data required for testing.
         /// </summary>
+        /// <param name="culture">The culture for the product.</param>
         /// <returns>The new product..</returns>
-        public static Product CreateMinimumProduct()
+        public static Product CreateMinimumProduct(
+            string culture)
         {
             string id = Guid.NewGuid().ToString("D");
 
             return new Product
             {
                 Category = "Rakuten",
-                Culture = "en-US",
+                Culture = culture,
                 DataSource = "GECP",
                 Id = id,
                 ImageUrl = "dummy image " + id,

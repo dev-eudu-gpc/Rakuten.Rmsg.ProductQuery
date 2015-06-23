@@ -3,7 +3,7 @@
 	that the product query group functionality operates according to the specification
 
 Scenario: Submitting a new product query when there is no empty or sparse product query groups updates the database correctly
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	And there are no empty or sparse product query groups in the database
 	And a request has been made to submit the new product query
 	When the product query is retrieved from the database
@@ -12,7 +12,7 @@ Scenario: Submitting a new product query when there is no empty or sparse produc
 	And the index of the product query from the database is 1
 
 Scenario: Submitting a new product query when there is one empty product query group updates the database correctly
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	And only one empty product query group exists
 	And a request has been made to submit the new product query
 	When the product query is retrieved from the database
@@ -22,7 +22,7 @@ Scenario: Submitting a new product query when there is one empty product query g
 	And the index of the product query from the database matches the incremented count of the product query group
 
 Scenario: Submitting a new product query when there is one sparse product query group updates the database correctly
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	And only one sparse product query group exists
 	And a request has been made to submit the new product query
 	When the product query is retrieved from the database

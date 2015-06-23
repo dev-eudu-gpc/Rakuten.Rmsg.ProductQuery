@@ -73,7 +73,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Getting the status of a product query group returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the product query group for the new product query has been retrieved from the dat" +
                     "abase", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

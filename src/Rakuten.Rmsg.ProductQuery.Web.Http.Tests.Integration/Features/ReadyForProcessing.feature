@@ -3,14 +3,14 @@
 	that the API operates according to the specification.
 
 Scenario: Flagging a product query as ready for processing persists the correct information to the database
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	And a request has been made to submit the new product query
 	When a request is made to flag the product query as ready for processing with a status of submitted
 	And the product query is retrieved from the database
 	Then the status of the product query from the database is Submitted
 
 Scenario: Flagging a product query as ready for processing returns the correct response
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	And a request has been made to submit the new product query
 	When a request is made to flag the product query as ready for processing with a status of submitted
 	And the product query is retrieved from the database
@@ -26,14 +26,14 @@ Scenario: Flagging a product query as ready for processing returns the correct r
 Scenario: Flagging a product query as ready for processing creates a message on the queue
 	Given the web job is stopped
 	And the message queue is empty
-	And a valid new product query has been prepared
+	And a valid new product query has been prepared for the culture en-US
 	And a request has been made to submit the new product query
 	When a request is made to flag the product query as ready for processing with a status of submitted
 	Then the HTTP status code is 202
 	And a message has been created on the queue
 	
 Scenario: Flagging a product query as ready for processing with an identifier that exists but in a different culture returns the correct response
-	Given a valid new product query with a culture of en-US has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	And a request has been made to submit the new product query
 	And the culture of the new product query is updated to en-GB
 	When a request is made to flag the product query as ready for processing with a status of submitted
@@ -59,7 +59,7 @@ Scenario: Flagging a product query as ready for processing with an invalid cultu
 	And the HTTP problem detail for the product query request is The culture '{culture}' in the request URI is invalid. It must be a valid language tag (as per BCP 47).
 
 Scenario: Flagging a product query as ready for processing with an identifier that does not exist returns the correct response
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	When a request is made to flag the product query as ready for processing with a status of submitted
 	Then the HTTP status code is 404
 	And an HTTP problem can be retrieved from the response body
@@ -68,7 +68,7 @@ Scenario: Flagging a product query as ready for processing with an identifier th
 	And the HTTP problem detail for the product query request is Failed to find a product query with identifier '{id}'.
 
 Scenario: Flagging a product query as ready for processing and supplying an invalid status returns the correct response
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	And a request has been made to submit the new product query
 	When a request is made to flag the product query as ready for processing with a status of i-am-invalid
 	Then the HTTP status code is 403
@@ -80,7 +80,7 @@ Scenario: Flagging a product query as ready for processing and supplying an inva
 	And the HTTP problem link of relation type http://rels.rakuten.com/product-query has an href that points to the product query
 
 Scenario: Flagging a product query as ready for processing when it has already been flagged as such returns the correct response
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	And a request has been made to submit the new product query
 	When a request is made to flag the product query as ready for processing with a status of submitted
 	And a request is made to flag the product query as ready for processing with a status of submitted

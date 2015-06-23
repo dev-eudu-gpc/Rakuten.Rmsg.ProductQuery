@@ -3,7 +3,7 @@
 	that the API operates according to the specification.
 
 Scenario: Submitting a valid new product query persists the correct information to the database
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	When a request is made to submit the new product query
 	Then the product query can be retrieved from the database
 	And the status of the product query from the database is New
@@ -12,7 +12,7 @@ Scenario: Submitting a valid new product query persists the correct information 
 	And the URI of the product query from the database matches the storage blob URI
 
 Scenario: Submitting a valid new product query returns the correct response
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	When a request is made to submit the new product query
 	And the product query is retrieved from the database
 	And the product query group for the new product query is retrieved from the database
@@ -24,7 +24,7 @@ Scenario: Submitting a valid new product query returns the correct response
 	And the product query in the response body has the correct monitor link
 
 Scenario: Submitting a new product query with an identifier and culture that exists returns the correct response
-	Given a valid new product query has been prepared
+	Given a valid new product query has been prepared for the culture en-US
 	And a request has been made to submit the new product query
 	When a request is made to submit the new product query again
 	And the product query is retrieved from the database

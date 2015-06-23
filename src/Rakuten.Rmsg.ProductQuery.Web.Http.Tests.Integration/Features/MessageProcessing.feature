@@ -8,8 +8,8 @@ Scenario: A query file with a single valid product is processed correctly
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a new product has been created in GPC
-	And a valid new product query has been prepared
+	And a new product has been created in GPC for the culture en-US
+	And a valid new product query has been prepared for the culture en-US
 	And a product query file for the new product has been created
 	And a request has been made to submit the new product query
 	And the file is uploaded to blob storage
@@ -35,8 +35,8 @@ Scenario: A query item with an image in the source file does not have its images
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a new product has been created in GPC
-	And a valid new product query has been prepared
+	And a new product has been created in GPC for the culture en-US
+	And a valid new product query has been prepared for the culture en-US
 	And a product query file containing image urls for the new product has been created
 	And a request has been made to submit the new product query
 	And the file is uploaded to blob storage
@@ -57,8 +57,8 @@ Scenario: Query items with no GTIN type are fuzzily matched
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a new product has been created in GPC
-	And a valid new product query has been prepared
+	And a new product has been created in GPC for the culture en-US
+	And a valid new product query has been prepared for the culture en-US
 	And a product query file with no GTIN type for the new product has been created
 	And a request has been made to submit the new product query
 	And the file is uploaded to blob storage
@@ -78,8 +78,8 @@ Scenario: Query items with no GTIN value are ignored
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a new product has been created in GPC
-	And a valid new product query has been prepared
+	And a new product has been created in GPC for the culture en-US
+	And a valid new product query has been prepared for the culture en-US
 	And a product query file with no GTIN value for the new product has been created
 	And a request has been made to submit the new product query
 	And the file is uploaded to blob storage
@@ -99,8 +99,8 @@ Scenario: Files with only some rows having GTINs are correctly processed
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a new product has been created in GPC
-	And a valid new product query has been prepared
+	And a new product has been created in GPC for the culture en-US
+	And a valid new product query has been prepared for the culture en-US
 	And a product query file with only some rows having GTINs has been created
 	And a request has been made to submit the new product query
 	And the file is uploaded to blob storage
@@ -126,8 +126,8 @@ Scenario: A file with no header row is rejected
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a new product has been created in GPC
-	And a valid new product query has been prepared
+	And a new product has been created in GPC for the culture en-US
+	And a valid new product query has been prepared for the culture en-US
 	And a product query file with no header row has been created
 	And a request has been made to submit the new product query
 	And the file is uploaded to blob storage
@@ -143,8 +143,8 @@ Scenario: A file with a row with insufficient columns is processed correctly
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a new product has been created in GPC
-	And a valid new product query has been prepared
+	And a new product has been created in GPC for the culture en-US
+	And a valid new product query has been prepared for the culture en-US
 	And a product query file for the new product and an additional row with insufficient columns has been created
 	And a request has been made to submit the new product query
 	And the file is uploaded to blob storage
@@ -171,7 +171,7 @@ Scenario: Messages for product queries where no blob has been uploaded are proce
     Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a valid new product query has been prepared
+	And a valid new product query has been prepared for the culture en-US
 	And a request has been made to submit the new product query
 	And a request is made to flag the product query as ready for processing with a status of submitted
 	And a message has been created on the queue

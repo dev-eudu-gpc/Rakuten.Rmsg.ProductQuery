@@ -34,11 +34,12 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// <summary>
         /// Creates a new product with a valid EAN.
         /// </summary>
-        [Given(@"a new product has been created in GPC")]
-        public void GivenANewProductWithAnEANHasBeenCreatedInGPC()
+        /// <param name="culture">The culture for the product</param>
+        [Given(@"a new product has been created in GPC for the culture (.*)")]
+        public void GivenANewProductWithAnEANHasBeenCreatedInGPCForTheSpecifiedCulture(string culture)
         {
             // Create the object
-            var product = ProductFactory.CreateMinimumProduct();
+            var product = ProductFactory.CreateMinimumProduct(culture);
 
             // Call GPC
             var result = this.apiClient.CreateProduct(product).Result;

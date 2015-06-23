@@ -75,7 +75,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Submitting a valid new product query persists the correct information to the data" +
                     "base", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.When("a request is made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the product query can be retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the status of the product query from the database is New", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -93,7 +93,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Submitting a valid new product query returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.When("a request is made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.And("the product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the product query group for the new product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -116,7 +116,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Submitting a new product query with an identifier and culture that exists returns" +
                     " the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to submit the new product query again", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.And("the product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

@@ -232,7 +232,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
                 var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
 
                 Assert.IsNotNull(product);
-                Assert.AreEqual(product.GetBrand(), result.Brand);
+                Assert.AreEqual(product.GetBrand(), result.Brand, true);
             }
         }
 
@@ -251,11 +251,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
                 var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
 
                 Assert.IsNotNull(product);
-                Assert.AreEqual(product.GetImageUrl(1), result.ImageUrl1);
-                Assert.AreEqual(product.GetImageUrl(2), result.ImageUrl2);
-                Assert.AreEqual(product.GetImageUrl(3), result.ImageUrl3);
-                Assert.AreEqual(product.GetImageUrl(4), result.ImageUrl4);
-                Assert.AreEqual(product.GetImageUrl(5), result.ImageUrl5);
+                Assert.AreEqual(product.GetImageUrl(1), result.ImageUrl1, true);
+                Assert.AreEqual(product.GetImageUrl(2), result.ImageUrl2, true);
+                Assert.AreEqual(product.GetImageUrl(3), result.ImageUrl3, true);
+                Assert.AreEqual(product.GetImageUrl(4), result.ImageUrl4, true);
+                Assert.AreEqual(product.GetImageUrl(5), result.ImageUrl5, true);
             }
         }
 
@@ -275,7 +275,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
                 var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
 
                 Assert.IsNotNull(product);
-                Assert.AreEqual(product.Manufacturer, result.Manufacturer);
+                Assert.AreEqual(product.Manufacturer, result.Manufacturer, true);
             }
         }
 
@@ -294,7 +294,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
                 var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
 
                 Assert.IsNotNull(product);
-                Assert.AreEqual(product.PartNumber, result.ManufacturerPartNumber);
+                Assert.AreEqual(product.PartNumber, result.ManufacturerPartNumber, true);
             }
         }
 
@@ -313,7 +313,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
                 var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
 
                 Assert.IsNotNull(product);
-                Assert.AreEqual(product.GetVideoUrl(), result.VideoUrl);
+                Assert.AreEqual(product.GetVideoUrl(), result.VideoUrl, true);
             }
         }
 
@@ -339,6 +339,18 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
             {
                 Assert.AreEqual(sourceItems[i], resultItems[i]);
             }
+        }
+
+        /// <summary>
+        /// Verifies that the items in the results file are the same as the items in the source file.
+        /// </summary>
+        [Then(@"the items in the results file are the same as the items in the source file")]
+        public void ThenTheItemsInTheResultsFileAreTheSameAsTheItemsInTheSourceFile()
+        {
+            // Arrange
+            Assert.AreEqual(ScenarioStorage.Items.Count(), ScenarioStorage.ResultItems.Count());
+
+            CollectionAssert.AreEqual(ScenarioStorage.Items, ScenarioStorage.ResultItems);
         }
 
         /// <summary>

@@ -79,8 +79,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the file is uploaded to blob storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -118,8 +118,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file containing image urls for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the file is uploaded to blob storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -152,8 +152,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file with no GTIN type for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the file is uploaded to blob storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -185,8 +185,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file with no GTIN value for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the file is uploaded to blob storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -218,8 +218,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file with only some rows having GTINs has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the file is uploaded to blob storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -258,8 +258,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file with no header row has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the file is uploaded to blob storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -287,8 +287,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file for the new product and an additional row with insufficient " +
                     "columns has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -330,7 +330,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
