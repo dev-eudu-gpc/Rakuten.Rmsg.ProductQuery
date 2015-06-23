@@ -61,13 +61,27 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             var client = this.CreateNewHttpClient();
 
             // Construct the URI
-            var uri = string.Format(
-                "/v1/product",
-                source.Id,
-                source.Culture);
+            var uri = "/v1/product";
 
             // Make the call
             return await client.PostAsJsonAsync<Product>(uri, source);
+        }
+
+        /// <summary>
+        /// Makes a call to improve a product.
+        /// </summary>
+        /// <param name="source">The parameters for the call.</param>
+        /// <returns>The <see cref="HttpResponseMessage"/> from the API call.</returns>
+        public async Task<HttpResponseMessage> ImproveProduct(ProductImprovement source)
+        {
+            // Create the HTTP client
+            var client = this.CreateNewHttpClient();
+
+            // Construct the URI
+            var uri = string.Format("/v1/productimprovement/product/{0}", source.Id);
+
+            // Make the call
+            return await client.PutAsJsonAsync<ProductImprovement>(uri, source);
         }
 
         /// <summary>

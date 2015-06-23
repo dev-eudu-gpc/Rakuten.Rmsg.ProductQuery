@@ -28,7 +28,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 Category = "Rakuten",
                 Culture = culture,
                 DataSource = "GECP",
-                Id = id,
                 ImageUrl = "dummy image " + id,
                 Name = "Integration test for rmsg product query API" + id,
                 Uploader = "Developer",
