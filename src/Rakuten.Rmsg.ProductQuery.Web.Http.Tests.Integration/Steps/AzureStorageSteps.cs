@@ -86,7 +86,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 throw new InvalidOperationException("The specified blob was not found within the given container.");
             }
 
-            var fileName = string.Format("{0}.{1}", System.IO.Path.GetTempPath(), "rmsgpg-int");
+            var fileName = Path.Combine(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString() + ".rmsgpq-int");
 
             blob.DownloadToFile(fileName, FileMode.Create);
 

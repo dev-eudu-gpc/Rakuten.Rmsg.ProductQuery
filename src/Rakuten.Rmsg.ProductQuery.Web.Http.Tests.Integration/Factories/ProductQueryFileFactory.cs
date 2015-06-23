@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
@@ -27,7 +28,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             bool includeHeaderRow = true)
         {
             var serializer = new LumenWorksSerializer<Item>();
-            var fileName = string.Format("{0}.{1}", System.IO.Path.GetTempPath(), "rmsgpq-int");
+            var fileName = Path.Combine(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString() + ".rmsgpq-int");
 
             using (var writer = new StreamWriter(fileName, false, Encoding.UTF8))
             {
