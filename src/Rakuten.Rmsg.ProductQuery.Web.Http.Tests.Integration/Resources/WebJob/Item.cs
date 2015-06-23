@@ -680,5 +680,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 (this.VideoUrl == other.VideoUrl || (string.IsNullOrWhiteSpace(this.VideoUrl) && string.IsNullOrWhiteSpace(other.VideoUrl))) &&
                 (this.Weight == other.Weight || (string.IsNullOrWhiteSpace(this.Weight) && string.IsNullOrWhiteSpace(other.Weight)));
         }
+
+        /// <summary>
+        /// Serves as a hash function.
+        /// </summary>
+        /// <returns>A hash code for the object.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
