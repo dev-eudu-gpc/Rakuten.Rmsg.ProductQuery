@@ -19,7 +19,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
         /// Gets or sets the point in time at which a matching product was located.
         /// </summary>
         [Column("dateCompleted")]
-        public DateTime Completed { get; set; }
+        public DateTime? Completed { get; set; }
 
         /// <summary>
         /// Gets or sets the GRAN of the product that matches this request.

@@ -64,16 +64,16 @@ Scenario: Products that have been improved are not matched against
 	And the file is uploaded to blob storage
 	And a request is made to flag the product query as ready for processing with a status of submitted
 	And a message has been created on the queue
-	#When the web job is started
-	#And the status of the product query is completed
-	#And the product query is retrieved from the database
-	#And the results file is retrieved from storage
-	#And the items have been parsed from the results file
-	#Then the message queue is empty
-	#And the dead letter queue is empty
-	#And the items in the database match the items in the file
-	#And the items in the database have a valid completed date
-	#And the items in the results file are the same as the items in the source file
+	When the web job is started
+	And the status of the product query is completed
+	And the product query is retrieved from the database
+	And the results file is retrieved from storage
+	And the items have been parsed from the results file
+	Then the message queue is empty
+	And the dead letter queue is empty
+	And the items in the database match the items in the file
+	And the items in the database have a valid completed date
+	And the items in the results file are the same as the items in the source file
 
 @WebJob @GpcCoreApi
 Scenario: Products with the highest data source trust score are selected first
