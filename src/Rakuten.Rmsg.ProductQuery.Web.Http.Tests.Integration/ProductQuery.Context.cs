@@ -29,5 +29,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         public virtual DbSet<rmsgProductQueryGroup> rmsgProductQueryGroups { get; set; }
         public virtual DbSet<rmsgProductQueryItem> rmsgProductQueryItems { get; set; }
         public virtual DbSet<rmsgProductQueryStatu> rmsgProductQueryStatus { get; set; }
+        public virtual DbSet<product> products { get; set; }
     }
 }

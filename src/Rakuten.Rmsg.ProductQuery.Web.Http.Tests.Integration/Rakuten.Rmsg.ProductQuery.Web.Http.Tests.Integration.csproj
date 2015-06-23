@@ -169,6 +169,9 @@
     </Compile>
     <Compile Include="Hooks\BeforeScenarioHooks.cs" />
     <Compile Include="Hooks\TestRunHooks.cs" />
+    <Compile Include="product.cs">
+      <DependentUpon>ProductQuery.tt</DependentUpon>
+    </Compile>
     <Compile Include="ProductQuery.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -212,7 +215,7 @@
       <DependentUpon>ProductQuery.tt</DependentUpon>
     </Compile>
     <Compile Include="Steps\AzureStorageSteps.cs" />
-    <Compile Include="Steps\GpcCoreApiSteps.cs" />
+    <Compile Include="Steps\GpcSteps.cs" />
     <Compile Include="Steps\MessageQueueSteps.cs" />
     <Compile Include="Steps\ProductQueryFileSteps.cs" />
     <Compile Include="Steps\ProductQueryGroupSteps.cs" />

@@ -4,18 +4,31 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="EntityModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EntityModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="product">
+          <Key>
+            <PropertyRef Name="GRAN" />
+          </Key>
+          <Property Name="GRAN" Type="char" MaxLength="12" Nullable="false" />
+          <Property Name="improvedGRAN" Type="char" MaxLength="12" Nullable="false" />
+          <Property Name="manufacturerID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="manufacturerPartNumber" Type="nvarchar" MaxLength="127" Nullable="false" />
+          <Property Name="productCategoryID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="GTINhash" Type="binary" MaxLength="12" />
+          <Property Name="createTime" Type="datetime2" Precision="4" Nullable="false" />
+          <Property Name="updateTime" Type="datetime2" Precision="4" Nullable="false" />
+        </EntityType>
         <EntityType Name="rmsgProductQuery">
           <Key>
             <PropertyRef Name="rmsgProductQueryID" />
           </Key>
           <Property Name="rmsgProductQueryID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="culture" Type="char" MaxLength="5" Nullable="false" />
           <Property Name="rmsgProductQueryGroupID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="index" Type="smallint" Nullable="false" />
           <Property Name="dateCreated" Type="datetime2" Precision="4" Nullable="false" />
           <Property Name="rmsgProductQueryStatusID" Type="tinyint" Nullable="false" />
           <Property Name="uri" Type="nvarchar" MaxLength="2083" />
-          <Property Name="culture" Type="char" MaxLength="5" />
         </EntityType>
         <EntityType Name="rmsgProductQueryGroup">
           <Key>
@@ -32,6 +45,7 @@
           <Property Name="rmsgProductQueryID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="gtin" Type="nvarchar" MaxLength="14" Nullable="false" />
           <Property Name="dateCompleted" Type="datetime2" Precision="4" />
+          <Property Name="gran" Type="nvarchar" MaxLength="12" />
         </EntityType>
         <EntityType Name="rmsgProductQueryStatus">
           <Key>
@@ -76,7 +90,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="product_primaryGRAN_R_product_GRAN">
+          <End Role="product" Type="Self.product" Multiplicity="1" />
+          <End Role="product1" Type="Self.product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="GRAN" />
+            </Principal>
+            <Dependent Role="product1">
+              <PropertyRef Name="improvedGRAN" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="EntityModelStoreContainer">
+          <EntitySet Name="product" EntityType="Self.product" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="rmsgProductQuery" EntityType="Self.rmsgProductQuery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="rmsgProductQueryGroup" EntityType="Self.rmsgProductQueryGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="rmsgProductQueryItem" EntityType="Self.rmsgProductQueryItem" Schema="dbo" store:Type="Tables" />
@@ -93,9 +120,12 @@
             <End Role="rmsgProductQuery" EntitySet="rmsgProductQuery" />
             <End Role="rmsgProductQueryItem" EntitySet="rmsgProductQueryItem" />
           </AssociationSet>
+          <AssociationSet Name="product_primaryGRAN_R_product_GRAN" Association="Self.product_primaryGRAN_R_product_GRAN">
+            <End Role="product" EntitySet="product" />
+            <End Role="product1" EntitySet="product" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EntityModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -109,7 +139,7 @@
           <Property Name="dateCreated" Type="DateTime" Nullable="false" Precision="4" />
           <Property Name="rmsgProductQueryStatusID" Type="Byte" Nullable="false" />
           <Property Name="uri" Type="String" MaxLength="2083" FixedLength="false" Unicode="true" />
-          <Property Name="culture" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+          <Property Name="culture" Type="String" MaxLength="5" FixedLength="true" Unicode="false" Nullable="false" />
           <NavigationProperty Name="rmsgProductQueryGroup" Relationship="Self.fkRmsgProductQuery_rmsgProductQueryGroup" FromRole="rmsgProductQuery" ToRole="rmsgProductQueryGroup" />
           <NavigationProperty Name="rmsgProductQueryStatu" Relationship="Self.fkRmsgProductQuery_rmsgProductQueryStatus" FromRole="rmsgProductQuery" ToRole="rmsgProductQueryStatus" />
           <NavigationProperty Name="rmsgProductQueryItems" Relationship="Self.fkRmsgProductQueryItem_rmsgProductQuery" FromRole="rmsgProductQuery" ToRole="rmsgProductQueryItem" />
@@ -131,6 +161,7 @@
           <Property Name="gtin" Type="String" MaxLength="14" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="dateCompleted" Type="DateTime" Precision="4" />
           <NavigationProperty Name="rmsgProductQuery" Relationship="Self.fkRmsgProductQueryItem_rmsgProductQuery" FromRole="rmsgProductQueryItem" ToRole="rmsgProductQuery" />
+          <Property Name="gran" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="rmsgProductQueryStatu">
           <Key>
@@ -193,7 +224,39 @@
             <End Role="rmsgProductQuery" EntitySet="rmsgProductQueries" />
             <End Role="rmsgProductQueryItem" EntitySet="rmsgProductQueryItems" />
           </AssociationSet>
+          <EntitySet Name="products" EntityType="EntityModel.product" />
+          <AssociationSet Name="product_primaryGRAN_R_product_GRAN" Association="EntityModel.product_primaryGRAN_R_product_GRAN">
+            <End Role="product" EntitySet="products" />
+            <End Role="product1" EntitySet="products" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="product">
+          <Key>
+            <PropertyRef Name="GRAN" />
+          </Key>
+          <Property Name="GRAN" Type="String" Nullable="false" MaxLength="12" FixedLength="true" Unicode="false" />
+          <Property Name="improvedGRAN" Type="String" Nullable="false" MaxLength="12" FixedLength="true" Unicode="false" />
+          <Property Name="manufacturerID" Type="Guid" Nullable="false" />
+          <Property Name="manufacturerPartNumber" Type="String" Nullable="false" MaxLength="127" FixedLength="false" Unicode="true" />
+          <Property Name="productCategoryID" Type="Guid" Nullable="false" />
+          <Property Name="GTINhash" Type="Binary" MaxLength="12" FixedLength="true" />
+          <Property Name="createTime" Type="DateTime" Nullable="false" Precision="4" />
+          <Property Name="updateTime" Type="DateTime" Nullable="false" Precision="4" />
+          <NavigationProperty Name="product1" Relationship="EntityModel.product_primaryGRAN_R_product_GRAN" FromRole="product" ToRole="product1" />
+          <NavigationProperty Name="product2" Relationship="EntityModel.product_primaryGRAN_R_product_GRAN" FromRole="product1" ToRole="product" />
+        </EntityType>
+        <Association Name="product_primaryGRAN_R_product_GRAN">
+          <End Type="EntityModel.product" Role="product" Multiplicity="1" />
+          <End Type="EntityModel.product" Role="product1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="GRAN" />
+            </Principal>
+            <Dependent Role="product1">
+              <PropertyRef Name="improvedGRAN" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -224,6 +287,7 @@
           <EntitySetMapping Name="rmsgProductQueryItems">
             <EntityTypeMapping TypeName="EntityModel.rmsgProductQueryItem">
               <MappingFragment StoreEntitySet="rmsgProductQueryItem">
+                <ScalarProperty Name="gran" ColumnName="gran" />
                 <ScalarProperty Name="rmsgProductQueryID" ColumnName="rmsgProductQueryID" />
                 <ScalarProperty Name="gtin" ColumnName="gtin" />
                 <ScalarProperty Name="dateCompleted" ColumnName="dateCompleted" />
@@ -235,6 +299,20 @@
               <MappingFragment StoreEntitySet="rmsgProductQueryStatus">
                 <ScalarProperty Name="rmsgProductQueryStatusID" ColumnName="rmsgProductQueryStatusID" />
                 <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="products">
+            <EntityTypeMapping TypeName="EntityModel.product">
+              <MappingFragment StoreEntitySet="product">
+                <ScalarProperty Name="updateTime" ColumnName="updateTime" />
+                <ScalarProperty Name="createTime" ColumnName="createTime" />
+                <ScalarProperty Name="GTINhash" ColumnName="GTINhash" />
+                <ScalarProperty Name="productCategoryID" ColumnName="productCategoryID" />
+                <ScalarProperty Name="manufacturerPartNumber" ColumnName="manufacturerPartNumber" />
+                <ScalarProperty Name="manufacturerID" ColumnName="manufacturerID" />
+                <ScalarProperty Name="improvedGRAN" ColumnName="improvedGRAN" />
+                <ScalarProperty Name="GRAN" ColumnName="GRAN" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

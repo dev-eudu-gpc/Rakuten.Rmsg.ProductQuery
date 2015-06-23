@@ -12,6 +12,8 @@
         <AssociationConnector Association="EntityModel.fkRmsgProductQuery_rmsgProductQueryGroup" ManuallyRouted="false" />
         <AssociationConnector Association="EntityModel.fkRmsgProductQuery_rmsgProductQueryStatus" ManuallyRouted="false" />
         <AssociationConnector Association="EntityModel.fkRmsgProductQueryItem_rmsgProductQuery" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="EntityModel.product" Width="1.5" PointX="3.375" PointY="4.75" />
+        <AssociationConnector Association="EntityModel.product_primaryGRAN_R_product_GRAN" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

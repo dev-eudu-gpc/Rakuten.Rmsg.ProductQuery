@@ -17,6 +17,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         public System.Guid rmsgProductQueryID { get; set; }
         public string gtin { get; set; }
         public Nullable<System.DateTime> dateCompleted { get; set; }
+        public string gran { get; set; }
     
         public virtual rmsgProductQuery rmsgProductQuery { get; set; }
     }
