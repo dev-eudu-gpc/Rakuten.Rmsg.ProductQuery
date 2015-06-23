@@ -28,7 +28,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             bool includeHeaderRow = true)
         {
             var serializer = new LumenWorksSerializer<Item>();
-            var fileName = Path.Combine(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString() + ".rmsgpq-int");
+            var fileName = Path.Combine(System.IO.Path.GetTempPath(), "rmsg-product-query-source.tmp");
 
             using (var writer = new StreamWriter(fileName, false, Encoding.UTF8))
             {
