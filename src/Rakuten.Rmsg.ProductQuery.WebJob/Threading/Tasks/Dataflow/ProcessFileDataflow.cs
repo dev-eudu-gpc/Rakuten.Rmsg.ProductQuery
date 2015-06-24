@@ -117,11 +117,11 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             // Get all available details for the GRAN.
             updateEntityBlock.LinkTo(
                 getProductBlock,
-                state => state.Product != null,
+                state => !string.IsNullOrWhiteSpace(state.Query.Gran),
                 outputBlock);
             updateEntityBlock.OnFaultOrCompletion(getProductBlock);
 
-            updateEntityBlock.LinkTo(outputBlock, state => state.Product == null);
+            updateEntityBlock.LinkTo(outputBlock, state => string.IsNullOrWhiteSpace(state.Query.Gran));
 
             // Merge the data with the original.
             getProductBlock.LinkTo(aggregateBlock, outputBlock);
