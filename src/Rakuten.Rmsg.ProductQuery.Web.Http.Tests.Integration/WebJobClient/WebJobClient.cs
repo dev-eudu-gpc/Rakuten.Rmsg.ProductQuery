@@ -38,6 +38,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             // Ensure any previous running process has been stopped and disposed.
             this.Stop();
 
+            // Ensure there are no running processes for the web job on the machine
+            KillAllProcesses();
+
             // Configure the process
             this.Process = new Process();
 
@@ -87,6 +90,17 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             if (this.Process != null)
             {
                 this.Process.Kill();
+            }
+        }
+
+        /// <summary>
+        /// Kills all web job processes.
+        /// </summary>
+        private static void KillAllProcesses()
+        {
+            foreach (Process process in Process.GetProcessesByName("Rakuten.Rmsg.ProductQuery.WebJob"))
+            {
+                process.Kill();
             }
         }
 
