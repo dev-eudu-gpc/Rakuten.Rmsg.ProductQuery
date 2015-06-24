@@ -19,7 +19,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "1.9.0.77")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute()]
-    public partial class NewMessageProcessingFeature
+    public partial class ParsingFeature
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -28,7 +28,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         public static void FeatureSetup(Microsoft.VisualStudio.TestTools.UnitTesting.TestContext testContext)
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "NewMessageProcessing", "Ensures that message processing performs as expected", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Parsing", "Ensures that messages and blobs are parsed correctly", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -43,9 +43,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         public virtual void TestInitialize()
         {
             if (((TechTalk.SpecFlow.FeatureContext.Current != null) 
-                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "NewMessageProcessing")))
+                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "Parsing")))
             {
-                Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features.NewMessageProcessingFeature.FeatureSetup(null);
+                Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features.ParsingFeature.FeatureSetup(null);
             }
         }
         
@@ -66,120 +66,36 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("A query file with a single valid product is processed correctly")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Messages for product queries where no blob has been uploaded are processed correc" +
+            "tly")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parsing")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void AQueryFileWithASingleValidProductIsProcessedCorrectly()
+        public virtual void MessagesForProductQueriesWhereNoBlobHasBeenUploadedAreProcessedCorrectly()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A query file with a single valid product is processed correctly", new string[] {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Messages for product queries where no blob has been uploaded are processed correc" +
+                    "tly", new string[] {
                         "WebJob",
                         "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a product query file for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the file is uploaded to blob storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("the web job is started", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-            testRunner.And("the status of the product query is completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the results file is retrieved from storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database match the items in the file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database have the correct GRAN", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the results file have the correct manufacturer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the results file have the correct manufacturer part number", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the results file have the correct brand", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the results file have the correct video URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the results file have the correct images", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("A query item with an image in the source file does not have its images updated")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void AQueryItemWithAnImageInTheSourceFileDoesNotHaveItsImagesUpdated()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A query item with an image in the source file does not have its images updated", new string[] {
-                        "WebJob",
-                        "GpcCoreApi"});
-            this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.Then("the message can be found in the dead letter queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a product query file containing image urls for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the file is uploaded to blob storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a request is made to flag the product query as ready for processing with a status" +
-                    " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.When("the web job is started", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-            testRunner.And("the status of the product query is completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the results file is retrieved from storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database match the items in the file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database have the correct GRAN", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the results file have the correct manufacturer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the results file have the correct manufacturer part number", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the results file have the correct brand", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the results file have the correct video URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the images in the file have been preserved", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Query items with no GTIN type are fuzzily matched")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void QueryItemsWithNoGTINTypeAreFuzzilyMatched()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Query items with no GTIN type are fuzzily matched", new string[] {
-                        "WebJob",
-                        "GpcCoreApi"});
-            this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-            testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a product query file with no GTIN type for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the file is uploaded to blob storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a request is made to flag the product query as ready for processing with a status" +
-                    " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.When("the web job is started", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-            testRunner.And("the status of the product query is completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the results file is retrieved from storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("there are no items for the product query in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the item in the results file is the same as the item in the source file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Query items with no GTIN value are ignored")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parsing")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         public virtual void QueryItemsWithNoGTINValueAreIgnored()
@@ -211,13 +127,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Files with only some rows having GTINs are correctly processed")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("A file with only some rows having GTINs is correctly processed")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parsing")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void FilesWithOnlySomeRowsHavingGTINsAreCorrectlyProcessed()
+        public virtual void AFileWithOnlySomeRowsHavingGTINsIsCorrectlyProcessed()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Files with only some rows having GTINs are correctly processed", new string[] {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A file with only some rows having GTINs is correctly processed", new string[] {
                         "WebJob",
                         "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
@@ -253,7 +169,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("A file with no header row is rejected")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parsing")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         public virtual void AFileWithNoHeaderRowIsRejected()
@@ -282,7 +198,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("A file with a row with insufficient columns is processed correctly")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parsing")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         public virtual void AFileWithARowWithInsufficientColumnsIsProcessedCorrectly()
@@ -319,34 +235,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the valid items in the results file have the correct video URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the valid items in the results file have the correct images", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items that have insufficient columns are not present in the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Messages for product queries where no blob has been uploaded are processed correc" +
-            "tly")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "NewMessageProcessing")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void MessagesForProductQueriesWhereNoBlobHasBeenUploadedAreProcessedCorrectly()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Messages for product queries where no blob has been uploaded are processed correc" +
-                    "tly", new string[] {
-                        "WebJob",
-                        "GpcCoreApi"});
-            this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-            testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a request is made to flag the product query as ready for processing with a status" +
-                    " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.When("the web job is started", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-            testRunner.Then("the message can be found in the dead letter queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("there are no items for the product query in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
     }

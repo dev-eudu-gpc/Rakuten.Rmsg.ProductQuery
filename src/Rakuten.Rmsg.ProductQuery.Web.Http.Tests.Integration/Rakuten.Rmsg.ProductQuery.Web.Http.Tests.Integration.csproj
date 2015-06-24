@@ -137,15 +137,37 @@
     <Compile Include="Factories\ProductQueryFileFactory.cs" />
     <Compile Include="Factories\QueueClientFactory.cs" />
     <Compile Include="Factories\TraceWriter.cs" />
-    <Compile Include="Features\MessageProcessing.feature.cs">
-      <AutoGen>True</AutoGen>
+    <Compile Include="Features\Matching.feature.cs">
+      <DependentUpon>Matching.feature</DependentUpon>
+      <SubType>Code</SubType>
       <DesignTime>True</DesignTime>
-      <DependentUpon>MessageProcessing.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Features\ProductMatching.feature.cs">
-      <AutoGen>True</AutoGen>
+    <Compile Include="Features\Parsing.feature.cs">
+      <DependentUpon>Parsing.feature</DependentUpon>
+      <SubType>Code</SubType>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ProductMatching.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Features\Submission.feature.cs">
+      <DependentUpon>Submission.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Features\Grouping.feature.cs">
+      <DependentUpon>Grouping.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Features\Monitor.feature.cs">
+      <DependentUpon>Monitor.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Features\ReadyForProcessing.feature.cs">
+      <DependentUpon>ReadyForProcessing.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Hooks\BeforeScenarioHooks.cs" />
     <Compile Include="Hooks\TestRunHooks.cs" />
@@ -218,13 +240,29 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Features\MessageProcessing.feature">
+    <None Include="Features\Matching.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>MessageProcessing.feature.cs</LastGenOutput>
+      <LastGenOutput>Matching.feature.cs</LastGenOutput>
     </None>
-    <None Include="Features\ProductMatching.feature">
+    <None Include="Features\Parsing.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ProductMatching.feature.cs</LastGenOutput>
+      <LastGenOutput>Parsing.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\Submission.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Submission.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\Grouping.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Grouping.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\Monitor.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Monitor.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\ReadyForProcessing.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ReadyForProcessing.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
     <EntityDeploy Include="ProductQuery.edmx">

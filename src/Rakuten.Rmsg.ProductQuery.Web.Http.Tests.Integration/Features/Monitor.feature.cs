@@ -19,7 +19,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "1.9.0.77")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute()]
-    public partial class ProductQueryMonitorFeature
+    public partial class MonitorFeature
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -28,7 +28,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         public static void FeatureSetup(Microsoft.VisualStudio.TestTools.UnitTesting.TestContext testContext)
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "ProductQueryMonitor", "Ensures that when using the API endpoint for monitoring the status of a product q" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Monitor", "Ensures that when using the API endpoint for monitoring the status of a product q" +
                     "uery group\r\nthat the API operates according to the specification.", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
@@ -44,9 +44,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         public virtual void TestInitialize()
         {
             if (((TechTalk.SpecFlow.FeatureContext.Current != null) 
-                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "ProductQueryMonitor")))
+                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "Monitor")))
             {
-                Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features.ProductQueryMonitorFeature.FeatureSetup(null);
+                Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features.MonitorFeature.FeatureSetup(null);
             }
         }
         
@@ -68,7 +68,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Getting the status of a product query group returns the correct response")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductQueryMonitor")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Monitor")]
         public virtual void GettingTheStatusOfAProductQueryGroupReturnsTheCorrectResponse()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Getting the status of a product query group returns the correct response", ((string[])(null)));
@@ -89,7 +89,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Getting the status of a product query group that does not exist returns the corre" +
             "ct response")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductQueryMonitor")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Monitor")]
         public virtual void GettingTheStatusOfAProductQueryGroupThatDoesNotExistReturnsTheCorrectResponse()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Getting the status of a product query group that does not exist returns the corre" +
@@ -112,7 +112,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Getting the status of a product query group with an identifier that is not a vali" +
             "d GUID returns the correct response")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductQueryMonitor")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Monitor")]
         public virtual void GettingTheStatusOfAProductQueryGroupWithAnIdentifierThatIsNotAValidGUIDReturnsTheCorrectResponse()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Getting the status of a product query group with an identifier that is not a vali" +
@@ -135,7 +135,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Getting the status of a product query group with a date/time that is not a valid " +
             "date/time returns the correct response")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductQueryMonitor")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Monitor")]
         public virtual void GettingTheStatusOfAProductQueryGroupWithADateTimeThatIsNotAValidDateTimeReturnsTheCorrectResponse()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Getting the status of a product query group with a date/time that is not a valid " +
@@ -158,7 +158,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Getting the status of a product query group for a date/time that is too recent re" +
             "turns the correct response")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductQueryMonitor")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Monitor")]
         public virtual void GettingTheStatusOfAProductQueryGroupForADateTimeThatIsTooRecentReturnsTheCorrectResponse()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Getting the status of a product query group for a date/time that is too recent re" +

@@ -177,6 +177,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 CollectionAssert.AreEqual(sourceItems, databaseItems);
             }
         }
+
         /// <summary>
         /// Verifies that the product query items in the database
         /// match those in the product query file.

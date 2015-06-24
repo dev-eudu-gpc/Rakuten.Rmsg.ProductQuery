@@ -19,7 +19,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "1.9.0.77")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute()]
-    public partial class ProductQueryGroupFeature
+    public partial class GroupingFeature
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -28,7 +28,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         public static void FeatureSetup(Microsoft.VisualStudio.TestTools.UnitTesting.TestContext testContext)
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "ProductQueryGroup", "Ensures that when adding a new product query\nthat the product query group functio" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Grouping", "Ensures that when adding a new product query\nthat the product query group functio" +
                     "nality operates according to the specification", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
@@ -44,9 +44,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         public virtual void TestInitialize()
         {
             if (((TechTalk.SpecFlow.FeatureContext.Current != null) 
-                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "ProductQueryGroup")))
+                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "Grouping")))
             {
-                Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features.ProductQueryGroupFeature.FeatureSetup(null);
+                Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features.GroupingFeature.FeatureSetup(null);
             }
         }
         
@@ -69,7 +69,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Submitting a new product query when there is no empty or sparse product query gro" +
             "ups updates the database correctly")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductQueryGroup")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Grouping")]
         public virtual void SubmittingANewProductQueryWhenThereIsNoEmptyOrSparseProductQueryGroupsUpdatesTheDatabaseCorrectly()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Submitting a new product query when there is no empty or sparse product query gro" +
@@ -88,7 +88,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Submitting a new product query when there is one empty product query group update" +
             "s the database correctly")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductQueryGroup")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Grouping")]
         public virtual void SubmittingANewProductQueryWhenThereIsOneEmptyProductQueryGroupUpdatesTheDatabaseCorrectly()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Submitting a new product query when there is one empty product query group update" +
@@ -110,7 +110,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Submitting a new product query when there is one sparse product query group updat" +
             "es the database correctly")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductQueryGroup")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Grouping")]
         public virtual void SubmittingANewProductQueryWhenThereIsOneSparseProductQueryGroupUpdatesTheDatabaseCorrectly()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Submitting a new product query when there is one sparse product query group updat" +

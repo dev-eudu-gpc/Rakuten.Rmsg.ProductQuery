@@ -1,4 +1,4 @@
-﻿Feature: NewProductQuery
+﻿Feature: Submission
 	Ensures that when using the API endpoint for submitting new product queries
 	that the API operates according to the specification.
 

@@ -19,7 +19,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "1.9.0.77")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute()]
-    public partial class ProductMatchingFeature
+    public partial class MatchingFeature
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -28,7 +28,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         public static void FeatureSetup(Microsoft.VisualStudio.TestTools.UnitTesting.TestContext testContext)
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "ProductMatching", "Ensures that product matching acts according to the specification", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Matching", "Ensures that product matching acts according to the specification", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -43,9 +43,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         public virtual void TestInitialize()
         {
             if (((TechTalk.SpecFlow.FeatureContext.Current != null) 
-                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "ProductMatching")))
+                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "Matching")))
             {
-                Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features.ProductMatchingFeature.FeatureSetup(null);
+                Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features.MatchingFeature.FeatureSetup(null);
             }
         }
         
@@ -66,13 +66,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Products are matched for the culture specified")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductMatching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items are matched successfully")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void ProductsAreMatchedForTheCultureSpecified()
+        public virtual void ItemsAreMatchedSuccessfully()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Products are matched for the culture specified", new string[] {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items are matched successfully", new string[] {
                         "WebJob",
                         "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
@@ -106,13 +106,87 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Products are not matched if they do not exist in the specified culture")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductMatching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are fuzzily matched")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void ProductsAreNotMatchedIfTheyDoNotExistInTheSpecifiedCulture()
+        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Products are not matched if they do not exist in the specified culture", new string[] {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items with no GTIN type are fuzzily matched", new string[] {
+                        "WebJob",
+                        "GpcCoreApi"});
+            this.ScenarioSetup(scenarioInfo);
+            testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a product query file with no GTIN type for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the file is uploaded to blob storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a request is made to flag the product query as ready for processing with a status" +
+                    " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.When("the web job is started", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.And("the status of the product query is completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the results file is retrieved from storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+            testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("there are no items for the product query in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the item in the results file is the same as the item in the source file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with images in the source file do not have their images updated in the resu" +
+            "lts file")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
+        public virtual void ItemsWithImagesInTheSourceFileDoNotHaveTheirImagesUpdatedInTheResultsFile()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items with images in the source file do not have their images updated in the resu" +
+                    "lts file", new string[] {
+                        "WebJob",
+                        "GpcCoreApi"});
+            this.ScenarioSetup(scenarioInfo);
+            testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a product query file containing image urls for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the file is uploaded to blob storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a request is made to flag the product query as ready for processing with a status" +
+                    " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.When("the web job is started", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.And("the status of the product query is completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the results file is retrieved from storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+            testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database match the items in the file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database have the correct GRAN", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the results file have the correct manufacturer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the results file have the correct manufacturer part number", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the results file have the correct brand", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the results file have the correct video URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the images in the file have been preserved", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items are not matched if no products exist in the specified culture")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
+        public virtual void ItemsAreNotMatchedIfNoProductsExistInTheSpecifiedCulture()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items are not matched if no products exist in the specified culture", new string[] {
                         "WebJob",
                         "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
@@ -142,13 +216,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Products that have been improved are not matched against")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductMatching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items are not matched against products that have been improved")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void ProductsThatHaveBeenImprovedAreNotMatchedAgainst()
+        public virtual void ItemsAreNotMatchedAgainstProductsThatHaveBeenImproved()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Products that have been improved are not matched against", new string[] {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items are not matched against products that have been improved", new string[] {
                         "WebJob",
                         "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
@@ -179,13 +253,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Products with the highest data source trust score are selected first")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductMatching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items are matched against products with the highest data source trust score as fi" +
+            "rst priority")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void ProductsWithTheHighestDataSourceTrustScoreAreSelectedFirst()
+        public virtual void ItemsAreMatchedAgainstProductsWithTheHighestDataSourceTrustScoreAsFirstPriority()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Products with the highest data source trust score are selected first", new string[] {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items are matched against products with the highest data source trust score as fi" +
+                    "rst priority", new string[] {
                         "WebJob",
                         "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
@@ -221,13 +297,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Products with the most recent updated date are selected second")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductMatching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items are matched against products with the most recent updated date as second pr" +
+            "iority")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void ProductsWithTheMostRecentUpdatedDateAreSelectedSecond()
+        public virtual void ItemsAreMatchedAgainstProductsWithTheMostRecentUpdatedDateAsSecondPriority()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Products with the most recent updated date are selected second", new string[] {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items are matched against products with the most recent updated date as second pr" +
+                    "iority", new string[] {
                         "WebJob",
                         "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);
@@ -263,13 +341,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Products with the highest GRAN are selected third")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "ProductMatching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items are matched against products with the highest GRAN as third priority")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void ProductsWithTheHighestGRANAreSelectedThird()
+        public virtual void ItemsAreMatchedAgainstProductsWithTheHighestGRANAsThirdPriority()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Products with the highest GRAN are selected third", new string[] {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items are matched against products with the highest GRAN as third priority", new string[] {
                         "WebJob",
                         "GpcCoreApi"});
             this.ScenarioSetup(scenarioInfo);

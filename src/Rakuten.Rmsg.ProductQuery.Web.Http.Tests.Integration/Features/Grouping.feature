@@ -1,4 +1,4 @@
-﻿Feature: ProductQueryGroup
+﻿Feature: Grouping
 	Ensures that when adding a new product query
 	that the product query group functionality operates according to the specification
 

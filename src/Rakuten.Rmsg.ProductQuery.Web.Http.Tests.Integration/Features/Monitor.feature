@@ -1,4 +1,4 @@
-﻿Feature: ProductQueryMonitor
+﻿Feature: Monitor
 	Ensures that when using the API endpoint for monitoring the status of a product query group
 	that the API operates according to the specification.
 
