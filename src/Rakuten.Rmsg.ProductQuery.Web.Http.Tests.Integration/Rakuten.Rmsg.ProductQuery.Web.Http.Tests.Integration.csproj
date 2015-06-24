@@ -142,30 +142,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MessageProcessing.feature</DependentUpon>
     </Compile>
-    <Compile Include="Features\NewProductQuery.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>NewProductQuery.feature</DependentUpon>
-    </Compile>
     <Compile Include="Features\ProductMatching.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ProductMatching.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Features\ProductQueryGroup.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ProductQueryGroup.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Features\ProductQueryMonitor.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ProductQueryMonitor.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Features\ReadyForProcessing.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ReadyForProcessing.feature</DependentUpon>
     </Compile>
     <Compile Include="Hooks\BeforeScenarioHooks.cs" />
     <Compile Include="Hooks\TestRunHooks.cs" />
@@ -242,25 +222,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>MessageProcessing.feature.cs</LastGenOutput>
     </None>
-    <None Include="Features\NewProductQuery.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>NewProductQuery.feature.cs</LastGenOutput>
-    </None>
     <None Include="Features\ProductMatching.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ProductMatching.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Features\ProductQueryGroup.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ProductQueryGroup.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Features\ProductQueryMonitor.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ProductQueryMonitor.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Features\ReadyForProcessing.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ReadyForProcessing.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
     <EntityDeploy Include="ProductQuery.edmx">

@@ -44,23 +44,23 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Given(@"only one empty product query group exists")]
         public void GivenOnlyOneEmptyProductQueryGroupExists()
         {
-            using (var databaseContext = new ProductQueryDbContext())
+            using (var database = new ProductQueryDbContext())
             {
                 // First, ensure there are no empty product query groups
-                foreach (var group in databaseContext.rmsgProductQueryGroups.Where(q => q.count < this.apiContext.MaximumQueriesPerGroup))
+                foreach (var group in database.rmsgProductQueryGroups.Where(q => q.count < this.apiContext.MaximumQueriesPerGroup))
                 {
                     group.count = (short)this.apiContext.MaximumQueriesPerGroup;
                 }
 
                 // Now create an empty product query group
-                ScenarioStorage.ProductQueryGroupExpected = databaseContext.rmsgProductQueryGroups.Add(
+                ScenarioStorage.ProductQueryGroupExpected = database.rmsgProductQueryGroups.Add(
                     new rmsgProductQueryGroup
                     {
                         rmsgProductQueryGroupID = Guid.NewGuid(),
                         count = 0
                     });
 
-                databaseContext.SaveChanges();
+                database.SaveChanges();
             }
         }
 
@@ -72,23 +72,23 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Given(@"only one sparse product query group exists")]
         public void GivenOnlyOneSparseProductQueryGroupExists()
         {
-            using (var databaseContext = new ProductQueryDbContext())
+            using (var database = new ProductQueryDbContext())
             {
                 // First, ensure there are no empty product query groups
-                foreach (var group in databaseContext.rmsgProductQueryGroups.Where(q => q.count < this.apiContext.MaximumQueriesPerGroup))
+                foreach (var group in database.rmsgProductQueryGroups.Where(q => q.count < this.apiContext.MaximumQueriesPerGroup))
                 {
                     group.count = (short)this.apiContext.MaximumQueriesPerGroup;
                 }
 
                 // Now create a new sparse product query group
-                ScenarioStorage.ProductQueryGroupExpected = databaseContext.rmsgProductQueryGroups.Add(
+                ScenarioStorage.ProductQueryGroupExpected = database.rmsgProductQueryGroups.Add(
                     new rmsgProductQueryGroup
                     {
                         rmsgProductQueryGroupID = Guid.NewGuid(),
                         count = 1
                     });
 
-                databaseContext.SaveChanges();
+                database.SaveChanges();
             }
         }
 
@@ -98,16 +98,33 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Given(@"there are no empty or sparse product query groups in the database")]
         public void GivenThereAreNoEmptyOrSparseProductQueryGroupsInTheDatabase()
         {
-            using (var databaseContext = new ProductQueryDbContext())
+            using (var database = new ProductQueryDbContext())
             {
                 // Update the count of all empty or sparse product query groups
                 // to ensure they appear full
-                foreach (var group in databaseContext.rmsgProductQueryGroups.Where(q => q.count < this.apiContext.MaximumQueriesPerGroup))
+                foreach (var group in database.rmsgProductQueryGroups.Where(q => q.count < this.apiContext.MaximumQueriesPerGroup))
                 {
                     group.count = (short)this.apiContext.MaximumQueriesPerGroup;
                 }
 
-                databaseContext.SaveChanges();
+                database.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the items in the database do not have a GRAN.
+        /// </summary>
+        [Then(@"the items in the database do not have a GRAN")]
+        public void ThenTheItemsInTheDatabaseDoNotHaveAGRAN()
+        {
+            using (var database = new ProductQueryDbContext())
+            {
+                var itemsWithGran = database.rmsgProductQueryItems
+                    .Where(i =>
+                        i.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid &&
+                        i.gran != null);
+
+                Assert.IsTrue(itemsWithGran.Count() == 0, "One or more items have a GRAN but should not have.");
             }
         }
 
@@ -118,9 +135,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the items in the database have a valid completed date")]
         public void ThenTheItemsInTheDatabaseHaveAValidCompletedDate()
         {
-            using (var databaseContext = new ProductQueryDbContext())
+            using (var database = new ProductQueryDbContext())
             {
-                var items = databaseContext.rmsgProductQueryItems
+                var items = database.rmsgProductQueryItems
                     .Where(item => item.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid);
 
                 foreach (var item in items)
@@ -141,6 +158,26 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
+        /// Verifies that all items for the product query have the correct GRAN.
+        /// </summary>
+        [Then(@"the items in the database have the correct GRAN")]
+        public void ThenTheItemsInTheDatabaseHaveTheCorrectGRAN()
+        {
+            using (var database = new ProductQueryDbContext())
+            {
+                var databaseItems = database.rmsgProductQueryItems
+                    .Where(i => i.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid)
+                    .OrderBy(i => i.gtin)
+                    .ToDictionary(i => i.gtin, i => i.gran);
+  
+                var sourceItems = ScenarioStorage.Products
+                    .OrderBy(p => p.GetEAN())
+                    .ToDictionary(p => p.GetEAN(), p => p.Id);
+
+                CollectionAssert.AreEqual(sourceItems, databaseItems);
+            }
+        }
+        /// <summary>
         /// Verifies that the product query items in the database
         /// match those in the product query file.
         /// </summary>
@@ -152,9 +189,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             var expectedEans = ScenarioStorage.Items.Select(item => item.GtinValue).ToList();
 
             // Assert
-            using (var databaseContext = new ProductQueryDbContext())
+            using (var database = new ProductQueryDbContext())
             {
-                var databaseEans = databaseContext.rmsgProductQueryItems
+                var databaseEans = database.rmsgProductQueryItems
                     .Where(i => i.rmsgProductQueryID == productQuery.IdAsGuid)
                     .Select(i => i.gtin)
                     .ToList();
@@ -177,9 +214,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 .Select(item => item.GtinValue).ToList();
 
             // Assert
-            using (var databaseContext = new ProductQueryDbContext())
+            using (var database = new ProductQueryDbContext())
             {
-                var databaseEans = databaseContext.rmsgProductQueryItems
+                var databaseEans = database.rmsgProductQueryItems
                     .Where(i => i.rmsgProductQueryID == productQuery.IdAsGuid)
                     .Select(i => i.gtin)
                     .ToList();
@@ -194,9 +231,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"there are no items for the product query in the database")]
         public void ThenThereAreNoItemsForTheProductQueryInTheDatabase()
         {
-            using (var databaseContext = new ProductQueryDbContext())
+            using (var database = new ProductQueryDbContext())
             {
-                var hasItems = databaseContext.rmsgProductQueryItems
+                var hasItems = database.rmsgProductQueryItems
                         .Any(i => i.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid);
 
                 Assert.IsFalse(hasItems, "There are items for the product query in the database when none were expected.");
@@ -211,7 +248,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [When(@"the product query group for the new product query is retrieved from the database")]
         public void WhenTheProductQueryGroupForTheNewProductQueryIsRetrievedFromTheDatabase()
         {
-            using (var databaseContext = new ProductQueryDbContext())
+            using (var database = new ProductQueryDbContext())
             {
                 // Get the details of the new product query from the current scenario context
                 ////var source = ScenarioStorage.ProductQueryFromDatabase;
@@ -219,9 +256,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 
                 // Get the product query group from the database and dump it in scenario storage.
                 ScenarioStorage.ProductQueryGroupActual =
-                    databaseContext.rmsgProductQueryGroups
+                    database.rmsgProductQueryGroups
                         .Join(
-                            databaseContext.rmsgProductQueries.Where<rmsgProductQuery>(query => query.rmsgProductQueryID == productQueryId),
+                            database.rmsgProductQueries.Where<rmsgProductQuery>(query => query.rmsgProductQueryID == productQueryId),
                             group => group.rmsgProductQueryGroupID,
                             query => query.rmsgProductQueryGroupID,
                             (group, query) => group)
@@ -237,11 +274,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [When(@"the product query group is retrieved from the database")]
         public void WhenTheProductQueryGroupIsRetrievedFromTheDatabase()
         {
-            using (var databaseContext = new ProductQueryDbContext())
+            using (var database = new ProductQueryDbContext())
             {
                 // Get the product query group from the database and dump it in scenario storage.
                 ScenarioStorage.ProductQueryGroupActual =
-                    databaseContext.rmsgProductQueryGroups
+                    database.rmsgProductQueryGroups
                         .Where(q => q.rmsgProductQueryGroupID == ScenarioStorage.ProductQueryGroupExpected.rmsgProductQueryGroupID)
                         .Single();
             }
@@ -256,7 +293,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the product query can be retrieved from the database")]
         public void WhenTheProductQueryIsRetrievedFromTheDatabase()
         {
-            using (var databaseContext = new ProductQueryDbContext())
+            using (var database = new ProductQueryDbContext())
             {
                 // Get the details of the new product query from the current scenario context
                 var source = ScenarioStorage.NewProductQuery;
@@ -264,7 +301,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 // Get the product query from the database, construct a new product query
                 // resource and dump it in scenario storage.
                 ScenarioStorage.ProductQueryFromDatabase =
-                    databaseContext.rmsgProductQueries
+                    database.rmsgProductQueries
                         .Where(q => q.rmsgProductQueryID == source.IdAsGuid && q.culture == source.Culture)
                         .Single();
             }
@@ -280,12 +317,12 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             var productQuery = ScenarioStorage.NewProductQuery;
             var isCompleted = false;
 
-            using (var databaseContext = new ProductQueryDbContext())
+            using (var database = new ProductQueryDbContext())
             {
                 // Check the status every 5 seconds for a maximum of 12 times
                 for (int i = 0; i < 12; i++)
                 {
-                    isCompleted = databaseContext.rmsgProductQueries
+                    isCompleted = database.rmsgProductQueries
                         .Any(q => q.rmsgProductQueryID == productQuery.IdAsGuid
                             && q.rmsgProductQueryStatusID == (int)ProductQueryStatus.Completed);
 

@@ -22,6 +22,7 @@ Scenario: Products are matched for the culture specified
 	And the dead letter queue is empty
 	And the items in the database match the items in the file
 	And the items in the database have a valid completed date
+	And the items in the database have the correct GRAN
 	And the items in the results file have the correct manufacturer
 	And the items in the results file have the correct manufacturer part number
 	And the items in the results file have the correct brand
@@ -49,6 +50,7 @@ Scenario: Products are not matched if they do not exist in the specified culture
 	And the dead letter queue is empty
 	And the items in the database match the items in the file
 	And the items in the database have a valid completed date
+	And the items in the database do not have a GRAN
 	And the items in the results file are the same as the items in the source file
 
 @WebJob @GpcCoreApi
@@ -73,6 +75,7 @@ Scenario: Products that have been improved are not matched against
 	And the dead letter queue is empty
 	And the items in the database match the items in the file
 	And the items in the database have a valid completed date
+	And the items in the database do not have a GRAN
 	And the items in the results file are the same as the items in the source file
 
 @WebJob @GpcCoreApi
@@ -97,6 +100,7 @@ Scenario: Products with the highest data source trust score are selected first
 	And the dead letter queue is empty
 	And the items in the database match the items in the file
 	And the items in the database have a valid completed date
+	And the items in the database have the correct GRAN
 	And the items in the results file have the correct manufacturer
 	And the items in the results file have the correct manufacturer part number
 	And the items in the results file have the correct brand
@@ -125,6 +129,7 @@ Scenario: Products with the most recent updated date are selected second
 	And the dead letter queue is empty
 	And the items in the database match the items in the file
 	And the items in the database have a valid completed date
+	And the items in the database have the correct GRAN
 	And the items in the results file have the correct manufacturer
 	And the items in the results file have the correct manufacturer part number
 	And the items in the results file have the correct brand
@@ -153,6 +158,7 @@ Scenario: Products with the highest GRAN are selected third
 	And the dead letter queue is empty
 	And the items in the database match the items in the file
 	And the items in the database have a valid completed date
+	And the items in the database have the correct GRAN
 	And the items in the results file have the correct manufacturer
 	And the items in the results file have the correct manufacturer part number
 	And the items in the results file have the correct brand

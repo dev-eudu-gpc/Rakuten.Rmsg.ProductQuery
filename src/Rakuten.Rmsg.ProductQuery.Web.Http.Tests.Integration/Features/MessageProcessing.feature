@@ -22,6 +22,7 @@ Scenario: A query file with a single valid product is processed correctly
 	And the dead letter queue is empty
 	And the items in the database match the items in the file
 	And the items in the database have a valid completed date
+	And the items in the database have the correct GRAN
 	And the items in the results file have the correct manufacturer
 	And the items in the results file have the correct manufacturer part number
 	And the items in the results file have the correct brand
@@ -48,6 +49,7 @@ Scenario: A query item with an image in the source file does not have its images
 	And the dead letter queue is empty
 	And the items in the database match the items in the file
 	And the items in the database have a valid completed date
+	And the items in the database have the correct GRAN
 	And the items in the results file have the correct manufacturer
 	And the items in the results file have the correct manufacturer part number
 	And the items in the results file have the correct brand
@@ -116,6 +118,7 @@ Scenario: Files with only some rows having GTINs are correctly processed
 	And the dead letter queue is empty
 	And the items in the database match the valid items in the file
 	And the items in the database have a valid completed date
+	And the items in the database have the correct GRAN
 	And the valid items in the results file have the correct manufacturer
 	And the valid items in the results file have the correct manufacturer part number
 	And the valid items in the results file have the correct brand
@@ -161,6 +164,7 @@ Scenario: A file with a row with insufficient columns is processed correctly
 	And the dead letter queue is empty
 	And the items in the database match the valid items in the file
 	And the items in the database have a valid completed date
+	And the items in the database have the correct GRAN
 	And the valid items in the results file have the correct manufacturer
 	And the valid items in the results file have the correct manufacturer part number
 	And the valid items in the results file have the correct brand
