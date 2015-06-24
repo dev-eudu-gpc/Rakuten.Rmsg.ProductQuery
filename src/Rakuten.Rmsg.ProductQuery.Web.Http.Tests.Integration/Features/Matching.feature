@@ -30,7 +30,7 @@ Scenario: Items are matched successfully
 	And the items in the results file have the correct images
 
 @WebJob @GpcCoreApi
-Scenario Outline: Items with no GTIN type are fuzzily matched
+Scenario Outline: Items with no GTIN type are matched against all GTIN types
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty

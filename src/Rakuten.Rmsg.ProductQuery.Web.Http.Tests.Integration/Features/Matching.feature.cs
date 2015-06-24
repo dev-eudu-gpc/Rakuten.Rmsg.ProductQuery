@@ -105,7 +105,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             this.ScenarioCleanup();
         }
         
-        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched(string identifier, string[] exampleTags)
+        public virtual void ItemsWithNoGTINTypeAreMatchedAgainstAllGTINTypes(string identifier, string[] exampleTags)
         {
             string[] @__tags = new string[] {
                     "WebJob",
@@ -114,7 +114,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items with no GTIN type are fuzzily matched", @__tags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items with no GTIN type are matched against all GTIN types", @__tags);
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -146,51 +146,51 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are fuzzily matched")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are matched against all GTIN types")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("VariantName", "EAN")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("Parameter:identifier", "EAN")]
-        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched_EAN()
+        public virtual void ItemsWithNoGTINTypeAreMatchedAgainstAllGTINTypes_EAN()
         {
-            this.ItemsWithNoGTINTypeAreFuzzilyMatched("EAN", ((string[])(null)));
+            this.ItemsWithNoGTINTypeAreMatchedAgainstAllGTINTypes("EAN", ((string[])(null)));
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are fuzzily matched")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are matched against all GTIN types")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("VariantName", "ISBN")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("Parameter:identifier", "ISBN")]
-        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched_ISBN()
+        public virtual void ItemsWithNoGTINTypeAreMatchedAgainstAllGTINTypes_ISBN()
         {
-            this.ItemsWithNoGTINTypeAreFuzzilyMatched("ISBN", ((string[])(null)));
+            this.ItemsWithNoGTINTypeAreMatchedAgainstAllGTINTypes("ISBN", ((string[])(null)));
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are fuzzily matched")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are matched against all GTIN types")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("VariantName", "JAN")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("Parameter:identifier", "JAN")]
-        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched_JAN()
+        public virtual void ItemsWithNoGTINTypeAreMatchedAgainstAllGTINTypes_JAN()
         {
-            this.ItemsWithNoGTINTypeAreFuzzilyMatched("JAN", ((string[])(null)));
+            this.ItemsWithNoGTINTypeAreMatchedAgainstAllGTINTypes("JAN", ((string[])(null)));
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are fuzzily matched")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are matched against all GTIN types")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("VariantName", "UPC")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("Parameter:identifier", "UPC")]
-        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched_UPC()
+        public virtual void ItemsWithNoGTINTypeAreMatchedAgainstAllGTINTypes_UPC()
         {
-            this.ItemsWithNoGTINTypeAreFuzzilyMatched("UPC", ((string[])(null)));
+            this.ItemsWithNoGTINTypeAreMatchedAgainstAllGTINTypes("UPC", ((string[])(null)));
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
