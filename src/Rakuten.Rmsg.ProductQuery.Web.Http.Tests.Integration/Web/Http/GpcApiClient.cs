@@ -81,6 +81,26 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
+        /// Gets a product for a given EAN.
+        /// </summary>
+        /// <param name="ean">The EAN of the product to find.</param>
+        /// <param name="culture">The culture of the product.</param>
+        /// <returns>If found, the product, otherwise null.</returns>
+        public async Task<HttpResponseMessage> GetProductAsync(string ean, string culture)
+        {
+            // Create the HTTP client
+            var client = this.CreateNewHttpClient();
+
+            // Make the call
+            string uri = string.Format(
+                "/v1/product?skip=0&top=1&filter=EAN eq '{0}'&culture={1}",
+                ean,
+                culture);
+
+            return await client.GetAsync(uri);
+        }
+
+        /// <summary>
         /// Makes a call to improve a product.
         /// </summary>
         /// <param name="source">The parameters for the call.</param>

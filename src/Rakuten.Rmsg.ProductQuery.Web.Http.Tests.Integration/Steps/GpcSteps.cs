@@ -58,8 +58,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Creates a new product with a valid EAN.
         /// </summary>
         /// <param name="culture">The culture for the product</param>
-        [Given(@"a new product with a culture of (.*) has been created in GPC")]
-        public void GivenANewProductWithASpecifiedCultureHasBeenCreatedInGPC(string culture)
+        /// <param name="identifier">The identifier to use for the product.</param>
+        [Given(@"a new product with a culture of (.*) has been created in GPC using (.*) as the identifier")]
+        public void GivenANewProductHasBeenCreatedInGPCForTheSpecifiedCultureUsingTheSpecifiedIdentifier(
+            string culture,
+            IdentifierType identifier)
         {
             // Create the object
             var sourceProduct = ProductFactory.CreateMinimumProduct(
@@ -80,14 +83,40 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
+        /// Prepares a new product with an EAN that does not exist but does not
+        /// create the product in GPC.
+        /// </summary>
+        /// <param name="culture">The culture of the product</param>
+        [Given(@"a new product with a culture of (.*) and an EAN that does not exist has been prepared but not created")]
+        public void GivenANewProductWithASpecifiedCultureAndAnEANThatDoesNotExistHasBeenPreparedButNotCreated(string culture)
+        {
+            // Find an EAN that does not exist in GPC
+            var ean = GtinFactory.CreateEan();
+            bool exists = true;
+
+            while (exists)
+            {
+                var result = this.apiClient.GetProductAsync(ean, culture).Result;
+                var content = JsonConvert.DeserializeObject<IEnumerable<Product>>(result.Content.ReadAsStringAsync().Result);
+
+                exists = content.Count() > 0;
+            }
+
+            // Create the object
+            var product = ProductFactory.CreateMinimumProduct(
+                culture: culture,
+                identifierValue: ean);
+
+            // Store the product in scenario storage
+            ScenarioStorage.Products = new List<Product> { product };
+        }
+
+        /// <summary>
         /// Creates a new product with a valid EAN.
         /// </summary>
         /// <param name="culture">The culture for the product</param>
-        /// <param name="identifier">The identifier to use for the product.</param>
-        [Given(@"a new product with a culture of (.*) has been created in GPC using (.*) as the identifier")]
-        public void GivenANewProductHasBeenCreatedInGPCForTheSpecifiedCultureUsingTheSpecifiedIdentifier(
-            string culture,
-            IdentifierType identifier)
+        [Given(@"a new product with a culture of (.*) has been created in GPC")]
+        public void GivenANewProductWithASpecifiedCultureHasBeenCreatedInGPC(string culture)
         {
             // Create the object
             var sourceProduct = ProductFactory.CreateMinimumProduct(
