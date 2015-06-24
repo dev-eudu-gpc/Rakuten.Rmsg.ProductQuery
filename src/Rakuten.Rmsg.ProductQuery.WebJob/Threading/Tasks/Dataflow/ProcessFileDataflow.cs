@@ -88,7 +88,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
             getEntityBlock.LinkTo(createEntityBlock, state => state.Query == null, outputBlock);
             getEntityBlock.OnFaultOrCompletion(createEntityBlock);
 
-            // If we have a database record but it has not GRAN search for a product.
+            // If we have a database record but it does not have a GRAN then search for a product.
             getEntityBlock.LinkTo(
                 searchBlock,
                 state => state.Query != null && string.IsNullOrWhiteSpace(state.Query.Gran),
@@ -115,8 +115,13 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 outputBlock);
 
             // Get all available details for the GRAN.
-            updateEntityBlock.LinkTo(getProductBlock, outputBlock);
+            updateEntityBlock.LinkTo(
+                getProductBlock,
+                state => state.Product != null,
+                outputBlock);
             updateEntityBlock.OnFaultOrCompletion(getProductBlock);
+
+            updateEntityBlock.LinkTo(outputBlock, state => state.Product == null);
 
             // Merge the data with the original.
             getProductBlock.LinkTo(aggregateBlock, outputBlock);

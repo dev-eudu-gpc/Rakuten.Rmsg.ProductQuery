@@ -31,7 +31,10 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                 try
                 {
                     var product = await command(state.Products);
-                    state.Query.Gran = product.Id;
+                    if (product != null)
+                    {
+                        state.Query.Gran = product.Id;
+                    }
 
                     return new ItemMessageState(state.Id, state.Culture, state.Item, state.Query);
                 }
