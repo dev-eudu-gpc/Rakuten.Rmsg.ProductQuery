@@ -48,7 +48,7 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
 
             ProductSearchLink searchLink;
 
-            switch (parameters[0].ToLower())
+            switch (parameters[0] == null ? string.Empty : parameters[0].ToLower())
             {
                 case "ean":
                     searchLink = link.WithEanFilter(parameters[1]);
@@ -63,7 +63,8 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob
                     searchLink = link.WithUpcFilter(parameters[1]);
                     break;
                 default:
-                    return Enumerable.Empty<Product>();
+                    searchLink = link.WithGtinFilter(parameters[1]);
+                    break;
             }
 
             searchLink = searchLink.ForCulture(culture).Taking(PageSize);

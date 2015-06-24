@@ -179,50 +179,50 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Verifies that the product query items in the database
-        /// match those in the product query file.
+        /// Verifies that the items in the product query file can be found in the database.
         /// </summary>
-        [Then(@"the items in the database match the items in the file")]
-        public void ThenTheItemsInTheDatabaseMatchTheItemsInTheFile()
+        [Then(@"the items in the file can be found in the database")]
+        public void ThenTheItemsInTheFileCanBeFoundInTheDatabase()
         {
             // Get the product query from scenario storage
             var productQuery = ScenarioStorage.NewProductQuery;
-            var expectedEans = ScenarioStorage.Items.Select(item => item.GtinValue).ToList();
+            var expectedGtins = ScenarioStorage.Items.Select(item => item.GtinValue).ToList();
 
             // Assert
             using (var database = new ProductQueryDbContext())
             {
-                var databaseEans = database.rmsgProductQueryItems
+                var actualGtins = database.rmsgProductQueryItems
                     .Where(i => i.rmsgProductQueryID == productQuery.IdAsGuid)
                     .Select(i => i.gtin)
                     .ToList();
 
-                CollectionAssert.AreEqual(expectedEans, databaseEans);
+                CollectionAssert.AreEqual(expectedGtins, actualGtins);
             }
         }
 
         /// <summary>
-        /// Verifies that the items in the database match the valid items in the
-        /// file and that only those items exist for the product query.
+        /// Verifies that the valid items in the product query file
+        /// can be found in the database and only those items are in the
+        /// database.
         /// </summary>
-        [Then(@"the items in the database match the valid items in the file")]
+        [Then(@"the valid items in the file can be found in the database")]
         public void ThenTheItemsInTheDatabaseMatchTheValidItemsInTheFile()
         {
             // Get the product query from scenario storage
             var productQuery = ScenarioStorage.NewProductQuery;
-            var expectedEans = ScenarioStorage.Items
+            var expectedGtins = ScenarioStorage.Items
                 .Where(item => !string.IsNullOrWhiteSpace(item.GtinValue))
                 .Select(item => item.GtinValue).ToList();
 
             // Assert
             using (var database = new ProductQueryDbContext())
             {
-                var databaseEans = database.rmsgProductQueryItems
+                var databaseGtins = database.rmsgProductQueryItems
                     .Where(i => i.rmsgProductQueryID == productQuery.IdAsGuid)
                     .Select(i => i.gtin)
                     .ToList();
 
-                CollectionAssert.AreEqual(expectedEans, databaseEans);
+                CollectionAssert.AreEqual(expectedGtins, databaseGtins);
             }
         }
 

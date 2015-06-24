@@ -83,6 +83,21 @@ namespace Rakuten.Rmsg.ProductQuery.WebJob.Linking
         }
 
         /// <summary>
+        /// Constructs a product search link to search for products across all GTINs.
+        /// </summary>
+        /// <param name="value">The value to match upon.</param>
+        /// <returns>A link to perform a product search matching upon all GTINs.</returns>
+        public ProductSearchLink WithGtinFilter(string value)
+        {
+            var filter = string.Format("(ISBN eq '{0}' or EAN eq '{0}' or JAN eq '{0}' or UPC eq '{0}')", value);
+
+            var resolvedTemplate = this.Target.Bind("filter", filter);
+            Contract.Assume(resolvedTemplate != null);
+
+            return new ProductSearchLink(resolvedTemplate);
+        }
+
+        /// <summary>
         /// Constructs a product search link to search for products with a matching ISBN.
         /// </summary>
         /// <param name="value">The value to match upon.</param>

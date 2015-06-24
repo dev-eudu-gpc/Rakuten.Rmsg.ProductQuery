@@ -79,7 +79,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC for the culture en-GB", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product with a culture of en-GB has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a valid new product query has been prepared for the culture en-GB", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -94,9 +94,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database match the items in the file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the file can be found in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the database have the correct GRAN", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct manufacturer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct manufacturer part number", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct brand", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -105,21 +105,22 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             this.ScenarioCleanup();
         }
         
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are fuzzily matched")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
-        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched()
+        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched(string identifier, string[] exampleTags)
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items with no GTIN type are fuzzily matched", new string[] {
-                        "WebJob",
-                        "GpcCoreApi"});
+            string[] @__tags = new string[] {
+                    "WebJob",
+                    "GpcCoreApi"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Items with no GTIN type are fuzzily matched", @__tags);
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And(string.Format("a new product with a culture of en-US has been created in GPC using {0} as the id" +
+                        "entifier", identifier), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file with no GTIN type for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -133,9 +134,63 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("there are no items for the product query in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the item in the results file is the same as the item in the source file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the file can be found in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database have the correct GRAN", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the results file have the correct manufacturer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the results file have the correct manufacturer part number", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the results file have the correct brand", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the results file have the correct video URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the results file have the correct images", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are fuzzily matched")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("VariantName", "EAN")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("Parameter:identifier", "EAN")]
+        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched_EAN()
+        {
+            this.ItemsWithNoGTINTypeAreFuzzilyMatched("EAN", ((string[])(null)));
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are fuzzily matched")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("VariantName", "ISBN")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("Parameter:identifier", "ISBN")]
+        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched_ISBN()
+        {
+            this.ItemsWithNoGTINTypeAreFuzzilyMatched("ISBN", ((string[])(null)));
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are fuzzily matched")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("VariantName", "JAN")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("Parameter:identifier", "JAN")]
+        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched_JAN()
+        {
+            this.ItemsWithNoGTINTypeAreFuzzilyMatched("JAN", ((string[])(null)));
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Items with no GTIN type are fuzzily matched")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Matching")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("WebJob")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("GpcCoreApi")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("VariantName", "UPC")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("Parameter:identifier", "UPC")]
+        public virtual void ItemsWithNoGTINTypeAreFuzzilyMatched_UPC()
+        {
+            this.ItemsWithNoGTINTypeAreFuzzilyMatched("UPC", ((string[])(null)));
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
@@ -154,7 +209,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product with a culture of en-US has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file containing image urls for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -168,9 +223,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database match the items in the file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the file can be found in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the database have the correct GRAN", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct manufacturer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct manufacturer part number", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct brand", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -193,7 +248,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product with a culture of en-US has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a valid new product query has been prepared for the culture en-GB", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -208,9 +263,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database match the items in the file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the file can be found in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the database do not have a GRAN", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file are the same as the items in the source file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
@@ -229,7 +284,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product with a culture of en-US has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the product is improved", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a product query file for the new product has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -245,9 +300,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database match the items in the file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the file can be found in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the database do not have a GRAN", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file are the same as the items in the source file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
@@ -268,7 +323,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product with a culture of en-US has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("another new product with the same EAN but a lower data source trust score has bee" +
                     "n created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -285,9 +340,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database match the items in the file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the file can be found in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the database have the correct GRAN", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct manufacturer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct manufacturer part number", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct brand", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -312,7 +367,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product with a culture of en-US has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("another new product with the same EAN and data source but a more recent updated d" +
                     "ate has been created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -329,9 +384,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database match the items in the file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the file can be found in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the database have the correct GRAN", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct manufacturer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct manufacturer part number", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct brand", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -354,7 +409,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.Given("the web job is stopped", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the dead letter message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a new product has been created in GPC for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("a new product with a culture of en-US has been created in GPC", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("another new product with the same EAN, data source and updated date has been crea" +
                     "ted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -371,9 +426,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the dead letter queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database match the items in the file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the file can be found in the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the database have the correct GRAN", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the items in the database have a valid completed date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct manufacturer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct manufacturer part number", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items in the results file have the correct brand", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

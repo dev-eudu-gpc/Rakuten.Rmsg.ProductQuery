@@ -58,8 +58,36 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Creates a new product with a valid EAN.
         /// </summary>
         /// <param name="culture">The culture for the product</param>
-        [Given(@"a new product has been created in GPC for the culture (.*)")]
-        public void GivenANewProductHasBeenCreatedInGPCForTheSpecifiedCulture(string culture)
+        [Given(@"a new product with a culture of (.*) has been created in GPC")]
+        public void GivenANewProductWithASpecifiedCultureHasBeenCreatedInGPC(string culture)
+        {
+            // Create the object
+            var sourceProduct = ProductFactory.CreateMinimumProduct(
+                culture: culture,
+                dataSourceName: this.dataSources.GetHighestTrustScore(culture).Name);
+
+            // Call GPC
+            var response = this.apiClient.CreateProduct(sourceProduct).Result;
+
+            // Make sure it was successful.
+            response.EnsureSuccessStatusCode();
+
+            // Get the product and store it in scenario storage
+            var product = JsonConvert.DeserializeObject<Product>(response.Content.ReadAsStringAsync().Result);
+
+            // Store the product in scenario storage
+            ScenarioStorage.Products = new List<Product> { product };
+        }
+
+        /// <summary>
+        /// Creates a new product with a valid EAN.
+        /// </summary>
+        /// <param name="culture">The culture for the product</param>
+        /// <param name="identifier">The identifier to use for the product.</param>
+        [Given(@"a new product with a culture of (.*) has been created in GPC using (.*) as the identifier")]
+        public void GivenANewProductHasBeenCreatedInGPCForTheSpecifiedCultureUsingTheSpecifiedIdentifier(
+            string culture,
+            IdentifierType identifier)
         {
             // Create the object
             var sourceProduct = ProductFactory.CreateMinimumProduct(
@@ -96,7 +124,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             // Create a new product with the same EAN but a lower data source trust score
             var newProduct = ProductFactory.CreateMinimumProduct(
                 culture: sourceProduct.Culture,
-                ean: sourceProduct.GetEAN(),
+                identifierValue: sourceProduct.GetEAN(),
                 dataSourceName: sourceProduct.DataSource);
 
             // Call the API
@@ -127,7 +155,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             // Create a new product with the same EAN but a lower data source trust score
             var newProduct = ProductFactory.CreateMinimumProduct(
                 culture: sourceProduct.Culture,
-                ean: sourceProduct.GetEAN(),
+                identifierValue: sourceProduct.GetEAN(),
                 dataSourceName: this.dataSources.GetLowestTrustScore(sourceProduct.Culture).Name);
 
             // Call the API
@@ -153,7 +181,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             // Create a new product with the same EAN but a lower data source trust score
             var newProduct = ProductFactory.CreateMinimumProduct(
                 culture: sourceProduct.Culture,
-                ean: sourceProduct.GetEAN(),
+                identifierValue: sourceProduct.GetEAN(),
                 dataSourceName: sourceProduct.DataSource);
 
             // Call the API to create the product

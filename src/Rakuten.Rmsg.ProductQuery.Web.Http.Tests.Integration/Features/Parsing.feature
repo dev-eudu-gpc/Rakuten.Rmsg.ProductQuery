@@ -20,7 +20,7 @@ Scenario: Query items with no GTIN value are ignored
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a new product has been created in GPC for the culture en-US
+	And a new product with a culture of en-US has been created in GPC
 	And a valid new product query has been prepared for the culture en-US
 	And a product query file with no GTIN value for the new product has been created
 	And a request has been made to submit the new product query
@@ -41,7 +41,7 @@ Scenario: A file with only some rows having GTINs is correctly processed
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a new product has been created in GPC for the culture en-US
+	And a new product with a culture of en-US has been created in GPC
 	And a valid new product query has been prepared for the culture en-US
 	And a product query file with only some rows having GTINs has been created
 	And a request has been made to submit the new product query
@@ -54,7 +54,7 @@ Scenario: A file with only some rows having GTINs is correctly processed
 	And the items have been parsed from the results file
 	Then the message queue is empty
 	And the dead letter queue is empty
-	And the items in the database match the valid items in the file
+	And the valid items in the file can be found in the database
 	And the items in the database have a valid completed date
 	And the items in the database have the correct GRAN
 	And the valid items in the results file have the correct manufacturer
@@ -69,7 +69,7 @@ Scenario: A file with no header row is rejected
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a new product has been created in GPC for the culture en-US
+	And a new product with a culture of en-US has been created in GPC
 	And a valid new product query has been prepared for the culture en-US
 	And a product query file with no header row has been created
 	And a request has been made to submit the new product query
@@ -86,7 +86,7 @@ Scenario: A file with a row with insufficient columns is processed correctly
 	Given the web job is stopped
 	And the message queue is empty
 	And the dead letter message queue is empty
-	And a new product has been created in GPC for the culture en-US
+	And a new product with a culture of en-US has been created in GPC
 	And a valid new product query has been prepared for the culture en-US
 	And a product query file for the new product and an additional row with insufficient columns has been created
 	And a request has been made to submit the new product query
@@ -100,7 +100,7 @@ Scenario: A file with a row with insufficient columns is processed correctly
 	And the items have been parsed from the results file
 	Then the message queue is empty
 	And the dead letter queue is empty
-	And the items in the database match the valid items in the file
+	And the valid items in the file can be found in the database
 	And the items in the database have a valid completed date
 	And the items in the database have the correct GRAN
 	And the valid items in the results file have the correct manufacturer
