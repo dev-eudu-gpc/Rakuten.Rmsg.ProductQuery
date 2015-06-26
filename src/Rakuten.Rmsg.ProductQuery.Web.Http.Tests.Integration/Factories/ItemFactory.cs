@@ -5,6 +5,13 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using LumenWorks.Framework.IO.Csv;
+    using Rakuten.IO.Delimited.Serialization;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Resources;
+
     /// <summary>
     /// Factory methods for the <see cref="Item"/> class.
     /// </summary>
@@ -57,6 +64,21 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             };
 
             return item;
+        }
+
+        /// <summary>
+        /// Gets all items from the specified file.
+        /// </summary>
+        /// <param name="filename">The name of the file.</param>
+        /// <returns>All items from the specified file.</returns>
+        public static List<Item> Get(string filename)
+        {
+            using (var streamReader = new StreamReader(filename, true))
+            using (var delimitedReader = new CsvReader(streamReader, true, ','))
+            {
+                var serializer = new LumenWorksSerializer<Item>();
+                return serializer.ReadFileByHeaders(delimitedReader).ToList();
+            }
         }
     }
 }

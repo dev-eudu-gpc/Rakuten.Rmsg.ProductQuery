@@ -3,11 +3,11 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
+namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
 {
     using System;
+    using System.Diagnostics.Contracts;
     using System.Linq;
-    using System.Net.Http;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using TechTalk.SpecFlow;
 
@@ -18,40 +18,35 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     public class HttpProblemSteps
     {
         /// <summary>
-        /// Verifies that an HTTP problem can be de-serialized from the content
-        /// of the response in the scenario context.  If so, the object
-        /// is persisted to the scenario context.
+        /// An object for storing and retrieving information from the scenario context.
         /// </summary>
-        [Then(@"an HTTP problem can be retrieved from the response body")]
-        public void ThenAnHTTPProblemCanBeRetrievedFromTheResponseBody()
+        private readonly ScenarioStorage scenarioStorage;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpProblemSteps"/> class
+        /// </summary>
+        /// <param name="scenarioStorage">An object for sharing information between steps.</param>
+        public HttpProblemSteps(ScenarioStorage scenarioStorage)
         {
-            // Arrange
-            var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsAsync<HttpProblem>().Result;
+            Contract.Requires(scenarioStorage != null);
 
-            // Store the problem object in scenario context for subsequent steps
-            ScenarioStorage.HttpProblem = content;
-
-            // Assert
-            Assert.IsNotNull(content);
+            this.scenarioStorage = scenarioStorage;
         }
 
         /// <summary>
-        /// Verifies that the detail property of the HTTP problem found in the
-        /// response content is the expected value when the request was a 
-        /// product query related request.
+        /// Verifies that the HTTP problem in scenario storage has a link
+        /// of the specified type.
         /// </summary>
-        /// <param name="detailTemplate">The expected value for the detail property.</param>
-        [Then(@"the HTTP problem detail for the product query request is (.*)")]
-        public void ThenTheHttpProblemDetailForTheProductQueryRequestIs(string detailTemplate)
+        /// <param name="expectedLinkType">The link type to assert.</param>
+        [Then(@"the HTTP problem contains a link of relation type (.*)")]
+        public void ThenTheHTTPProblemContainsALinkOfType(string expectedLinkType)
         {
             // Arrange
-            var expectedDetail = detailTemplate
-                .Replace("{id}", ScenarioStorage.NewProductQuery.Id)
-                .Replace("{culture}", ScenarioStorage.NewProductQuery.Culture)
-                .Replace("{status}", ScenarioStorage.NewProductQuery.Status);
+            var link = this.scenarioStorage.LastResponseHttpProblem.Links.FirstOrDefault(
+                l => l.RelationType.Equals(expectedLinkType, StringComparison.InvariantCultureIgnoreCase));
 
             // Assert
-            Assert.AreEqual(expectedDetail, ScenarioStorage.HttpProblem.Detail, true);
+            Assert.IsNotNull(link, "Could not find a link of relation type " + expectedLinkType);
         }
 
         /// <summary>
@@ -64,14 +59,62 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         public void ThenTheHttpProblemDetailForTheProductQueryMonitorRequestIs(string detailTemplate)
         {
             // Arrange
-            var p = ScenarioStorage.ProductQueryMonitorRequest;
+            var request = this.scenarioStorage.Monitor.SourceRequest;
 
             var expectedDetail = detailTemplate
-                .Replace("{datetime}", string.Format("{0}/{1}/{2}/{3}/{4}", p.Year, p.Month, p.Day, p.Hour, p.Minute))
-                .Replace("{id}", p.Id);
+                .Replace("{datetime}", string.Format("{0}/{1}/{2}/{3}/{4}", request.Year, request.Month, request.Day, request.Hour, request.Minute))
+                .Replace("{id}", request.Id);
 
             // Assert
-            Assert.AreEqual(expectedDetail, ScenarioStorage.HttpProblem.Detail, true);
+            Assert.AreEqual(expectedDetail, this.scenarioStorage.Monitor.ResponseHttpProblem.Detail, true);
+        }
+
+        /// <summary>
+        /// Verifies that the detail property of the HTTP problem found in the
+        /// response content is the expected value when the request was a 
+        /// product query related request.
+        /// </summary>
+        /// <param name="detailTemplate">The expected value for the detail property.</param>
+        [Then(@"the HTTP problem detail for the product query request is (.*)")]
+        public void ThenTheHttpProblemDetailForTheProductQueryRequestIs(string detailTemplate)
+        {
+            // Arrange
+            var productQuery = this.scenarioStorage.Creation.SourceProductQuery;
+
+            var expectedDetail = detailTemplate
+                .Replace("{id}", productQuery.Id)
+                .Replace("{culture}", productQuery.Culture)
+                .Replace("{status}", productQuery.Status);
+
+            // Assert
+            Assert.AreEqual(
+                expectedDetail,
+                this.scenarioStorage.Creation.ResponseHttpProblem.Detail,
+                true);
+        }
+
+        /// <summary>
+        /// Verifies that the detail property of the HTTP problem found in the
+        /// response content of a ready for processing request is the expected 
+        /// value when the request was a product query related request.
+        /// </summary>
+        /// <param name="detailTemplate">The expected value for the detail property.</param>
+        [Then(@"the HTTP problem detail for the ready for processing request is (.*)")]
+        public void ThenTheHTTPProblemDetailForTheReadyForProcessingRequestIs(string detailTemplate)
+        {
+            // Arrange
+            var productQuery = this.scenarioStorage.Creation.SourceProductQuery;
+
+            var expectedDetail = detailTemplate
+                .Replace("{id}", productQuery.Id)
+                .Replace("{culture}", productQuery.Culture)
+                .Replace("{status}", productQuery.Status);
+
+            // Assert
+            Assert.AreEqual(
+                expectedDetail,
+                this.scenarioStorage.ReadyForProcessing.ResponseHttpProblem.Detail,
+                true);
         }
 
         /// <summary>
@@ -82,32 +125,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the HTTP problem is of type (.*)")]
         public void ThenTheHTTPProblemIsOfType(string expectedType)
         {
-            Assert.AreEqual(expectedType, ScenarioStorage.HttpProblem.Type, true);
-        }
-
-        /// <summary>
-        /// Verifies that the HTTP problem in scenario storage has the specified title.
-        /// </summary>
-        /// <param name="expectedTitle">The expected title.</param>
-        [Then(@"the HTTP problem title is (.*)")]
-        public void ThenTheHTTPProblemTitleIs(string expectedTitle)
-        {
-            Assert.AreEqual(expectedTitle, ScenarioStorage.HttpProblem.Title, true);
-        }
-
-        /// <summary>
-        /// Verifies that the HTTP problem in scenario storage has a link
-        /// of the specified type.
-        /// </summary>
-        /// <param name="expectedLinkType">The link type to assert.</param>
-        [Then(@"the HTTP problem contains a link of relation type (.*)")]
-        public void ThenTheHTTPProblemContainsALinkOfType(string expectedLinkType)
-        {
-            // Try and find a link with the specified link type
-            var link = ScenarioStorage.HttpProblem.Links.FirstOrDefault(
-                l => l.RelationType.Equals(expectedLinkType, StringComparison.InvariantCultureIgnoreCase));
-
-            Assert.IsNotNull(link, "Could not find a link of relation type " + expectedLinkType);
+            Assert.AreEqual(
+                expectedType,
+                this.scenarioStorage.LastResponseHttpProblem.Type,
+                true);
         }
 
         /// <summary>
@@ -118,12 +139,29 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the HTTP problem link of relation type (.*) has an href that points to the product query")]
         public void ThenTheHTTPProblemLinkTypeHasAnHrefThatPointsToTheProductQuery(string linkRelationType)
         {
-            // Try and get the specified link
-            var link = ScenarioStorage.HttpProblem.Links.FirstOrDefault(l => l.RelationType == linkRelationType);
+            // Arrange
+            var link = this.scenarioStorage.LastResponseHttpProblem.Links
+                .FirstOrDefault(l => l.RelationType == linkRelationType);
 
             // Assert
             Assert.IsNotNull(link);
-            Assert.AreEqual(ScenarioStorage.NewProductQuery.Links.Self.Href, link.Target, true);
+            Assert.AreEqual(
+                this.scenarioStorage.Creation.SourceProductQuery.Links.Self.Href,
+                link.Target,
+                true);
+        }
+
+        /// <summary>
+        /// Verifies that the HTTP problem in scenario storage has the specified title.
+        /// </summary>
+        /// <param name="expectedTitle">The expected title.</param>
+        [Then(@"the HTTP problem title is (.*)")]
+        public void ThenTheHTTPProblemTitleIs(string expectedTitle)
+        {
+            Assert.AreEqual(
+                expectedTitle,
+                this.scenarioStorage.LastResponseHttpProblem.Title,
+                true);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
     using System.Collections.Generic;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Resources;
 
     /// <summary>
     /// Contains methods for providing <see cref="Product"/> objects.

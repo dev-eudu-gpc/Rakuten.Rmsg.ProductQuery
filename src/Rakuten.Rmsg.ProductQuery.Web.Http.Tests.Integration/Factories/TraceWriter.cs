@@ -121,7 +121,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 switch (name)
                 {
                     case "NewProductQuery":
-                        return ScenarioStorage.NewProductQuery.Id;
+                        ////return ScenarioStorage.NewProductQuery.Id;
+                        return string.Empty;
                     default:
                         return string.Empty;
                 }

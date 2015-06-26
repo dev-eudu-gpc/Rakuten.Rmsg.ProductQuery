@@ -3,7 +3,7 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
+namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Resources
 {
     /// <summary>
     /// Product query status.

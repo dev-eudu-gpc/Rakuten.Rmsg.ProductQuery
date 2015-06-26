@@ -163,10 +163,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ReadyForProcessing.feature</DependentUpon>
     </Compile>
-    <Compile Include="Features\Submission.feature.cs">
+    <Compile Include="Features\Creation.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Submission.feature</DependentUpon>
+      <DependentUpon>Creation.feature</DependentUpon>
     </Compile>
     <Compile Include="Hooks\BeforeScenarioHooks.cs" />
     <Compile Include="Hooks\TestRunHooks.cs" />
@@ -195,7 +195,6 @@
     <Compile Include="Resources\Gpc\ProductImprovement.cs" />
     <Compile Include="Resources\HttpProblem.cs" />
     <Compile Include="Resources\Json\DictionaryConverter.cs" />
-    <Compile Include="Resources\Message.cs" />
     <Compile Include="Resources\ProductQuery\ProductQueryGroup.cs" />
     <Compile Include="Resources\ProductQuery\ProductQueryLink.cs" />
     <Compile Include="Resources\ProductQuery\ProductQueryLinks.cs" />
@@ -225,7 +224,7 @@
     <Compile Include="Storage\ScenarioStorage.cs" />
     <Compile Include="Steps\DatabaseSteps.cs" />
     <Compile Include="Steps\HttpProblemSteps.cs" />
-    <Compile Include="Steps\NewProductQuerySteps.cs" />
+    <Compile Include="Steps\ProductQueryCreationSteps.cs" />
     <Compile Include="Steps\HttpRequestSteps.cs" />
     <Compile Include="Steps\HttpResponseSteps.cs" />
     <Compile Include="Steps\ProductQueryResponseSteps.cs" />
@@ -259,9 +258,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ReadyForProcessing.feature.cs</LastGenOutput>
     </None>
-    <None Include="Features\Submission.feature">
+    <None Include="Features\Creation.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Submission.feature.cs</LastGenOutput>
+      <LastGenOutput>Creation.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
     <EntityDeploy Include="ProductQuery.edmx">

@@ -3,11 +3,12 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
+namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
 {
     using System;
     using System.Diagnostics.Contracts;
     using System.IO;
+    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Windows.Media.Imaging;
@@ -27,31 +28,36 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         private readonly IApiContext apiContext;
 
         /// <summary>
+        /// An object for storing and retrieving information from the scenario context.
+        /// </summary>
+        private readonly ScenarioStorage scenarioStorage;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="HttpResponseSteps"/> class
         /// </summary>
         /// <param name="apiContext">A context for the product query API.</param>
-        public HttpResponseSteps(IApiContext apiContext)
+        /// <param name="scenarioStorage">An object for sharing information between steps.</param>
+        public HttpResponseSteps(
+            IApiContext apiContext,
+            ScenarioStorage scenarioStorage)
         {
             Contract.Requires(apiContext != null);
+            Contract.Requires(scenarioStorage != null);
 
             this.apiContext = apiContext;
+            this.scenarioStorage = scenarioStorage;
         }
 
         /// <summary>
-        /// Verifies that the location header of the HTTP response in scenario storage
-        /// is as specified.
+        /// Verifies that the HTTP content type header is the specified value.
         /// </summary>
-        /// <param name="expectedLocationHeaderTemplate">The template to match against</param>
-        [Then(@"the HTTP location header is (.*)")]
-        public void ThenTheHTTPLocationHeaderIs(string expectedLocationHeaderTemplate)
+        /// <param name="expectedValue">The expected value of the content type header.</param>
+        [Then(@"the HTTP content type is (.*)")]
+        public void ThenTheHTTPContentTypeIs(string expectedValue)
         {
-            // Arrange
-            var expectedLocationHeader = expectedLocationHeaderTemplate.Replace("{id}", ScenarioStorage.NewProductQuery.Id);
-
-            // Assert
             Assert.AreEqual(
-                expectedLocationHeader,
-                ScenarioStorage.HttpResponseMessage.Headers.Location.ToString(),
+                expectedValue,
+                this.scenarioStorage.LastResponse.Content.Headers.ContentType.MediaType,
                 true);
         }
 
@@ -65,22 +71,49 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             // TODO: [WB 12-May-2015] Potentially volatile test as we can't guarantee that UtcNow is 
             // the same at this point as what it was when the server generated the response message.
 
+            // Get the group of the product query
+            using (var database = new ProductQueryDbContext())
+            {
+                // Get the group
+                var group = database.rmsgProductQueries
+                    .Single(q => q.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid)
+                    .rmsgProductQueryGroup;
+
+                // Arrange
+                var expectedDateTime = DateTime.UtcNow;
+                var expectedLocationHeader = string.Format(
+                    "/product-query-group/{0}/status/{1}/{2}/{3}/{4}/{5}",
+                    group.rmsgProductQueryGroupID,
+                    expectedDateTime.Year.ToString("00"),
+                    expectedDateTime.Month.ToString("00"),
+                    expectedDateTime.Day.ToString("00"),
+                    expectedDateTime.Hour.ToString("00"),
+                    expectedDateTime.Minute.ToString("00"));
+
+                // Assert
+                Assert.AreEqual(
+                    expectedLocationHeader,
+                    this.scenarioStorage.Monitor.ResponseMessage.Headers.Location.ToString(),
+                    true);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the location header of the HTTP response in scenario storage
+        /// is as specified.
+        /// </summary>
+        /// <param name="expectedLocationHeaderTemplate">The template to match against</param>
+        [Then(@"the HTTP location header is (.*)")]
+        public void ThenTheHTTPLocationHeaderIs(string expectedLocationHeaderTemplate)
+        {
             // Arrange
-            var requestParameters = ScenarioStorage.ProductQueryMonitorRequest;
-            var expectedDateTime = DateTime.UtcNow;
-            var expectedLocationHeader = string.Format(
-                "/product-query-group/{0}/status/{1}/{2}/{3}/{4}/{5}",
-                requestParameters.Id,
-                expectedDateTime.Year.ToString("00"),
-                expectedDateTime.Month.ToString("00"),
-                expectedDateTime.Day.ToString("00"),
-                expectedDateTime.Hour.ToString("00"),
-                expectedDateTime.Minute.ToString("00"));
+            var expectedLocationHeader = expectedLocationHeaderTemplate
+                .Replace("{id}", this.scenarioStorage.Creation.SourceProductQuery.Id);
 
             // Assert
             Assert.AreEqual(
                 expectedLocationHeader,
-                ScenarioStorage.HttpResponseMessage.Headers.Location.ToString(),
+                this.scenarioStorage.Creation.ResponseMessage.Headers.Location.ToString(),
                 true);
         }
 
@@ -93,7 +126,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         {
             Assert.AreEqual(
                 this.apiContext.ProgressMapIntervalInSeconds,
-                ScenarioStorage.HttpResponseMessage.Headers.RetryAfter.Delta.Value.TotalSeconds);
+                this.scenarioStorage.Monitor.ResponseMessage.Headers.RetryAfter.Delta.Value.TotalSeconds);
         }
 
         /// <summary>
@@ -104,23 +137,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the HTTP status code is (.*)")]
         public void ThenTheHttpStatusCodeIs(int expectedStatusCode)
         {
-            // Assert
             Assert.AreEqual(
                 (HttpStatusCode)expectedStatusCode,
-                ScenarioStorage.HttpResponseMessage.StatusCode);
-        }
-
-        /// <summary>
-        /// Verifies that the HTTP content type header is the specified value.
-        /// </summary>
-        /// <param name="expectedValue">The expected value of the content type header.</param>
-        [Then(@"the HTTP content type is (.*)")]
-        public void ThenTheHTTPContentTypeIs(string expectedValue)
-        {
-            Assert.AreEqual(
-                expectedValue,
-                ScenarioStorage.HttpResponseMessage.Content.Headers.ContentType.MediaType,
-                true);
+                this.scenarioStorage.LastResponse.StatusCode);
         }
 
         /// <summary>
@@ -134,7 +153,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 
             try
             {
-                Stream contentStream = ScenarioStorage.HttpResponseMessage.Content.ReadAsStreamAsync().Result;
+                Stream contentStream = this.scenarioStorage.LastResponse.Content.ReadAsStreamAsync().Result;
                 bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.StreamSource = contentStream;

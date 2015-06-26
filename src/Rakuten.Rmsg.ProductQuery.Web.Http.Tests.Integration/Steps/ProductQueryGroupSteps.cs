@@ -3,9 +3,12 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
+namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
 {
+    using System.Diagnostics.Contracts;
+    using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Rakuten.Rmsg.ProductQuery.Configuration;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -15,6 +18,32 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     public class ProductQueryGroupSteps
     {
         /// <summary>
+        /// The context under which this instance is operating.
+        /// </summary>
+        private readonly IApiContext apiContext;
+
+        /// <summary>
+        /// An object for storing and retrieving information from the scenario context.
+        /// </summary>
+        private readonly ScenarioStorage scenarioStorage;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductQueryGroupSteps"/> class
+        /// </summary>
+        /// <param name="apiContext">A context for the API.</param>
+        /// <param name="scenarioStorage">An object for sharing information between steps.</param>
+        public ProductQueryGroupSteps(
+            IApiContext apiContext,
+            ScenarioStorage scenarioStorage)
+        {
+            Contract.Requires(apiContext != null);
+            Contract.Requires(scenarioStorage != null);
+
+            this.apiContext = apiContext;
+            this.scenarioStorage = scenarioStorage;
+        }
+
+        /// <summary>
         /// Verifies that the count property of the product query group that was
         /// retrieved from the database matches the expected count.
         /// </summary>
@@ -22,7 +51,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the count of product queries in the new product query group is (.*)")]
         public void ThenTheCountOfProductQueriesInTheNewProductQueryGroupIs(int expectedCount)
         {
-            Assert.AreEqual(expectedCount, ScenarioStorage.ProductQueryGroupActual.count);
+            using (var database = new ProductQueryDbContext())
+            {
+                var group = database.rmsgProductQueries
+                    .Single(q => q.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid)
+                    .rmsgProductQueryGroup;
+
+                Assert.AreEqual(expectedCount, group.count);
+            }
         }
 
         /// <summary>
@@ -33,9 +69,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the count of product queries in the product query group has been incremented by 1")]
         public void ThenTheCountOfProductQueriesInTheProductQueryGroupHasBeenIncrementedBy1()
         {
-            Assert.AreEqual(
-                ScenarioStorage.ProductQueryGroupExpected.count + 1,
-                ScenarioStorage.ProductQueryGroupActual.count);
+            using (var database = new ProductQueryDbContext())
+            {
+                var expectedGroup = this.scenarioStorage.Creation.ExpectedGroup;
+                var actualGroup = database.rmsgProductQueries
+                    .Single(q => q.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid)
+                    .rmsgProductQueryGroup;
+
+                Assert.AreEqual(expectedGroup.count + 1, actualGroup.count);
+            }
         }
 
         /// <summary>
@@ -46,7 +88,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the index of the product query from the database is (.*)")]
         public void ThenTheIndexOfTheProductQueryFromTheDatabaseIs(int expectedIndex)
         {
-            Assert.AreEqual(expectedIndex, ScenarioStorage.ProductQueryFromDatabase.index);
+            using (var database = new ProductQueryDbContext())
+            {
+                var databaseEntity = database.rmsgProductQueries
+                    .Single(q => q.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid);
+
+                Assert.AreEqual(expectedIndex, databaseEntity.index);
+            }
         }
 
         /// <summary>
@@ -56,9 +104,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the index of the product query from the database matches the incremented count of the product query group")]
         public void ThenTheIndexOfTheProductQueryFromTheDatabaseMatchesTheIncrementedCountOfTheProductQueryGroup()
         {
-            Assert.AreEqual(
-                ScenarioStorage.ProductQueryGroupActual.count,
-                ScenarioStorage.ProductQueryFromDatabase.index);
+            using (var database = new ProductQueryDbContext())
+            {
+                var databaseEntity = database.rmsgProductQueries
+                    .Single(q => q.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid);
+
+                Assert.AreEqual(databaseEntity.rmsgProductQueryGroup.count, databaseEntity.index);
+            }
         }
 
         /// <summary>
@@ -68,10 +120,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the product query group assigned to the new product query is the correct one")]
         public void ThenTheProductQueryGroupAssignedToTheNewProductQueryIsTheCorrectOne()
         {
-            // Assert
-            Assert.AreEqual(
-                ScenarioStorage.ProductQueryGroupExpected.rmsgProductQueryGroupID,
-                ScenarioStorage.ProductQueryFromDatabase.rmsgProductQueryGroupID);
+            using (var database = new ProductQueryDbContext())
+            {
+                var databaseEntity = database.rmsgProductQueries
+                    .Single(q => q.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid);
+
+                Assert.AreEqual(
+                    this.scenarioStorage.Creation.ExpectedGroup.rmsgProductQueryGroupID,
+                    databaseEntity.rmsgProductQueryGroupID);
+            }
         }
     }
 }

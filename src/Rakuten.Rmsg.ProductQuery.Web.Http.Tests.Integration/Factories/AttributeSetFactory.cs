@@ -8,6 +8,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Resources;
 
     /// <summary>
     /// Helpers for creating <see cref="AttributeSet"/>s.

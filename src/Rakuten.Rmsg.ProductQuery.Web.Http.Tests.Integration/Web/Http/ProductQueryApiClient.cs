@@ -10,6 +10,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     using System.Net.Http;
     using System.Threading.Tasks;
     using Rakuten.Rmsg.ProductQuery.Configuration;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Resources;
 
     /// <summary>
     /// Provides methods for making calls to the Product Query API

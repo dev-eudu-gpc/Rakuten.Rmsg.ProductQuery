@@ -3,7 +3,7 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
+namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
 {
     using System.Diagnostics.Contracts;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -32,17 +32,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Starts the web job.
-        /// </summary>
-        [When(@"the web job is started")]
-        public void WhenTheWebJobIsStarted()
-        {
-            this.webJobClient.Start();
-
-            Assert.IsFalse(this.webJobClient.HasErrors);
-        }
-
-        /// <summary>
         /// Ensures that the web job is stopped.
         /// </summary>
         [Given(@"the web job is stopped")]
@@ -58,6 +47,17 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         public void ThenTheWebJobPicksUpTheNewMessage()
         {
             ScenarioContext.Current.Pending();
+        }
+
+        /// <summary>
+        /// Starts the web job.
+        /// </summary>
+        [When(@"the web job is started")]
+        public void WhenTheWebJobIsStarted()
+        {
+            this.webJobClient.Start();
+
+            Assert.IsFalse(this.webJobClient.HasErrors);
         }
     }
 }

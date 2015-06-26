@@ -14,6 +14,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
     using Rakuten.Rmsg.ProductQuery.Configuration;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Resources;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -47,12 +48,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 apiContext.ServiceBusConnectionString,
                 apiContext.MessageQueueName,
                 ReceiveMode.PeekLock);
+            ScenarioStorage scenarioStorage = new ScenarioStorage();
 
             container.RegisterInstanceAs(apiContext);
             container.RegisterInstanceAs(azureStorage);
             container.RegisterInstanceAs(apiClient);
             container.RegisterInstanceAs(gpcApiClient);
             container.RegisterInstanceAs(peekLockQueueClient);
+            container.RegisterInstanceAs(scenarioStorage);
 
             this.container = container;
         }
@@ -67,7 +70,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             this.container.Resolve<IStorage>();
 
             // Log the time at which the scenario began.
-            ScenarioStorage.ScenarioStartTime = DateTime.UtcNow;
+            ////ScenarioStorage.ScenarioStartTime = DateTime.UtcNow;
+            var scenarioStorage = this.container.Resolve<ScenarioStorage>();
+            scenarioStorage.StartTime = DateTime.UtcNow;
         }
 
         /// <summary>

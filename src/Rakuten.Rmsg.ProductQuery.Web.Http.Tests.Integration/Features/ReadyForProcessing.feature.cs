@@ -79,8 +79,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-            testRunner.And("the product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.Then("the status of the product query from the database is Submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+            testRunner.Then("the status of the product query in the database is Submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             this.ScenarioCleanup();
         }
         
@@ -95,8 +94,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-            testRunner.And("the product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the product query group for the new product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the HTTP status code is 202", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the product query in the response body has the correct self link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the product query in the response body has the correct enclosure link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -124,6 +121,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 202", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the message for the new product query has the correct product query identifier", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the message for the new product query has the correct culture", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the message for the new product query has the correct enclosure link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
         
@@ -159,12 +159,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 400", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("an HTTP problem can be retrieved from the response body", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is An invalid request parameter was supplied.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the HTTP problem detail for the product query request is The product query identi" +
-                    "fier \'{id}\' in the request URI is invalid. It must be a GUID.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem detail for the ready for processing request is The product query" +
+                    " identifier \'{id}\' in the request URI is invalid. It must be a GUID.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
         
@@ -181,12 +180,12 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 400", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("an HTTP problem can be retrieved from the response body", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is An invalid request parameter was supplied.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the HTTP problem detail for the product query request is The culture \'{culture}\' " +
-                    "in the request URI is invalid. It must be a valid language tag (as per BCP 47).", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem detail for the ready for processing request is The culture \'{cul" +
+                    "ture}\' in the request URI is invalid. It must be a valid language tag (as per BC" +
+                    "P 47).", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
         
@@ -203,11 +202,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 404", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("an HTTP problem can be retrieved from the response body", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/product-query-not-found", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is The product query could not be found.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the HTTP problem detail for the product query request is Failed to find a product" +
-                    " query with identifier \'{id}\'.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem detail for the ready for processing request is Failed to find a " +
+                    "product query with identifier \'{id}\'.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             this.ScenarioCleanup();
         }
         
@@ -225,11 +223,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.When("a request is made to flag the product query as ready for processing with a status" +
                     " of i-am-invalid", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 403", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("an HTTP problem can be retrieved from the response body", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/invalid-product-query-sta" +
                     "tus", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is An invalid product query status was supplied.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And(@"the HTTP problem detail for the product query request is You attempted to update the status of the query at '/product-query/{id}/culture/{culture}' to '{status}', which is an invalid status.  The only valid status to which this query can be set is 'submitted'.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And(@"the HTTP problem detail for the ready for processing request is You attempted to update the status of the query at '/product-query/{id}/culture/{culture}' to '{status}', which is an invalid status.  The only valid status to which this query can be set is 'submitted'.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem contains a link of relation type http://rels.rakuten.com/product" +
                     "-query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem link of relation type http://rels.rakuten.com/product-query has " +
@@ -253,14 +250,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("a request is made to flag the product query as ready for processing with a status" +
                     " of submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the HTTP status code is 403", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("an HTTP problem can be retrieved from the response body", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/product-query-already-rea" +
                     "dy-for-processing", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is The product query has already been flagged as ready for" +
                     " processing.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the HTTP problem detail for the product query request is You attempted to flag th" +
-                    "e query at \'/product-query/{id}/culture/{culture}\' as ready for processing but h" +
-                    "as already been flagged as such.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the HTTP problem detail for the ready for processing request is You attempted to " +
+                    "flag the query at \'/product-query/{id}/culture/{culture}\' as ready for processin" +
+                    "g but has already been flagged as such.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem contains a link of relation type http://rels.rakuten.com/product" +
                     "-query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem link of relation type http://rels.rakuten.com/product-query has " +

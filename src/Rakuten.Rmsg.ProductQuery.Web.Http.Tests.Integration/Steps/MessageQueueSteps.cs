@@ -3,14 +3,13 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
+namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
 {
     using System;
     using System.Diagnostics;
     using System.Diagnostics.Contracts;
     using Microsoft.ServiceBus.Messaging;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Newtonsoft.Json;
     using Rakuten.Rmsg.ProductQuery.Configuration;
     using TechTalk.SpecFlow;
 
@@ -31,19 +30,28 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         private readonly QueueClient peekLockQueueClient;
 
         /// <summary>
+        /// An object for storing and retrieving information from the scenario context.
+        /// </summary>
+        private readonly ScenarioStorage scenarioStorage;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MessageQueueSteps"/> class
         /// </summary>
         /// <param name="apiContext">A context for the API.</param>
         /// <param name="peekLockQueueClient">A queue client using peek lock mode.</param>
+        /// <param name="scenarioStorage">An object for sharing information between steps.</param>
         public MessageQueueSteps(
             IApiContext apiContext,
-            QueueClient peekLockQueueClient)
+            QueueClient peekLockQueueClient,
+            ScenarioStorage scenarioStorage)
         {
             Contract.Requires(apiContext != null);
             Contract.Requires(peekLockQueueClient != null);
+            Contract.Requires(scenarioStorage != null);
 
             this.apiContext = apiContext;
             this.peekLockQueueClient = peekLockQueueClient;
+            this.scenarioStorage = scenarioStorage;
         }
 
         /// <summary>
@@ -58,24 +66,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 QueueClient.FormatDeadLetterPath(this.peekLockQueueClient.Path),
                 ReceiveMode.ReceiveAndDelete);
 
-            // Empty the queue by receiving the messages one by one until there are none left.
-            try
+            // Empty the queue by receiving the messages one by one until there are none left
+            BrokeredMessage message = null;
+            do
             {
-                BrokeredMessage message = null;
-                do
-                {
-                    message = deadLetterQueueClient.Receive(new TimeSpan(0, 0, 5));
-                    if (message != null)
-                    {
-                        message.Complete();
-                    }
-                }
-                while (message != null);
+                message = deadLetterQueueClient.Receive(new TimeSpan(0, 0, 5));
             }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-            }
+            while (message != null);
         }
 
         /// <summary>
@@ -84,11 +81,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Given(@"the message queue is empty")]
         public void GivenTheMessageQueueIsEmpty()
         {
+            // Create a queue client in the correct mode
             QueueClient receiveAndDeleteQueueClient = QueueClient.CreateFromConnectionString(
                 this.apiContext.ServiceBusConnectionString,
                 this.apiContext.MessageQueueName,
                 ReceiveMode.ReceiveAndDelete);
 
+            // Empty the queue by receibing the messages one by one until there are none left
             BrokeredMessage message = null;
             do
             {
@@ -101,48 +100,21 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Verifies that a message has been created on the queue for the product
         /// query that is in scenario storage.
         /// </summary>
-        [Given(@"a message has been created on the queue")]
+        ////[Given(@"a message has been created on the queue")]
         [Then(@"a message has been created on the queue")]
         public void ThenAMessageHasBeenCreatedOnTheQueue()
         {
-            // Get the product query that was created from the response
-            var content = ScenarioStorage.HttpResponseMessage.Content.ReadAsStringAsync().Result;
-            var productQuery = JsonConvert.DeserializeObject<ProductQuery>(content);
-
-            // Verify that the message can be found
-            var message = this.peekLockQueueClient.Peek();
-
-            Assert.IsNotNull(message);
-            
-            // Verify the contents of the message body
-            var messageBody = message.GetBody<Message>();
-
-            Assert.AreEqual(ScenarioStorage.NewProductQuery.IdAsGuid, messageBody.Id);
-            Assert.AreEqual(ScenarioStorage.NewProductQuery.Culture, messageBody.Culture);
-            Assert.AreEqual(productQuery.Links.Enclosure.Href, messageBody.Link.Target);
-
-            // Store the message in scenario storage
-            ScenarioStorage.MessageId = message.MessageId;
-
-            // Clean up
-            AbandonPeekLock(message);
-        }
-
-        /// <summary>
-        /// Verifies that the dead letter queue is empty.
-        /// </summary>
-        [Then(@"the dead letter queue is empty")]
-        public void ThenTheDeadLetterQueueIsEmpty()
-        {
             // Arrange
-            BrokeredMessage message = this.peekLockQueueClient.Peek();
-            if (message != null)
-            {
-                AbandonPeekLock(message);
-            }
+            var productQuery = this.scenarioStorage.Creation.SourceProductQuery;
+            var messageBody = GetMessageBody(
+                this.peekLockQueueClient,
+                this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid);
 
             // Assert
-            Assert.IsNull(message);
+            Assert.IsNotNull(messageBody);
+
+            // Store the message for subsequent steps
+            this.scenarioStorage.ReadyForProcessing.MessageBody = messageBody;
         }
 
         /// <summary>
@@ -157,62 +129,45 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 QueueClient.FormatDeadLetterPath(this.peekLockQueueClient.Path),
                 ReceiveMode.PeekLock);
 
-            // Try and get a message from the queue for up to 1 minute
-            // and stop as soon as we get one
-            BrokeredMessage message = null;
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            while (message == null && stopwatch.Elapsed < TimeSpan.FromSeconds(60))
-            {
-                message = deadLetterQueueClient.Peek();
-            }
+            var messageBody = GetMessageBody(
+                deadLetterQueueClient,
+                this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid);
 
-            // Assertions
-            Assert.IsNotNull(message);
-            Assert.AreEqual(message.MessageId, ScenarioStorage.MessageId, true);
-
-            // Clean up
-            AbandonPeekLock(message);
+            // Assert
+            Assert.IsNotNull(messageBody);
         }
 
         /// <summary>
-        /// Verifies that the message queue is empty.
+        /// Verifies that the message has the correct culture.
         /// </summary>
-        [Then(@"the message queue is empty")]
-        public void ThenTheMessageQueueIsEmpty()
+        [Then(@"the message for the new product query has the correct culture")]
+        public void ThenTheMessageForTheNewProductQueryHasTheCorrectCulture()
         {
-            BrokeredMessage message = this.peekLockQueueClient.Peek();
-
-            if (message != null)
-            {
-                AbandonPeekLock(message);
-            }
-
-            Assert.IsNull(message);
+            Assert.AreEqual(
+                this.scenarioStorage.Creation.SourceProductQuery.Culture,
+                this.scenarioStorage.ReadyForProcessing.MessageBody.Culture);
         }
 
         /// <summary>
-        /// Waits for the message queue to be empty for a maximum of one minute
+        /// Verifies that the message has the correct enclosure link.
         /// </summary>
-        [When(@"the message queue is empty")]
-        public void WhenTheMessageQueueIsEmpty()
+        [Then(@"the message for the new product query has the correct enclosure link")]
+        public void ThenTheMessageForTheNewProductQueryHasTheCorrectEnclosureLink()
         {
-            var stopWatch = new Stopwatch();
-            BrokeredMessage message = null;
+            Assert.AreEqual(
+                this.scenarioStorage.Creation.ResponseProductQuery.Links.Enclosure.Href,
+                this.scenarioStorage.ReadyForProcessing.MessageBody.Link.Target);
+        }
 
-            stopWatch.Start();
-            do
-            {
-                message = this.peekLockQueueClient.Peek();
-
-                if (message != null)
-                {
-                    AbandonPeekLock(message);
-                }
-            }
-            while (message != null && stopWatch.ElapsedMilliseconds < 60000);
-
-            Assert.IsNull(message);
+        /// <summary>
+        /// Verifies that the message has the correct product query identifier.
+        /// </summary>
+        [Then(@"the message for the new product query has the correct product query identifier")]
+        public void ThenTheMessageForTheNewProductQueryHasTheCorrectProductQueryIdentifier()
+        {
+            Assert.AreEqual(
+                this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid,
+                this.scenarioStorage.ReadyForProcessing.MessageBody.Id);
         }
 
         /// <summary>
@@ -233,6 +188,37 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             catch (InvalidOperationException)
             {
             }
+        }
+
+        /// <summary>
+        /// Tries to get the body of a message from the given queue for a given product query id.
+        /// </summary>
+        /// <param name="queueClient">The queue client.</param>
+        /// <param name="productQueryId">The product query id.</param>
+        /// <returns>The message body, if found, null otherwise.</returns>
+        private static Message GetMessageBody(QueueClient queueClient, Guid productQueryId)
+        {
+            BrokeredMessage message = null;
+            Message messageBody = null;
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (messageBody == null && stopwatch.ElapsedMilliseconds < 120000)
+            {
+                message = queueClient.Peek();
+                if (message != null)
+                {
+                    messageBody = message.GetBody<Message>();
+
+                    if (messageBody.Id != productQueryId)
+                    {
+                        messageBody = null;
+                    }
+                }
+            }
+
+            AbandonPeekLock(message);
+            return messageBody;
         }
     }
 }

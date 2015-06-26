@@ -5,12 +5,11 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Reflection;
     using System.Text;
     using Rakuten.IO.Delimited.Serialization;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Resources;
 
     /// <summary>
     /// Factory methods for product query files.

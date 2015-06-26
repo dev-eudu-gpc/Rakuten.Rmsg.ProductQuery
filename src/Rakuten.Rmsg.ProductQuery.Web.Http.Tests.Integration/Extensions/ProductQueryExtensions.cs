@@ -6,6 +6,7 @@
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 {
     using System;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Resources;
 
     /// <summary>
     /// Extension methods for the <see cref="ProductQuery"/> resource class.

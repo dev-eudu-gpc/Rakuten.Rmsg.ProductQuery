@@ -8,6 +8,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Resources;
 
     /// <summary>
     /// Extension methods for the <see cref="DataSource"/> class.

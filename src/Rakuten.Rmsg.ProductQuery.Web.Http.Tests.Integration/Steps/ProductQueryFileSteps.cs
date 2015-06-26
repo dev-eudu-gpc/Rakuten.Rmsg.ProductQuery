@@ -5,11 +5,11 @@
 //------------------------------------------------------------------------------
 namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
 {
-    using System.IO;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
-    using LumenWorks.Framework.IO.Csv;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Rakuten.IO.Delimited.Serialization;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Resources;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -19,16 +19,33 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
     public class ProductQueryFileSteps
     {
         /// <summary>
+        /// An object for storing and retrieving information from the scenario context.
+        /// </summary>
+        private readonly ScenarioStorage scenarioStorage;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductQueryFileSteps"/> class
+        /// </summary>
+        /// <param name="scenarioStorage">An object for sharing information between steps.</param>
+        public ProductQueryFileSteps(ScenarioStorage scenarioStorage)
+        {
+            Contract.Requires(scenarioStorage != null);
+
+            this.scenarioStorage = scenarioStorage;
+        }
+
+        /// <summary>
         /// Creates a new file for a product query with the image url columns populated
         /// using the products in scenario storage as the source for EAN.
         /// </summary>
         [Given(@"a product query file containing image urls for the new product has been created")]
         public void GivenAProductQueryFileContainingImageUrlsForTheNewProductHasBeenCreated()
         {
-            var items = ScenarioStorage.Products
-                .Select(p => ItemFactory.Create(
+            var items = new List<Item>
+            {
+                ItemFactory.Create(
                     "EAN",
-                    p.GetEAN(),
+                    this.scenarioStorage.Gpc.Product.GetEAN(),
                     "image01.jpg",
                     "image02.jpg",
                     "image03.jpg",
@@ -38,14 +55,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
                     "image07.jpg",
                     "image08.jpg",
                     "image09.jpg",
-                    "image10.jpg"));
+                    "image10.jpg")
+            };
 
             // Create a product query file for the EANs
             var filename = ProductQueryFileFactory.Create(items);
 
-            // Store details in scenario storage
-            ScenarioStorage.ProductQueryFileName = filename;
-            ScenarioStorage.Items = items.ToList();
+            // Store pertinent details for subsequent steps
+            this.scenarioStorage.Files.SourceFileName = filename;
+            this.scenarioStorage.Files.SourceItems = items;
         }
 
         /// <summary>
@@ -56,17 +74,20 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void GivenAProductQueryFileForTheNewProductAndAnAdditionalRowWithInsufficientColumnsHasBeenCreated()
         {
             // Create the items that have GTINs
-            var items = ScenarioStorage.Products
-                .Select(p => ItemFactory.Create("EAN", p.GetEAN()))
-                .ToList();
+            var items = new List<Item>
+            {
+                ItemFactory.Create("EAN", this.scenarioStorage.Gpc.Product.GetEAN())
+            };
 
             // Create a product query file for the items
             var filename = ProductQueryFileFactory.Create(items);
+
+            // Add a row with insufficient columns the to file
             ProductQueryFileFactory.AddRowWithInsufficientColumns(filename);
 
-            // Storage
-            ScenarioStorage.ProductQueryFileName = filename;
-            ScenarioStorage.Items = items;
+            // Store pertinent details for subsequent steps
+            this.scenarioStorage.Files.SourceFileName = filename;
+            this.scenarioStorage.Files.SourceItems = items;
         }
 
         /// <summary>
@@ -76,15 +97,18 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         [Given(@"a product query file for the new product has been created")]
         public void GivenAProductQueryFileForTheNewProductHasBeenCreated()
         {
-            var items = ScenarioStorage.Products
-                .Select(p => ItemFactory.Create("EAN", p.GetEAN()));
+            // Create the items
+            var items = new List<Item>
+            {
+                ItemFactory.Create("EAN", this.scenarioStorage.Gpc.Product.GetEAN())
+            };
 
             // Create a product query file for the EANs
             var filename = ProductQueryFileFactory.Create(items);
 
-            // Store details in scenario storage
-            ScenarioStorage.ProductQueryFileName = filename;
-            ScenarioStorage.Items = items.ToList();
+            // Store pertinent details for subsequent steps
+            this.scenarioStorage.Files.SourceFileName = filename;
+            this.scenarioStorage.Files.SourceItems = items;
         }
 
         /// <summary>
@@ -94,15 +118,16 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         [Given(@"a product query file with no GTIN type for the new product has been created")]
         public void GivenAProductQueryFileWithNoGTINTypeForTheNewProductHasBeenCreated()
         {
-            var items = ScenarioStorage.Products
-                .Select(p => ItemFactory.Create(string.Empty, p.GetEAN()));
-
             // Create a product query file for the products
+            var items = new List<Item>
+            {
+                ItemFactory.Create(string.Empty, this.scenarioStorage.Gpc.Product.GetEAN())
+            };
             var filename = ProductQueryFileFactory.Create(items);
 
-            // Store details in scenario storage
-            ScenarioStorage.ProductQueryFileName = filename;
-            ScenarioStorage.Items = items.ToList();
+            // Store pertinent details for subsequent steps
+            this.scenarioStorage.Files.SourceFileName = filename;
+            this.scenarioStorage.Files.SourceItems = items;
         }
 
         /// <summary>
@@ -112,15 +137,17 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         [Given(@"a product query file with no GTIN value for the new product has been created")]
         public void GivenAProductQueryFileWithNoGTINValueForTheNewProductHasBeenCreated()
         {
-            var items = ScenarioStorage.Products
-                .Select(p => ItemFactory.Create("EAN", string.Empty));
-
             // Create a product query file for the products
+            var items = new List<Item>
+            {
+                ItemFactory.Create("EAN", string.Empty)
+            };
+
             var filename = ProductQueryFileFactory.Create(items);
 
-            // Store details in scenario storage
-            ScenarioStorage.ProductQueryFileName = filename;
-            ScenarioStorage.Items = items.ToList();
+            // Store pertinent details for subsequent steps
+            this.scenarioStorage.Files.SourceFileName = filename;
+            this.scenarioStorage.Files.SourceItems = items;
         }
 
         /// <summary>
@@ -130,15 +157,16 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         [Given(@"a product query file with no header row has been created")]
         public void GivenAProductQueryFileWithNoHeaderRowHasBeenCreated()
         {
-            var items = ScenarioStorage.Products
-                .Select(p => ItemFactory.Create("EAN", p.GetEAN()));
-
             // Create a product query file for the products
+            var items = new List<Item>
+            {
+                ItemFactory.Create("EAN", this.scenarioStorage.Gpc.Product.GetEAN())
+            };
             var filename = ProductQueryFileFactory.Create(items, false);
 
-            // Store details in scenario storage
-            ScenarioStorage.ProductQueryFileName = filename;
-            ScenarioStorage.Items = items.ToList();
+            // Store pertinent details for subsequent steps
+            this.scenarioStorage.Files.SourceFileName = filename;
+            this.scenarioStorage.Files.SourceItems = items;
         }
 
         /// <summary>
@@ -151,9 +179,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void GivenAProductQueryFileWithOnlySomeRowsHavingGTINsHasBeenCreated()
         {
             // Create the items that have GTINs
-            var items = ScenarioStorage.Products
-                .Select(p => ItemFactory.Create("EAN", p.GetEAN()))
-                .ToList();
+            var items = new List<Item>
+            {
+                ItemFactory.Create("EAN", this.scenarioStorage.Gpc.Product.GetEAN())
+            };
 
             // Create items without GTINs
             items.Add(ItemFactory.Create(null, null));
@@ -163,9 +192,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
             // Create a product query file for the items
             var filename = ProductQueryFileFactory.Create(items);
 
-            // Storage
-            ScenarioStorage.ProductQueryFileName = filename;
-            ScenarioStorage.Items = items;
+            // Store pertinent details for subsequent steps
+            this.scenarioStorage.Files.SourceFileName = filename;
+            this.scenarioStorage.Files.SourceItems = items;
         }
 
         /// <summary>
@@ -175,8 +204,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheImagesInTheFileHaveBeenPreserved()
         {
             // Arrange
-            var sourceItems = ScenarioStorage.Items;
-            var resultItems = ScenarioStorage.ResultItems;
+            var sourceItems = this.scenarioStorage.Files.SourceItems;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName);
 
             // Assert
             Assert.AreEqual(sourceItems.Count, resultItems.Count);
@@ -197,16 +226,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         }
 
         /// <summary>
-        /// Verifies that the items in the results file are the same as 
-        /// those in the source file and they all have the same data
-        /// in both target and source.
+        /// Verifies that the items in the results file are the same as the items in the source file.
         /// </summary>
-        [Then(@"the item in the results file is the same as the item in the source file")]
-        public void ThenTheItemInTheResultsFileIsTheSameAsTheItemInTheSourceFile()
+        [Then(@"the items in the results file are the same as the items in the source file")]
+        public void ThenTheItemsInTheResultsFileAreTheSameAsTheItemsInTheSourceFile()
         {
             // Arrange
-            var sourceItems = ScenarioStorage.Items;
-            var resultItems = ScenarioStorage.ResultItems;
+            var sourceItems = this.scenarioStorage.Files.SourceItems;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName);
 
             // Assert
             Assert.AreEqual(sourceItems.Count, resultItems.Count);
@@ -224,15 +251,16 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheItemsInTheResultsFileHaveTheCorrectBrand()
         {
             // Arrange
-            var sourceProducts = ScenarioStorage.Products;
-            var resultItems = ScenarioStorage.ResultItems;
+            var sourceProduct = this.scenarioStorage.Gpc.Product;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName);
 
+            // Assert
             foreach (var result in resultItems)
             {
-                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+                var product = sourceProduct;
 
                 Assert.IsNotNull(product);
-                Assert.AreEqual(product.GetBrand(), result.Brand, true);
+                Assert.AreEqual(product.GetBrand(), result.Brand);
             }
         }
 
@@ -243,13 +271,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheItemsInTheResultsFileHaveTheCorrectImages()
         {
             // Arrange
-            var sourceProducts = ScenarioStorage.Products;
-            var resultItems = ScenarioStorage.ResultItems;
+            var sourceProduct = this.scenarioStorage.Gpc.Product;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName);
 
+            // Assert
             foreach (var result in resultItems)
             {
-                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+                var product = sourceProduct;
 
+                Assert.IsNotNull(product);
                 Assert.IsNotNull(product);
                 Assert.AreEqual(product.GetImageUrl(1), result.ImageUrl1, true);
                 Assert.AreEqual(product.GetImageUrl(2), result.ImageUrl2, true);
@@ -266,13 +296,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheItemsInTheResultsFileHaveTheCorrectManufacturer()
         {
             // Arrange
-            var sourceProducts = ScenarioStorage.Products;
-            var resultItems = ScenarioStorage.ResultItems;
+            var sourceProduct = this.scenarioStorage.Gpc.Product;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName);
 
             // Assert
             foreach (var result in resultItems)
             {
-                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+                var product = sourceProduct;
 
                 Assert.IsNotNull(product);
                 Assert.AreEqual(product.Manufacturer, result.Manufacturer, true);
@@ -286,12 +316,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheItemsInTheResultsFileHaveTheCorrectManufacturerPartNumber()
         {
             // Arrange
-            var sourceProducts = ScenarioStorage.Products;
-            var resultItems = ScenarioStorage.ResultItems;
+            var sourceProduct = this.scenarioStorage.Gpc.Product;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName);
 
+            // Assert
             foreach (var result in resultItems)
             {
-                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+                var product = sourceProduct;
 
                 Assert.IsNotNull(product);
                 Assert.AreEqual(product.PartNumber, result.ManufacturerPartNumber, true);
@@ -305,12 +336,13 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheItemsInTheResultsFileHaveTheCorrectVideoURL()
         {
             // Arrange
-            var sourceProducts = ScenarioStorage.Products;
-            var resultItems = ScenarioStorage.ResultItems;
+            var sourceProduct = this.scenarioStorage.Gpc.Product;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName);
 
+            // Assert
             foreach (var result in resultItems)
             {
-                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+                var product = sourceProduct;
 
                 Assert.IsNotNull(product);
                 Assert.AreEqual(product.GetVideoUrl(), result.VideoUrl, true);
@@ -325,11 +357,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheItemsThatDoNotHaveAGTINValueAreTheSameInTheResultsFileAsInTheSourceFile()
         {
             // Arrange
-            var sourceItems = ScenarioStorage.Items
-                .Where(item => string.IsNullOrWhiteSpace(item.GtinValue))
+            var sourceItems = this.scenarioStorage.Files.SourceItems
+                .Where(i => string.IsNullOrWhiteSpace(i.GtinValue))
                 .ToList();
-            var resultItems = ScenarioStorage.ResultItems
-                .Where(item => string.IsNullOrWhiteSpace(item.GtinValue))
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName)
+                .Where(i => string.IsNullOrWhiteSpace(i.GtinValue))
                 .ToList();
 
             // Assert
@@ -342,19 +374,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         }
 
         /// <summary>
-        /// Verifies that the items in the results file are the same as the items in the source file.
-        /// </summary>
-        [Then(@"the items in the results file are the same as the items in the source file")]
-        public void ThenTheItemsInTheResultsFileAreTheSameAsTheItemsInTheSourceFile()
-        {
-            // Arrange
-            Assert.AreEqual(ScenarioStorage.Items.Count(), ScenarioStorage.ResultItems.Count());
-
-            // Assert
-            CollectionAssert.AreEqual(ScenarioStorage.Items, ScenarioStorage.ResultItems);
-        }
-
-        /// <summary>
         /// Verifies that the items in the source file that have insufficient columns
         /// are the same in the results file.
         /// </summary>
@@ -362,7 +381,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheItemsThatHaveInsufficientColumnsAreNotPresentInTheResultsFile()
         {
             // Arrange
-            var resultItems = ScenarioStorage.ResultItems
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName)
                 .Where(item => string.IsNullOrWhiteSpace(item.GtinValue));
 
             // Assert
@@ -377,13 +396,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheValidItemsInTheResultsFileHaveTheCorrectBrand()
         {
             // Arrange
-            var sourceProducts = ScenarioStorage.Products;
-            var resultItems = ScenarioStorage.ResultItems
+            var sourceProduct = this.scenarioStorage.Gpc.Product;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName)
                 .Where(item => !string.IsNullOrEmpty(item.GtinValue));
 
+            // Assert
             foreach (var result in resultItems)
             {
-                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+                var product = sourceProduct;
 
                 Assert.IsNotNull(product);
                 Assert.AreEqual(product.GetBrand(), result.Brand);
@@ -398,13 +418,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheValidItemsInTheResultsFileHaveTheCorrectImages()
         {
             // Arrange
-            var sourceProducts = ScenarioStorage.Products;
-            var resultItems = ScenarioStorage.ResultItems
+            var sourceProduct = this.scenarioStorage.Gpc.Product;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName)
                 .Where(item => !string.IsNullOrEmpty(item.GtinValue));
 
+            // Assert
             foreach (var result in resultItems)
             {
-                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+                var product = sourceProduct;
 
                 Assert.IsNotNull(product);
                 Assert.AreEqual(product.GetImageUrl(1), result.ImageUrl1);
@@ -423,14 +444,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheValidItemsInTheResultsFileHaveTheCorrectManufacturer()
         {
             // Arrange
-            var sourceProducts = ScenarioStorage.Products;
-            var resultItems = ScenarioStorage.ResultItems
+            var sourceProduct = this.scenarioStorage.Gpc.Product;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName)
                 .Where(item => !string.IsNullOrEmpty(item.GtinValue));
 
             // Assert
             foreach (var result in resultItems)
             {
-                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+                var product = sourceProduct;
 
                 Assert.IsNotNull(product);
                 Assert.AreEqual(product.Manufacturer, result.Manufacturer);
@@ -445,13 +466,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheValidItemsInTheResultsFileHaveTheCorrectManufacturerPartNumber()
         {
             // Arrange
-            var sourceProducts = ScenarioStorage.Products;
-            var resultItems = ScenarioStorage.ResultItems
+            var sourceProduct = this.scenarioStorage.Gpc.Product;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName)
                 .Where(item => !string.IsNullOrEmpty(item.GtinValue));
 
+            // Assert
             foreach (var result in resultItems)
             {
-                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+                var product = sourceProduct;
 
                 Assert.IsNotNull(product);
                 Assert.AreEqual(product.PartNumber, result.ManufacturerPartNumber);
@@ -466,31 +488,17 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
         public void ThenTheValidItemsInTheResultsFileHaveTheCorrectVideoURL()
         {
             // Arrange
-            var sourceProducts = ScenarioStorage.Products;
-            var resultItems = ScenarioStorage.ResultItems
+            var sourceProduct = this.scenarioStorage.Gpc.Product;
+            var resultItems = ItemFactory.Get(this.scenarioStorage.Files.ResultFileName)
                 .Where(item => !string.IsNullOrEmpty(item.GtinValue));
 
+            // Assert
             foreach (var result in resultItems)
             {
-                var product = sourceProducts.FirstOrDefault(p => p.GetEAN() == result.GtinValue);
+                var product = sourceProduct;
 
                 Assert.IsNotNull(product);
                 Assert.AreEqual(product.GetVideoUrl(), result.VideoUrl);
-            }
-        }
-
-        /// <summary>
-        /// Parses the items from the results file and dumps them
-        /// in scenario storage.
-        /// </summary>
-        [When(@"the items have been parsed from the results file")]
-        public void WhenTheItemsHaveBeenParsedFromTheResultsFile()
-        {
-            using (var streamReader = new StreamReader(ScenarioStorage.ResultFileName, true))
-            using (var delimitedReader = new CsvReader(streamReader, true, ','))
-            {
-                var serializer = new LumenWorksSerializer<Item>();
-                ScenarioStorage.ResultItems = serializer.ReadFileByHeaders(delimitedReader).ToList();
             }
         }
     }

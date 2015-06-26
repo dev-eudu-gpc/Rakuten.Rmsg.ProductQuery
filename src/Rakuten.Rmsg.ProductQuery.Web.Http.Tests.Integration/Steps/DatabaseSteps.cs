@@ -3,14 +3,16 @@
 //     Copyright (c) Rakuten. All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
+namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Rakuten.Rmsg.ProductQuery.Configuration;
+    using Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Resources;
     using TechTalk.SpecFlow;
 
     // TODO: Connection string from config
@@ -27,14 +29,24 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         private readonly IApiContext apiContext;
 
         /// <summary>
+        /// An object for storing and retrieving information from the scenario context.
+        /// </summary>
+        private readonly ScenarioStorage scenarioStorage;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseSteps"/> class
         /// </summary>
         /// <param name="apiContext">A context for the API.</param>
-        public DatabaseSteps(IApiContext apiContext)
+        /// <param name="scenarioStorage">An object for sharing information between steps.</param>
+        public DatabaseSteps(
+            IApiContext apiContext,
+            ScenarioStorage scenarioStorage)
         {
             Contract.Requires(apiContext != null);
+            Contract.Requires(scenarioStorage != null);
 
             this.apiContext = apiContext;
+            this.scenarioStorage = scenarioStorage;
         }
 
         /// <summary>
@@ -53,7 +65,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 }
 
                 // Now create an empty product query group
-                ScenarioStorage.ProductQueryGroupExpected = database.rmsgProductQueryGroups.Add(
+                var emptyGroup = database.rmsgProductQueryGroups.Add(
                     new rmsgProductQueryGroup
                     {
                         rmsgProductQueryGroupID = Guid.NewGuid(),
@@ -61,6 +73,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                     });
 
                 database.SaveChanges();
+
+                // Store pertinent details for subsequent steps
+                this.scenarioStorage.Creation.ExpectedGroup = emptyGroup;
             }
         }
 
@@ -81,7 +96,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 }
 
                 // Now create a new sparse product query group
-                ScenarioStorage.ProductQueryGroupExpected = database.rmsgProductQueryGroups.Add(
+                var sparseGroup = database.rmsgProductQueryGroups.Add(
                     new rmsgProductQueryGroup
                     {
                         rmsgProductQueryGroupID = Guid.NewGuid(),
@@ -89,6 +104,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                     });
 
                 database.SaveChanges();
+
+                // Store pertinent details for subsequent steps
+                this.scenarioStorage.Creation.ExpectedGroup = sparseGroup;
             }
         }
 
@@ -121,7 +139,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             {
                 var itemsWithGran = database.rmsgProductQueryItems
                     .Where(i =>
-                        i.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid &&
+                        i.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid &&
                         i.gran != null);
 
                 Assert.IsTrue(itemsWithGran.Count() == 0, "One or more items have a GRAN but should not have.");
@@ -138,7 +156,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             using (var database = new ProductQueryDbContext())
             {
                 var items = database.rmsgProductQueryItems
-                    .Where(item => item.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid);
+                    .Where(item => item.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid);
 
                 foreach (var item in items)
                 {
@@ -150,9 +168,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                             "The item with GTIN {0} has a completed date of {1} which is earlier than the scenario start date of {2}",
                             item.gtin,
                             item.dateCompleted,
-                            ScenarioStorage.ScenarioStartTime);
+                            this.scenarioStorage.StartTime);
 
-                    Assert.IsTrue(item.dateCompleted > ScenarioStorage.ScenarioStartTime, message);
+                    Assert.IsTrue(item.dateCompleted > this.scenarioStorage.StartTime, message);
                 }
             }
         }
@@ -166,37 +184,16 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             using (var database = new ProductQueryDbContext())
             {
                 var databaseItems = database.rmsgProductQueryItems
-                    .Where(i => i.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid)
-                    .OrderBy(i => i.gtin)
-                    .ToDictionary(i => i.gtin, i => i.gran);
+                    .Where(item => item.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid)
+                    .OrderBy(item => item.gtin)
+                    .ToDictionary(item => item.gtin, i => i.gran);
 
-                var sourceItems = ScenarioStorage.Products
-                    .OrderBy(p => p.GetEAN())
-                    .ToDictionary(p => p.GetEAN(), p => p.Id);
+                var sourceItems = new Dictionary<string, string>
+                {
+                    { this.scenarioStorage.Gpc.Product.GetEAN(), this.scenarioStorage.Gpc.Product.Id }
+                };
 
                 CollectionAssert.AreEqual(sourceItems, databaseItems);
-            }
-        }
-
-        /// <summary>
-        /// Verifies that the items in the product query file can be found in the database.
-        /// </summary>
-        [Then(@"the items in the file can be found in the database")]
-        public void ThenTheItemsInTheFileCanBeFoundInTheDatabase()
-        {
-            // Get the product query from scenario storage
-            var productQuery = ScenarioStorage.NewProductQuery;
-            var expectedGtins = ScenarioStorage.Items.Select(item => item.GtinValue).ToList();
-
-            // Assert
-            using (var database = new ProductQueryDbContext())
-            {
-                var actualGtins = database.rmsgProductQueryItems
-                    .Where(i => i.rmsgProductQueryID == productQuery.IdAsGuid)
-                    .Select(i => i.gtin)
-                    .ToList();
-
-                CollectionAssert.AreEqual(expectedGtins, actualGtins);
             }
         }
 
@@ -208,9 +205,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the valid items in the file can be found in the database")]
         public void ThenTheItemsInTheDatabaseMatchTheValidItemsInTheFile()
         {
-            // Get the product query from scenario storage
-            var productQuery = ScenarioStorage.NewProductQuery;
-            var expectedGtins = ScenarioStorage.Items
+            // Arrange
+            var productQuery = this.scenarioStorage.Creation.SourceProductQuery;
+            var expectedGtins = this.scenarioStorage.Files.SourceItems
                 .Where(item => !string.IsNullOrWhiteSpace(item.GtinValue))
                 .Select(item => item.GtinValue).ToList();
 
@@ -227,6 +224,119 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
+        /// Verifies that the items in the product query file can be found in the database.
+        /// </summary>
+        [Then(@"the items in the file can be found in the database")]
+        public void ThenTheItemsInTheFileCanBeFoundInTheDatabase()
+        {
+            // Arrange
+            var productQuery = this.scenarioStorage.Creation.SourceProductQuery;
+            var expectedGtins = this.scenarioStorage.Files.SourceItems.Select(item => item.GtinValue).ToList();
+
+            // Assert
+            using (var database = new ProductQueryDbContext())
+            {
+                var actualGtins = database.rmsgProductQueryItems
+                    .Where(i => i.rmsgProductQueryID == productQuery.IdAsGuid)
+                    .Select(i => i.gtin)
+                    .ToList();
+
+                CollectionAssert.AreEqual(expectedGtins, actualGtins);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the product query in the response body
+        /// has the same enclosure link as that found in the database.
+        /// </summary>
+        [Then(@"the product query in the response body has the correct enclosure link")]
+        public void ThenTheProductQueryInTheResponseBodyHasTheCorrectEnclosureLink()
+        {
+            using (var database = new ProductQueryDbContext())
+            {
+                // Arrange
+                var productQuery = this.scenarioStorage.Creation.ResponseProductQuery;
+                var databaseEntity = database.rmsgProductQueries
+                    .Single(q => q.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid);
+
+                // Assert
+                Assert.IsNotNull(productQuery.Links.Enclosure);
+                Assert.AreEqual(databaseEntity.uri, productQuery.Links.Enclosure.Href, true);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the product query in the response has the correct monitor link.
+        /// </summary>
+        [Then(@"the product query in the response body has the correct monitor link")]
+        public void ThenTheProductQueryInTheResponseBodyHasTheCorrectMonitorLink()
+        {
+            using (var database = new ProductQueryDbContext())
+            {
+                // Arrange
+                var productQuery = this.scenarioStorage.Creation.ResponseProductQuery;
+                var group = database.rmsgProductQueries
+                    .Single(q => q.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid)
+                    .rmsgProductQueryGroup;
+
+                var expectedUri = string.Format(
+                    "/product-query-group/{0}/status/{{year}}/{{month}}/{{day}}/{{hour}}/{{minute}}",
+                    group.rmsgProductQueryGroupID);
+
+                // Assert
+                Assert.IsNotNull(productQuery.Links.Monitor);
+                Assert.AreEqual(expectedUri, productQuery.Links.Monitor.Href);
+            }
+        }
+
+        /// <summary>
+        /// Ensures that the product query in the response body has the
+        /// same date created as that found in the database.
+        /// </summary>
+        [Then(@"the product query in the response body has the same created date as that in the database")]
+        public void ThenTheProductQueryInTheResponseBodyHasTheSameCreatedDateAsThatInTheDatabase()
+        {
+            using (var database = new ProductQueryDbContext())
+            {
+                // Arrange
+                ProductQuery productQuery = this.scenarioStorage.Creation.ResponseProductQuery;
+                var databaseEntity = database.rmsgProductQueries
+                    .Single(q => q.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid);
+
+                // Assert
+                Assert.AreEqual(databaseEntity.dateCreated.Year, productQuery.Year);
+                Assert.AreEqual(databaseEntity.dateCreated.Month, productQuery.Month);
+                Assert.AreEqual(databaseEntity.dateCreated.Day, productQuery.Day);
+                Assert.AreEqual(databaseEntity.dateCreated.Hour, productQuery.Hour);
+                Assert.AreEqual(databaseEntity.dateCreated.Minute, productQuery.Minute);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the status of the product query in the response is the
+        /// same as the status of the product query in the database
+        /// </summary>
+        [Then(@"the product query in the response body has the same status as that in the database")]
+        public void ThenTheProductQueryInTheResponseBodyHasTheSameStatusAsThatInTheDatabase()
+        {
+            //// TODO: [WB 26-Jun-2015] Really ought to be able to get the id from the response rather than the source.
+
+            using (var database = new ProductQueryDbContext())
+            {
+                // Arrange
+                var productQuery = this.scenarioStorage.Creation.ResponseProductQuery;
+                var databaseEntity = database.rmsgProductQueries
+                    .Single(q => q.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid);
+
+                ProductQueryStatus parsedStatus;
+                Enum.TryParse<ProductQueryStatus>(productQuery.Status, out parsedStatus);
+
+                Assert.IsNotNull(parsedStatus, string.Format("The status in the response is '{0}' which is not a valid status.", productQuery.Status));
+                Assert.AreEqual((ProductQueryStatus)databaseEntity.rmsgProductQueryStatusID, parsedStatus);
+            }
+        }
+
+        /// <summary>
         /// Verifies that there are no items for the product query in the database.
         /// </summary>
         [Then(@"there are no items for the product query in the database")]
@@ -235,76 +345,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             using (var database = new ProductQueryDbContext())
             {
                 var hasItems = database.rmsgProductQueryItems
-                        .Any(i => i.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid);
+                        .Any(i => i.rmsgProductQueryID == this.scenarioStorage.Creation.SourceProductQuery.IdAsGuid);
 
                 Assert.IsFalse(hasItems, "There are items for the product query in the database when none were expected.");
-            }
-        }
-
-        /// <summary>
-        /// Retrieves the product query group from the database for the
-        /// new product query stored in scenario context.
-        /// </summary>
-        [Given(@"the product query group for the new product query has been retrieved from the database")]
-        [When(@"the product query group for the new product query is retrieved from the database")]
-        public void WhenTheProductQueryGroupForTheNewProductQueryIsRetrievedFromTheDatabase()
-        {
-            using (var database = new ProductQueryDbContext())
-            {
-                // Get the details of the new product query from the current scenario context
-                ////var source = ScenarioStorage.ProductQueryFromDatabase;
-                var productQueryId = Guid.Parse(ScenarioStorage.NewProductQuery.Id);
-
-                // Get the product query group from the database and dump it in scenario storage.
-                ScenarioStorage.ProductQueryGroupActual =
-                    database.rmsgProductQueryGroups
-                        .Join(
-                            database.rmsgProductQueries.Where<rmsgProductQuery>(query => query.rmsgProductQueryID == productQueryId),
-                            group => group.rmsgProductQueryGroupID,
-                            query => query.rmsgProductQueryGroupID,
-                            (group, query) => group)
-                        .Single();
-            }
-        }
-
-        /// <summary>
-        /// Retrieves the product query group from the database for the
-        /// product query that is stored in scenario storage and puts it
-        /// in scenario storage.
-        /// </summary>
-        [When(@"the product query group is retrieved from the database")]
-        public void WhenTheProductQueryGroupIsRetrievedFromTheDatabase()
-        {
-            using (var database = new ProductQueryDbContext())
-            {
-                // Get the product query group from the database and dump it in scenario storage.
-                ScenarioStorage.ProductQueryGroupActual =
-                    database.rmsgProductQueryGroups
-                        .Where(q => q.rmsgProductQueryGroupID == ScenarioStorage.ProductQueryGroupExpected.rmsgProductQueryGroupID)
-                        .Single();
-            }
-        }
-
-        /// <summary>
-        /// Retrieves the product query from the database and stores it in
-        /// the current scenario context.
-        /// </summary>
-        [Given(@"the product query has been retrieved from the database")]
-        [When(@"the product query is retrieved from the database")]
-        [Then(@"the product query can be retrieved from the database")]
-        public void WhenTheProductQueryIsRetrievedFromTheDatabase()
-        {
-            using (var database = new ProductQueryDbContext())
-            {
-                // Get the details of the new product query from the current scenario context
-                var source = ScenarioStorage.NewProductQuery;
-
-                // Get the product query from the database, construct a new product query
-                // resource and dump it in scenario storage.
-                ScenarioStorage.ProductQueryFromDatabase =
-                    database.rmsgProductQueries
-                        .Where(q => q.rmsgProductQueryID == source.IdAsGuid && q.culture == source.Culture)
-                        .Single();
             }
         }
 
@@ -312,10 +355,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         /// Waits for the product query to move to the specified status.
         /// </summary>
         /// <param name="expectedStatus">The status to wait for.</param>
-        [When(@"the status of the product query is (.*)")]
-        public void WhenTheStatusOfTheProductQueryIs(string expectedStatus)
+        [When(@"the status of the product query becomes (.*)")]
+        public void WhenTheStatusOfTheProductQueryBecomes(string expectedStatus)
         {
-            var productQuery = ScenarioStorage.NewProductQuery;
+            var productQuery = this.scenarioStorage.Creation.SourceProductQuery;
             var isCompleted = false;
 
             using (var database = new ProductQueryDbContext())
@@ -324,8 +367,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                 for (int i = 0; i < 12; i++)
                 {
                     isCompleted = database.rmsgProductQueries
-                        .Any(q => q.rmsgProductQueryID == productQuery.IdAsGuid
-                            && q.rmsgProductQueryStatusID == (int)ProductQueryStatus.Completed);
+                        .Any(q => 
+                            q.rmsgProductQueryID == productQuery.IdAsGuid &&
+                            q.rmsgProductQueryStatusID == (int)ProductQueryStatus.Completed);
 
                     if (isCompleted)
                     {

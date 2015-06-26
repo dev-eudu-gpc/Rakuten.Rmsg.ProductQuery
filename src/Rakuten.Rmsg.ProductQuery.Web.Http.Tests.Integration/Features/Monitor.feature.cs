@@ -75,11 +75,8 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             this.ScenarioSetup(scenarioInfo);
             testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
             testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("the product query group for the new product query has been retrieved from the dat" +
-                    "abase", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.And("a product query monitor request for the new product query has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-            testRunner.When("a request is made to get the status of a product query group using the prepared r" +
-                    "equest", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.When("a request is made to get the status of the product query group of the new product" +
+                    " query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the HTTP content type is image/png", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the response body contains an image", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -95,12 +92,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Getting the status of a product query group that does not exist returns the corre" +
                     "ct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a product query monitor request for a non-existent product query group has been p" +
-                    "repared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-            testRunner.When("a request is made to get the status of a product query group using the prepared r" +
-                    "equest", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.When("a request is made to get the status of a product query group which does not exist" +
+                    "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 404", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("an HTTP problem can be retrieved from the response body", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/product-query-group-not-f" +
                     "ound", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is The product query group could not be found.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -118,12 +112,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Getting the status of a product query group with an identifier that is not a vali" +
                     "d GUID returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a product query monitor request with an identifier that is not a GUID has been pr" +
-                    "epared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-            testRunner.When("a request is made to get the status of a product query group using the prepared r" +
-                    "equest", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.When("a request is made to get the status of a product query group with an identifier t" +
+                    "hat is not a GUID", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 400", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("an HTTP problem can be retrieved from the response body", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is An invalid request parameter was supplied.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -141,11 +132,11 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Getting the status of a product query group with a date/time that is not a valid " +
                     "date/time returns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a product query monitor request with an invalid date/time has been prepared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-            testRunner.When("a request is made to get the status of a product query group using the prepared r" +
-                    "equest", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.When("a request is made to get the status of the product query group using an invalid d" +
+                    "ate/time", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 400", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-            testRunner.And("an HTTP problem can be retrieved from the response body", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem is of type http://problems.rakuten.com/invalid-request-parameter" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the HTTP problem title is An invalid request parameter was supplied.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -164,10 +155,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Getting the status of a product query group for a date/time that is too recent re" +
                     "turns the correct response", ((string[])(null)));
             this.ScenarioSetup(scenarioInfo);
-            testRunner.Given("a product query monitor request with a date/time that is too recent has been prep" +
-                    "ared", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-            testRunner.When("a request is made to get the status of a product query group using the prepared r" +
-                    "equest", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+            testRunner.Given("a valid new product query has been prepared for the culture en-US", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+            testRunner.And("a request has been made to submit the new product query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.When("a request is made to get the status of a product query group using a date/time th" +
+                    "at is too recent", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.Then("the HTTP status code is 303", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
             testRunner.And("the HTTP location header for the product query monitor request is the current dat" +
                     "e/time", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
