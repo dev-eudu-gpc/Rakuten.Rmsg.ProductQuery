@@ -211,7 +211,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
             // Assert
             Assert.AreEqual(sourceItems.Count, resultItems.Count);
 
-            for (int i = 0; i  < sourceItems.Count; i++)
+            for (int i = 0; i < sourceItems.Count; i++)
             {
                 Assert.AreEqual(sourceItems[i], resultItems[i]);
             }
@@ -350,6 +350,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Steps
             // Arrange
             Assert.AreEqual(ScenarioStorage.Items.Count(), ScenarioStorage.ResultItems.Count());
 
+            // Assert
             CollectionAssert.AreEqual(ScenarioStorage.Items, ScenarioStorage.ResultItems);
         }
 

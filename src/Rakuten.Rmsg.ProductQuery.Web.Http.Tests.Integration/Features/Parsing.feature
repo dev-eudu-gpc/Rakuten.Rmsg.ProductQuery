@@ -29,6 +29,7 @@ Scenario: Query items with no GTIN value are ignored
 	And a message has been created on the queue
 	When the web job is started
 	And the status of the product query is completed
+	And the message queue is empty
 	And the results file is retrieved from storage
 	And the items have been parsed from the results file
 	Then the message queue is empty
@@ -50,6 +51,7 @@ Scenario: A file with only some rows having GTINs is correctly processed
 	And a message has been created on the queue
 	When the web job is started
 	And the status of the product query is completed
+	And the message queue is empty
 	And the results file is retrieved from storage
 	And the items have been parsed from the results file
 	Then the message queue is empty
@@ -95,6 +97,7 @@ Scenario: A file with a row with insufficient columns is processed correctly
 	And a message has been created on the queue
 	When the web job is started
 	And the status of the product query is completed
+	And the message queue is empty
 	And the product query is retrieved from the database
 	And the results file is retrieved from storage
 	And the items have been parsed from the results file

@@ -18,22 +18,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     public static class ScenarioStorage
     {
         /// <summary>
-        /// Gets or sets a message identifier.
-        /// </summary>
-        public static BrokeredMessage DeadLetterMessage
-        {
-            get
-            {
-                return ScenarioContext.Current.Get<BrokeredMessage>("deadLetterMessage");
-            }
-
-            set
-            {
-                ScenarioContext.Current.Set<BrokeredMessage>(value, "deadLetterMessage");
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the HTTP problem that has been deserialized from the response message.
         /// </summary>
         public static HttpProblem HttpProblem
@@ -66,18 +50,18 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         }
 
         /// <summary>
-        /// Gets or sets a message.
+        /// Gets or sets the identifier of the message.
         /// </summary>
-        public static BrokeredMessage Message
+        public static string MessageId
         {
             get
             {
-                return ScenarioContext.Current.Get<BrokeredMessage>("message");
+                return ScenarioContext.Current.Get<string>("messageId");
             }
 
             set
             {
-                ScenarioContext.Current.Set<BrokeredMessage>(value, "message");
+                ScenarioContext.Current.Set<string>(value, "messageId");
             }
         }
 

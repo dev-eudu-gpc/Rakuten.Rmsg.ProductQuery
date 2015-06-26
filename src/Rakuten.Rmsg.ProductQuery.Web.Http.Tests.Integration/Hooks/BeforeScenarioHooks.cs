@@ -10,6 +10,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     using System.Net.Http;
     using System.Threading.Tasks;
     using BoDi;
+    using Microsoft.ServiceBus.Messaging;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
     using Rakuten.Rmsg.ProductQuery.Configuration;
@@ -42,11 +43,16 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             IStorage azureStorage = new AzureStorage();
             ProductQueryApiClient apiClient = new ProductQueryApiClient(apiContext);
             GpcApiClient gpcApiClient = new GpcApiClient(apiContext);
+            QueueClient peekLockQueueClient = QueueClient.CreateFromConnectionString(
+                apiContext.ServiceBusConnectionString,
+                apiContext.MessageQueueName,
+                ReceiveMode.PeekLock);
 
             container.RegisterInstanceAs(apiContext);
             container.RegisterInstanceAs(azureStorage);
             container.RegisterInstanceAs(apiClient);
             container.RegisterInstanceAs(gpcApiClient);
+            container.RegisterInstanceAs(peekLockQueueClient);
 
             this.container = container;
         }

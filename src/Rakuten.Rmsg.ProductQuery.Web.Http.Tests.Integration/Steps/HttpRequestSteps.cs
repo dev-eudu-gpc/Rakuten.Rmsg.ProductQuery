@@ -80,12 +80,12 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         public void WhenARequestIsMadeToGetTheStatusOfAProductQueryGroupUsingThePreparedRequest()
         {
             // Get the request parameters from scenario storage
-            var p = ScenarioStorage.ProductQueryMonitorRequest;
+            var request = ScenarioStorage.ProductQueryMonitorRequest;
 
             // Make the call
             ScenarioStorage.HttpResponseMessage = 
                 this.apiClient
-                    .GetProductQueryGroupStatus(p.Id, p.Year, p.Month, p.Day, p.Hour, p.Minute)
+                    .GetProductQueryGroupStatus(request.Id, request.Year, request.Month, request.Day, request.Hour, request.Minute)
                     .Result;
         }
     }

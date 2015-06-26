@@ -8,7 +8,6 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
     using System;
     using System.Diagnostics.Contracts;
     using System.IO;
-    using System.Reflection;
     using Microsoft.WindowsAzure.Storage.Blob;
     using Newtonsoft.Json;
     using Rakuten.Rmsg.ProductQuery.Configuration;

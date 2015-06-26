@@ -135,39 +135,38 @@
     <Compile Include="Factories\ProductFactory.cs" />
     <Compile Include="Factories\ProductQueryFactory.cs" />
     <Compile Include="Factories\ProductQueryFileFactory.cs" />
-    <Compile Include="Factories\QueueClientFactory.cs" />
     <Compile Include="Factories\TraceWriter.cs" />
+    <Compile Include="Features\Grouping.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Grouping.feature</DependentUpon>
+    </Compile>
     <Compile Include="Features\Matching.feature.cs">
       <DependentUpon>Matching.feature</DependentUpon>
       <SubType>Code</SubType>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Features\Parsing.feature.cs">
-      <DependentUpon>Parsing.feature</DependentUpon>
-      <SubType>Code</SubType>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="Features\Submission.feature.cs">
-      <DependentUpon>Submission.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="Features\Grouping.feature.cs">
-      <DependentUpon>Grouping.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Include="Features\Monitor.feature.cs">
-      <DependentUpon>Monitor.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Monitor.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Parsing.feature.cs">
+      <SubType>Code</SubType>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Parsing.feature</DependentUpon>
     </Compile>
     <Compile Include="Features\ReadyForProcessing.feature.cs">
-      <DependentUpon>ReadyForProcessing.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReadyForProcessing.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Submission.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Submission.feature</DependentUpon>
     </Compile>
     <Compile Include="Hooks\BeforeScenarioHooks.cs" />
     <Compile Include="Hooks\TestRunHooks.cs" />
@@ -240,29 +239,29 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Features\Matching.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Matching.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Features\Parsing.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Parsing.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Features\Submission.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Submission.feature.cs</LastGenOutput>
-    </None>
     <None Include="Features\Grouping.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Grouping.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\Matching.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Matching.feature.cs</LastGenOutput>
     </None>
     <None Include="Features\Monitor.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Monitor.feature.cs</LastGenOutput>
     </None>
+    <None Include="Features\Parsing.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Parsing.feature.cs</LastGenOutput>
+    </None>
     <None Include="Features\ReadyForProcessing.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ReadyForProcessing.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\Submission.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Submission.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
     <EntityDeploy Include="ProductQuery.edmx">

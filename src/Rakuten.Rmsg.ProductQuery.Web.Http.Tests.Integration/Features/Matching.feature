@@ -15,6 +15,7 @@ Scenario: Items are matched successfully
 	And a message has been created on the queue
 	When the web job is started
 	And the status of the product query is completed
+	And the message queue is empty
 	And the product query is retrieved from the database
 	And the results file is retrieved from storage
 	And the items have been parsed from the results file
@@ -44,6 +45,7 @@ Scenario: Items are matched against products with the highest data source trust 
 	And a message has been created on the queue
 	When the web job is started
 	And the status of the product query is completed
+	And the message queue is empty
 	And the product query is retrieved from the database
 	And the results file is retrieved from storage
 	And the items have been parsed from the results file
@@ -73,6 +75,7 @@ Scenario: Items are matched against products with the most recent updated date a
 	And a message has been created on the queue
 	When the web job is started
 	And the status of the product query is completed
+	And the message queue is empty
 	And the product query is retrieved from the database
 	And the results file is retrieved from storage
 	And the items have been parsed from the results file
@@ -102,6 +105,7 @@ Scenario: Items are matched against products with the highest GRAN as third prio
 	And a message has been created on the queue
 	When the web job is started
 	And the status of the product query is completed
+	And the message queue is empty
 	And the product query is retrieved from the database
 	And the results file is retrieved from storage
 	And the items have been parsed from the results file
@@ -157,6 +161,7 @@ Scenario Outline: Items with no GTIN type are matched against all GTIN types
 	And a message has been created on the queue
 	When the web job is started
 	And the status of the product query is completed
+	And the message queue is empty
 	And the results file is retrieved from storage
 	And the items have been parsed from the results file
 	Then the message queue is empty
@@ -190,6 +195,7 @@ Scenario: Items are not matched if no products are found for the GTIN
 	And a message has been created on the queue
 	When the web job is started
 	And the status of the product query is completed
+	And the message queue is empty
 	And the product query is retrieved from the database
 	And the results file is retrieved from storage
 	And the items have been parsed from the results file
@@ -214,6 +220,7 @@ Scenario: Items are not matched if no products exist in the specified culture
 	And a message has been created on the queue
 	When the web job is started
 	And the status of the product query is completed
+	And the message queue is empty
 	And the product query is retrieved from the database
 	And the results file is retrieved from storage
 	And the items have been parsed from the results file
@@ -239,6 +246,7 @@ Scenario: Items are not matched against products that have been improved
 	And a message has been created on the queue
 	When the web job is started
 	And the status of the product query is completed
+	And the message queue is empty
 	And the product query is retrieved from the database
 	And the results file is retrieved from storage
 	And the items have been parsed from the results file

@@ -169,7 +169,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
                     .Where(i => i.rmsgProductQueryID == ScenarioStorage.NewProductQuery.IdAsGuid)
                     .OrderBy(i => i.gtin)
                     .ToDictionary(i => i.gtin, i => i.gran);
-  
+
                 var sourceItems = ScenarioStorage.Products
                     .OrderBy(p => p.GetEAN())
                     .ToDictionary(p => p.GetEAN(), p => p.Id);

@@ -26,14 +26,24 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         private readonly IApiContext apiContext;
 
         /// <summary>
+        /// A queue client using peek lock mode.
+        /// </summary>
+        private readonly QueueClient peekLockQueueClient;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MessageQueueSteps"/> class
         /// </summary>
         /// <param name="apiContext">A context for the API.</param>
-        public MessageQueueSteps(IApiContext apiContext)
+        /// <param name="peekLockQueueClient">A queue client using peek lock mode.</param>
+        public MessageQueueSteps(
+            IApiContext apiContext,
+            QueueClient peekLockQueueClient)
         {
             Contract.Requires(apiContext != null);
+            Contract.Requires(peekLockQueueClient != null);
 
             this.apiContext = apiContext;
+            this.peekLockQueueClient = peekLockQueueClient;
         }
 
         /// <summary>
@@ -43,8 +53,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         public void GivenTheDeadLetterQueueIsEmpty()
         {
             // Create a dead letter queue client
-            var deadLetterQueueClient = QueueClientFactory.CreateForDeadLetter(
-                this.apiContext,
+            var deadLetterQueueClient = QueueClient.CreateFromConnectionString(
+                this.apiContext.ServiceBusConnectionString,
+                QueueClient.FormatDeadLetterPath(this.peekLockQueueClient.Path),
                 ReceiveMode.ReceiveAndDelete);
 
             // Empty the queue by receiving the messages one by one until there are none left.
@@ -73,12 +84,15 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Given(@"the message queue is empty")]
         public void GivenTheMessageQueueIsEmpty()
         {
-            var client = QueueClientFactory.Create(this.apiContext, ReceiveMode.ReceiveAndDelete);
+            QueueClient receiveAndDeleteQueueClient = QueueClient.CreateFromConnectionString(
+                this.apiContext.ServiceBusConnectionString,
+                this.apiContext.MessageQueueName,
+                ReceiveMode.ReceiveAndDelete);
 
             BrokeredMessage message = null;
             do
             {
-                message = client.Receive(new TimeSpan(0, 0, 5));
+                message = receiveAndDeleteQueueClient.Receive(new TimeSpan(0, 0, 5));
             }
             while (message != null);
         }
@@ -96,18 +110,22 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
             var productQuery = JsonConvert.DeserializeObject<ProductQuery>(content);
 
             // Verify that the message can be found
-            var client = QueueClientFactory.Create(this.apiContext, ReceiveMode.PeekLock);
-            var message = client.Peek();
-            Assert.IsNotNull(message);
+            var message = this.peekLockQueueClient.Peek();
 
+            Assert.IsNotNull(message);
+            
             // Verify the contents of the message body
             var messageBody = message.GetBody<Message>();
+
             Assert.AreEqual(ScenarioStorage.NewProductQuery.IdAsGuid, messageBody.Id);
             Assert.AreEqual(ScenarioStorage.NewProductQuery.Culture, messageBody.Culture);
             Assert.AreEqual(productQuery.Links.Enclosure.Href, messageBody.Link.Target);
 
             // Store the message in scenario storage
-            ScenarioStorage.Message = message;
+            ScenarioStorage.MessageId = message.MessageId;
+
+            // Clean up
+            AbandonPeekLock(message);
         }
 
         /// <summary>
@@ -116,10 +134,14 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the dead letter queue is empty")]
         public void ThenTheDeadLetterQueueIsEmpty()
         {
-            var client = QueueClientFactory.CreateForDeadLetter(this.apiContext, ReceiveMode.PeekLock);
+            // Arrange
+            BrokeredMessage message = this.peekLockQueueClient.Peek();
+            if (message != null)
+            {
+                AbandonPeekLock(message);
+            }
 
-            BrokeredMessage message = client.Peek();
-
+            // Assert
             Assert.IsNull(message);
         }
 
@@ -130,8 +152,9 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         public void ThenTheMessageCanBeFoundInTheDeadLetterQueue()
         {
             // Get a queue client for the dead letter queue
-            QueueClient deadLetterQueueClient = QueueClientFactory.CreateForDeadLetter(
-                this.apiContext,
+            QueueClient deadLetterQueueClient = QueueClient.CreateFromConnectionString(
+                this.apiContext.ServiceBusConnectionString,
+                QueueClient.FormatDeadLetterPath(this.peekLockQueueClient.Path),
                 ReceiveMode.PeekLock);
 
             // Try and get a message from the queue for up to 1 minute
@@ -146,10 +169,10 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
 
             // Assertions
             Assert.IsNotNull(message);
-            Assert.AreEqual(message.MessageId, ScenarioStorage.Message.MessageId, false);
+            Assert.AreEqual(message.MessageId, ScenarioStorage.MessageId, true);
 
-            // Storage
-            ScenarioStorage.DeadLetterMessage = message;
+            // Clean up
+            AbandonPeekLock(message);
         }
 
         /// <summary>
@@ -158,11 +181,58 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration
         [Then(@"the message queue is empty")]
         public void ThenTheMessageQueueIsEmpty()
         {
-            var client = QueueClientFactory.Create(this.apiContext, ReceiveMode.PeekLock);
+            BrokeredMessage message = this.peekLockQueueClient.Peek();
 
-            BrokeredMessage message = client.Peek();
+            if (message != null)
+            {
+                AbandonPeekLock(message);
+            }
 
             Assert.IsNull(message);
+        }
+
+        /// <summary>
+        /// Waits for the message queue to be empty for a maximum of one minute
+        /// </summary>
+        [When(@"the message queue is empty")]
+        public void WhenTheMessageQueueIsEmpty()
+        {
+            var stopWatch = new Stopwatch();
+            BrokeredMessage message = null;
+
+            stopWatch.Start();
+            do
+            {
+                message = this.peekLockQueueClient.Peek();
+
+                if (message != null)
+                {
+                    AbandonPeekLock(message);
+                }
+            }
+            while (message != null && stopWatch.ElapsedMilliseconds < 60000);
+
+            Assert.IsNull(message);
+        }
+
+        /// <summary>
+        /// Tries to abandon a lock on a peek locked message.
+        /// </summary>
+        /// <param name="message">The message to try and abandon.</param>
+        private static void AbandonPeekLock(BrokeredMessage message)
+        {
+            try
+            {
+                // A message is only abandonable if there is a lock token.
+                var lockToken = message.LockToken;
+                message.Abandon();
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
     }
 }

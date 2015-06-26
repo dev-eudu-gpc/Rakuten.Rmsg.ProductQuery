@@ -117,6 +117,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("the web job is started", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.And("the status of the product query is completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the results file is retrieved from storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -150,6 +151,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("the web job is started", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.And("the status of the product query is completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the results file is retrieved from storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.Then("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -221,6 +223,7 @@ namespace Rakuten.Rmsg.ProductQuery.Web.Http.Tests.Integration.Features
             testRunner.And("a message has been created on the queue", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.When("the web job is started", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
             testRunner.And("the status of the product query is completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            testRunner.And("the message queue is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the product query is retrieved from the database", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the results file is retrieved from storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
             testRunner.And("the items have been parsed from the results file", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
